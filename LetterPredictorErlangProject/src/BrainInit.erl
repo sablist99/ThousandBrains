@@ -5,11 +5,11 @@
 %% API
 -export([getBrain/4, getSynapseRow/1]).
 
--define(PERMANENCE_WEIGHT, 0.35).
+-define(PERMANENCE_WEIGHT_BORDER, 0.35).
 
 
 % Синапс с заполненными значениями
-getPermanenceWeight(Value) when Value >= ?PERMANENCE_WEIGHT ->
+getPermanenceWeight(Value) when Value >= ?PERMANENCE_WEIGHT_BORDER ->
   true;
 getPermanenceWeight(_Value) ->
   false.

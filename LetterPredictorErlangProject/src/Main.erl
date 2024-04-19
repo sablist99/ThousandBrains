@@ -6,5 +6,5 @@
 
 main() ->
   _ = #brain{
-    layers = 'BrainInit':getBrain(16, 6, 5, 1)
+    layers = 'BrainInit':getBrain(10, 10, 10, 1)
   }.
