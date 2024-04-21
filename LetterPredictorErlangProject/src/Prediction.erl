@@ -5,7 +5,8 @@
 %% API
 -export([selectWinColumns/1]).
 
--define(THETA, 3).
+
+
 
 
 % В зависимости от способа хранения, может быть несколько столбцов, отвечающих за один символ
@@ -95,6 +96,7 @@ isCellInPredictionStateHelper(X, Y, Layer, [LayerState_H, LayerState_T], Count) 
     )
   ).
 
+% Не факт, что название соответствует тому, что функция делает в действительности:)
 isCellInPredictionState(X, Y, Layer, LayerState) ->
   compareThetaAndActiveCells(isCellInPredictionStateHelper(X, Y, Layer, LayerState, 0)).
 
@@ -120,6 +122,7 @@ intToBool(_Expression) ->
   true.
 
 % Клетки, которые сделали верное предсказание
+% TODO в пердыдущей реализации (на python) сделано не верно, поощерать нужно другие клетки, см. оригинальную стсатью Хоккинса
 searchCorrectlyPredictedCellsHelper([], _Layer, _PrevActiveLayer, _PrevPredictionLayer, ReinforcementCells) ->
   ReinforcementCells;
 searchCorrectlyPredictedCellsHelper([{X, Y} | ActiveLayer_T], Layer, PrevActiveLayer, PrevPredictionLayer, ReinforcementCells) ->
@@ -133,11 +136,138 @@ searchCorrectlyPredictedCells(ActiveLayer, Layer, PrevActiveLayer, PrevPredictio
 
 
 
+-record(targetValues, {
+  column :: integer(),
+  maxValue :: integer(),
+  maxCellCoordinates_X :: integer(),
+  maxCellCoordinates_Y :: integer(),
+  targetCoordinates_X :: integer(),
+  targetCoordinates_Y :: integer()}).
 
-selectCellAndSegmentForPatternHelper(Layer, PrevActiveLayerState, Stolb, MaxCellCoords, TargetCoords, MaxCount, MaxDendriteIndex, MaxValue) ->
-  .
+% TODO Подумать о вынесении обращения к двумерному массиву в отдельную функцию
+setValuesForPattern([], _TargetValues) ->
+  true;
+setValuesForPattern([CurrentDendrite | Dendrites_T], TargetValues) ->
+  Synapse = lists:nth(TargetValues#targetValues.targetCoordinates_Y, lists:nth(TargetValues#targetValues.targetCoordinates_X, CurrentDendrite)),
+  Synapse#synapse{permanenceValue = ?PERMANENCE_WEIGHT_BORDER, permanenceWeight = 1},
+  setValuesForPattern(Dendrites_T, TargetValues).
 
-selectCellAndSegmentForPattern(Layer, WinColumns, PrevActiveLayerState) ->
-  selectCellAndSegmentForPatternHelper(Layer, PrevActiveLayerState, lists:nth(0, WinColumns), {-1, -1}, [], -1, -1, -1).
+
+
+updateDendritesForPattern(Layer, TargetValues) ->
+  setValuesForPattern(lists:nth(TargetValues#targetValues.maxCellCoordinates_Y, lists:nth(TargetValues#targetValues.maxCellCoordinates_X, Layer)), TargetValues).
+
+
+
+updateMaxValuesForPattern(TargetValues, CurrentDendritePermanenceValue, {PrevActiveCell_X, PrevActiveCell_Y} , M)
+  when CurrentDendritePermanenceValue > TargetValues#targetValues.maxValue ->
+  TargetValues#targetValues{
+    maxValue = CurrentDendritePermanenceValue,
+    maxCellCoordinates_X = PrevActiveCell_X,
+    maxCellCoordinates_Y = PrevActiveCell_Y,
+    targetCoordinates_X = M,
+    targetCoordinates_Y = TargetValues#targetValues.column};
+updateMaxValuesForPattern(TargetValues, _CurrentDendritePermanenceValue, {_PrevActiveCell_X, _PrevActiveCell_Y} , _M) ->
+  TargetValues.
+
+
+
+selectCellAndSegmentForPatternColumnHelper(TargetValues, _PrevActiveCellCoordinates,  _CurrentDendrite, CurrentM, TargetM) when CurrentM == TargetM ->
+  TargetValues;
+selectCellAndSegmentForPatternColumnHelper(TargetValues, PrevActiveCellCoordinates,  CurrentDendrite, CurrentM, TargetM) ->
+  selectCellAndSegmentForPatternColumnHelper(
+    updateMaxValuesForPattern(
+      TargetValues,
+      lists:nth(CurrentM, lists:nth(TargetValues#targetValues.column, CurrentDendrite))#synapse.permanenceValue,
+      PrevActiveCellCoordinates,
+      CurrentM),
+    PrevActiveCellCoordinates,  CurrentDendrite, CurrentM + 1, TargetM
+  ).
+
+
+
+selectCellAndSegmentForPatternDendriteHelper(TargetValues, [], _PrevActiveCellCoordinates, _TargetM) ->
+  TargetValues;
+selectCellAndSegmentForPatternDendriteHelper(TargetValues, [CurrentDendrite | Dendrites_T], PrevActiveCellCoordinates, TargetM) ->
+  selectCellAndSegmentForPatternDendriteHelper(
+    selectCellAndSegmentForPatternColumnHelper(
+      TargetValues, PrevActiveCellCoordinates, CurrentDendrite, 0, TargetM
+    ),
+    Dendrites_T, PrevActiveCellCoordinates, TargetM
+  ).
+
+
+
+selectCellAndSegmentForPatternCellHelper(TargetValues, Layer, [], _TargetM) ->
+  updateDendritesForPattern(Layer, TargetValues);
+selectCellAndSegmentForPatternCellHelper(TargetValues, Layer, [{X_PALS, Y_PALS} | PrevActiveLayerState_T], TargetM) ->
+  selectCellAndSegmentForPatternCellHelper(
+    selectCellAndSegmentForPatternDendriteHelper(
+      TargetValues, lists:nth(Y_PALS, lists:nth(X_PALS, Layer)), {X_PALS, Y_PALS}, TargetM
+    ),
+    Layer, PrevActiveLayerState_T, TargetM
+  ).
+
+
+
+selectCellAndSegmentForPattern(Layer, WinColumns, PrevActiveLayerState, TargetM) ->
+  selectCellAndSegmentForPatternCellHelper(#targetValues{
+    column = lists:nth(0, WinColumns),
+    maxValue = -1,
+    maxCellCoordinates_X = -1,
+    maxCellCoordinates_Y = -1,
+    targetCoordinates_X = -1,
+    targetCoordinates_Y = -1},
+    Layer, PrevActiveLayerState, TargetM).
+
+% TODO Возможно, нужно контролировать выход за единицу. Уточнить в оригинальной статье
+rewardOneSynapseInDendrite(Synapse) when Synapse#synapse.permanenceWeight == 1 ->
+  Synapse#synapse{permanenceWeight = Synapse#synapse.permanenceWeight + ?P_PLUS}.
+
+
+
+rewardSynapsesInCell([], {_CurrentCorrectlyCell_X, _CurrentCorrectlyCell_Y}) ->
+  false;
+rewardSynapsesInCell([CurrentDendrite | _Dendrites_T], {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}) ->
+  rewardOneSynapseInDendrite(lists:nth(CurrentCorrectlyCell_Y, lists:nth(CurrentCorrectlyCell_X, CurrentDendrite))),
+  rewardSynapsesInCell(_Dendrites_T, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}).
+
+
+
+rewardSynapsesInLayer(Layer, {CurrentActiveCell_X, CurrentActiveCell_Y}, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}) ->
+  rewardSynapsesInCell(lists:nth(CurrentActiveCell_Y, lists:nth(CurrentActiveCell_X, Layer)), {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}).
+
+
+
+rewardSynapsesInPrevActiveLayerState(Layer, [], CurrentCorrectlyCell) ->
+  false;
+rewardSynapsesInPrevActiveLayerState(Layer, [{PALS_X, PALS_Y} | PALS_T], CurrentCorrectlyCell) ->
+  rewardSynapsesInLayer(Layer, {PALS_X, PALS_Y}, CurrentCorrectlyCell),
+  rewardSynapsesInPrevActiveLayerState(Layer, PALS_T, CurrentCorrectlyCell).
+
+
+
+rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, []) ->
+  false;
+rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, [{CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y} | CurrentCorrectlyCell_T]) ->
+  rewardSynapsesInPrevActiveLayerState(Layer, PrevActiveLayerState, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}),
+  rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, CurrentCorrectlyCell_T).
+
+
+% По сути, лишняя прослойка, но с ней нагляднее.
+rewardSynapses(Layer, PrevActiveLayerState, CurrentCorrectlyCell) ->
+  rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, CurrentCorrectlyCell).
+
+
+
+
+
+
+
+
+
+
+
+
 
 
