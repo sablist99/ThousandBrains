@@ -3,10 +3,7 @@
 -include("Model.hrl").
 
 %% API
--export([selectWinColumns/1]).
-
-
-
+-export([selectWinColumns/1, selectActiveCells/4, selectPredictedCells/4, selectCellAndSegmentForPattern/4, searchCorrectlyPredictedCells/4, rewardSynapses/3]).
 
 
 % В зависимости от способа хранения, может быть несколько столбцов, отвечающих за один символ
@@ -14,7 +11,6 @@
 % Текущая реализация преполагает, что входящий символ соответсвует номеру столбца.
 selectWinColumns(InputSymbol) ->
   [InputSymbol].
-
 
 
 % Ищем в списке пар координат пару с заданным Y
@@ -36,7 +32,6 @@ computeOneCellState(X_Coordinate, Y_Coordinate, PredictionLayerSate, WinColumns)
     true -> computeOneCellStateHelper(X_Coordinate, Y_Coordinate, PredictionLayerSate);
     false -> 0
   end.
-
 
 
 % Добавление координат к списку, если выполнено условие
@@ -62,7 +57,6 @@ selectActiveCellsHelper({X, Y}, _X_Target, Y_Target, PrevPredictionState, WinCol
 % Возвращение активных клеток слоя
 selectActiveCells(X_Target, Y_Target, PrevPredictionState, WinColumns) ->
   selectActiveCellsHelper({0, 0}, X_Target, Y_Target, PrevPredictionState, WinColumns, []).
-
 
 
 % Обновление активности клетки (В состоянии предсказания или нет)
@@ -101,7 +95,6 @@ isCellInPredictionState(X, Y, Layer, LayerState) ->
   compareThetaAndActiveCells(isCellInPredictionStateHelper(X, Y, Layer, LayerState, 0)).
 
 
-
 % Вычисление матрицы предсказания
 selectPredictedCellsHelper({X, Y}, X_Target, Y_Target, _Layer, _ActiveLayerState, PredictionMatrix) when X == X_Target - 1, Y == Y_Target - 1 ->
   PredictionMatrix;
@@ -111,7 +104,7 @@ selectPredictedCellsHelper({X, Y}, X_Target, Y_Target, Layer, ActiveLayerState, 
       isCellInPredictionState(X, Y, Layer, ActiveLayerState))).
 
 selectPredictedCells(X_Target, Y_Target, Layer, ActiveLayerState) ->
-  selectPredictedCellsHelper ({0, 0}, X_Target, Y_Target, Layer, ActiveLayerState, []).
+  selectPredictedCellsHelper({0, 0}, X_Target, Y_Target, Layer, ActiveLayerState, []).
 
 
 
@@ -159,7 +152,7 @@ updateDendritesForPattern(Layer, TargetValues) ->
 
 
 
-updateMaxValuesForPattern(TargetValues, CurrentDendritePermanenceValue, {PrevActiveCell_X, PrevActiveCell_Y} , M)
+updateMaxValuesForPattern(TargetValues, CurrentDendritePermanenceValue, {PrevActiveCell_X, PrevActiveCell_Y}, M)
   when CurrentDendritePermanenceValue > TargetValues#targetValues.maxValue ->
   TargetValues#targetValues{
     maxValue = CurrentDendritePermanenceValue,
@@ -167,21 +160,21 @@ updateMaxValuesForPattern(TargetValues, CurrentDendritePermanenceValue, {PrevAct
     maxCellCoordinates_Y = PrevActiveCell_Y,
     targetCoordinates_X = M,
     targetCoordinates_Y = TargetValues#targetValues.column};
-updateMaxValuesForPattern(TargetValues, _CurrentDendritePermanenceValue, {_PrevActiveCell_X, _PrevActiveCell_Y} , _M) ->
+updateMaxValuesForPattern(TargetValues, _CurrentDendritePermanenceValue, {_PrevActiveCell_X, _PrevActiveCell_Y}, _M) ->
   TargetValues.
 
 
 
-selectCellAndSegmentForPatternColumnHelper(TargetValues, _PrevActiveCellCoordinates,  _CurrentDendrite, CurrentM, TargetM) when CurrentM == TargetM ->
+selectCellAndSegmentForPatternColumnHelper(TargetValues, _PrevActiveCellCoordinates, _CurrentDendrite, CurrentM, TargetM) when CurrentM == TargetM ->
   TargetValues;
-selectCellAndSegmentForPatternColumnHelper(TargetValues, PrevActiveCellCoordinates,  CurrentDendrite, CurrentM, TargetM) ->
+selectCellAndSegmentForPatternColumnHelper(TargetValues, PrevActiveCellCoordinates, CurrentDendrite, CurrentM, TargetM) ->
   selectCellAndSegmentForPatternColumnHelper(
     updateMaxValuesForPattern(
       TargetValues,
       lists:nth(CurrentM, lists:nth(TargetValues#targetValues.column, CurrentDendrite))#synapse.permanenceValue,
       PrevActiveCellCoordinates,
       CurrentM),
-    PrevActiveCellCoordinates,  CurrentDendrite, CurrentM + 1, TargetM
+    PrevActiveCellCoordinates, CurrentDendrite, CurrentM + 1, TargetM
   ).
 
 
@@ -239,7 +232,7 @@ rewardSynapsesInLayer(Layer, {CurrentActiveCell_X, CurrentActiveCell_Y}, {Curren
 
 
 
-rewardSynapsesInPrevActiveLayerState(Layer, [], CurrentCorrectlyCell) ->
+rewardSynapsesInPrevActiveLayerState(_Layer, [], _CurrentCorrectlyCell) ->
   false;
 rewardSynapsesInPrevActiveLayerState(Layer, [{PALS_X, PALS_Y} | PALS_T], CurrentCorrectlyCell) ->
   rewardSynapsesInLayer(Layer, {PALS_X, PALS_Y}, CurrentCorrectlyCell),
@@ -247,11 +240,11 @@ rewardSynapsesInPrevActiveLayerState(Layer, [{PALS_X, PALS_Y} | PALS_T], Current
 
 
 
-rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, []) ->
+rewardSynapsesInCurrentlyPredirectedCells(_Layer, _PrevActiveLayerState, []) ->
   false;
-rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, [{CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y} | CurrentCorrectlyCell_T]) ->
+rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, [{CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y} | CurrentCorrectlyCell_T]) ->
   rewardSynapsesInPrevActiveLayerState(Layer, PrevActiveLayerState, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}),
-  rewardSynapsesInCurrentlyPredirectedCells(Layer,PrevActiveLayerState, CurrentCorrectlyCell_T).
+  rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, CurrentCorrectlyCell_T).
 
 
 % По сути, лишняя прослойка, но с ней нагляднее.

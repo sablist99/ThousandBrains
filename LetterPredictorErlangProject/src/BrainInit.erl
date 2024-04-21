@@ -6,7 +6,6 @@
 -export([getBrain/4, getSynapseRow/1]).
 
 
-
 % Синапс с заполненными значениями
 getPermanenceWeight(Value) when Value >= ?PERMANENCE_WEIGHT_BORDER ->
   true;
