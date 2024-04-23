@@ -3,7 +3,7 @@
 -include("Model.hrl").
 
 %% API
--export([getBrain/4, getSynapseRow/1]).
+-export([getBrain/4]).
 
 
 % Синапс с заполненными значениями

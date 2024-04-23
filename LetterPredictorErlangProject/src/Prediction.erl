@@ -5,7 +5,6 @@
 %% API
 -export([selectWinColumns/1, selectActiveCells/4, selectPredictedCells/4, selectCellAndSegmentForPattern/4, searchCorrectlyPredictedCells/4, rewardSynapses/3]).
 
-
 % В зависимости от способа хранения, может быть несколько столбцов, отвечающих за один символ
 % Поэтому нужна соответствующая прослойка, чтобы была возможность для расширения
 % Текущая реализация преполагает, что входящий символ соответсвует номеру столбца.
@@ -40,8 +39,8 @@ appendCoordinateByCondition(TargetList, X, Y, State) when State == 1; State == t
 appendCoordinateByCondition(TargetList, _X, _Y, _State) ->
   TargetList.
 
-getCoordinateForCycle(_X, Y, Y_Target) when Y == Y_Target - 1 ->
-  {x + 1, 0};
+getCoordinateForCycle(X, Y, Y_Target) when Y == Y_Target - 1 ->
+  {X + 1, 0};
 getCoordinateForCycle(X, Y, _Y_Target) ->
   {X, Y + 1}.
 
@@ -50,7 +49,7 @@ getCoordinateForCycle(X, Y, _Y_Target) ->
 selectActiveCellsHelper({X, Y}, X_Target, Y_Target, _PrevPredictionState, _WinColumns, LayerState) when X == X_Target - 1, Y == Y_Target - 1 ->
   LayerState;
 selectActiveCellsHelper({X, Y}, _X_Target, Y_Target, PrevPredictionState, WinColumns, LayerState) ->
-  selectActiveCellsHelper(getCoordinateForCycle(X, Y, Y_Target), _X_Target, _Y_Target, PrevPredictionState, WinColumns,
+  selectActiveCellsHelper(getCoordinateForCycle(X, Y, Y_Target), _X_Target, Y_Target, PrevPredictionState, WinColumns,
     appendCoordinateByCondition(LayerState, X, Y, % Добавляем клетку, если она активная
       computeOneCellState(X, Y, PrevPredictionState, WinColumns))). % Определяем активность клетки
 
@@ -139,11 +138,11 @@ searchCorrectlyPredictedCells(ActiveLayer, Layer, PrevActiveLayer, PrevPredictio
 
 % TODO Подумать о вынесении обращения к двумерному массиву в отдельную функцию
 setValuesForPattern([], _TargetValues) ->
-  true;
-setValuesForPattern([CurrentDendrite | Dendrites_T], TargetValues) ->
-  Synapse = lists:nth(TargetValues#targetValues.targetCoordinates_Y, lists:nth(TargetValues#targetValues.targetCoordinates_X, CurrentDendrite)),
-  Synapse#synapse{permanenceValue = ?PERMANENCE_WEIGHT_BORDER, permanenceWeight = 1},
-  setValuesForPattern(Dendrites_T, TargetValues).
+  true.
+%setValuesForPattern([CurrentDendrite | Dendrites_T], TargetValues) ->
+%  Synapse = lists:nth(TargetValues#targetValues.targetCoordinates_Y, lists:nth(TargetValues#targetValues.targetCoordinates_X, CurrentDendrite)),
+%  Synapse#synapse{permanenceValue = ?PERMANENCE_WEIGHT_BORDER, permanenceWeight = 1},
+%  setValuesForPattern(Dendrites_T, TargetValues).
 
 
 
@@ -168,10 +167,11 @@ updateMaxValuesForPattern(TargetValues, _CurrentDendritePermanenceValue, {_PrevA
 selectCellAndSegmentForPatternColumnHelper(TargetValues, _PrevActiveCellCoordinates, _CurrentDendrite, CurrentM, TargetM) when CurrentM == TargetM ->
   TargetValues;
 selectCellAndSegmentForPatternColumnHelper(TargetValues, PrevActiveCellCoordinates, CurrentDendrite, CurrentM, TargetM) ->
+  Synapse = lists:nth(CurrentM, lists:nth(TargetValues#targetValues.column, CurrentDendrite)),
   selectCellAndSegmentForPatternColumnHelper(
     updateMaxValuesForPattern(
       TargetValues,
-      lists:nth(CurrentM, lists:nth(TargetValues#targetValues.column, CurrentDendrite))#synapse.permanenceValue,
+      Synapse#synapse.permanenceValue,
       PrevActiveCellCoordinates,
       CurrentM),
     PrevActiveCellCoordinates, CurrentDendrite, CurrentM + 1, TargetM
@@ -214,53 +214,75 @@ selectCellAndSegmentForPattern(Layer, WinColumns, PrevActiveLayerState, TargetM)
     Layer, PrevActiveLayerState, TargetM).
 
 % TODO Возможно, нужно контролировать выход за единицу. Уточнить в оригинальной статье
-rewardOneSynapseInDendrite(Synapse) when Synapse#synapse.permanenceWeight == 1 ->
-  Synapse#synapse{permanenceWeight = Synapse#synapse.permanenceWeight + ?P_PLUS}.
+rewardCorrectlyPredictedSynapse(Synapse) when Synapse#synapse.permanenceWeight == 1 ->
+  Synapse#synapse{permanenceWeight = Synapse#synapse.permanenceWeight + ?P_PLUS};
+rewardCorrectlyPredictedSynapse(Synapse) -> Synapse.
+
+% Перебираем все синапсы в строке путем перекладывания из одного списка в другой
+iterateSynapseRow([], IteratedSynapseRow, _CurrentIndex, _TargetY) ->
+  IteratedSynapseRow;
+iterateSynapseRow([CurrentSynapse | SynapseRow_T], IteratedSynapseRow, CurrentIndex, TargetX) when CurrentIndex == TargetX ->
+  iterateSynapseRow(SynapseRow_T, IteratedSynapseRow ++ [rewardCorrectlyPredictedSynapse(CurrentSynapse)], CurrentIndex + 1, TargetX);
+iterateSynapseRow([CurrentSynapse | SynapseRow_T], IteratedSynapseRow, CurrentIndex, TargetX) ->
+  iterateSynapseRow(SynapseRow_T, IteratedSynapseRow ++ [CurrentSynapse], CurrentIndex + 1, TargetX).
 
 
-
-rewardSynapsesInCell([], {_CurrentCorrectlyCell_X, _CurrentCorrectlyCell_Y}) ->
-  false;
-rewardSynapsesInCell([CurrentDendrite | _Dendrites_T], {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}) ->
-  rewardOneSynapseInDendrite(lists:nth(CurrentCorrectlyCell_Y, lists:nth(CurrentCorrectlyCell_X, CurrentDendrite))),
-  rewardSynapsesInCell(_Dendrites_T, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}).
-
-
-
-rewardSynapsesInLayer(Layer, {CurrentActiveCell_X, CurrentActiveCell_Y}, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}) ->
-  rewardSynapsesInCell(lists:nth(CurrentActiveCell_Y, lists:nth(CurrentActiveCell_X, Layer)), {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}).
+% Перебираем все строки синапсов в дендрите
+iteratedDendrite([], IteratedDendrite, _CurrentIndex, _TargetX, _TargetY) ->
+  IteratedDendrite;
+iteratedDendrite([CurrentSynapseRow | Dendrite_T], IteratedDendrite, CurrentIndex, TargetX, TargetY) when CurrentIndex == TargetY ->
+  iteratedDendrite(Dendrite_T, IteratedDendrite ++ [iterateSynapseRow(CurrentSynapseRow, [], 0, TargetX)], CurrentIndex + 1, TargetX, TargetY);
+iteratedDendrite([CurrentSynapseRow | Dendrite_T], IteratedDendrite, CurrentIndex,  TargetX, TargetY) ->
+  iteratedDendrite(Dendrite_T, IteratedDendrite ++ [CurrentSynapseRow], CurrentIndex + 1, TargetX, TargetY).
 
 
-
-rewardSynapsesInPrevActiveLayerState(_Layer, [], _CurrentCorrectlyCell) ->
-  false;
-rewardSynapsesInPrevActiveLayerState(Layer, [{PALS_X, PALS_Y} | PALS_T], CurrentCorrectlyCell) ->
-  rewardSynapsesInLayer(Layer, {PALS_X, PALS_Y}, CurrentCorrectlyCell),
-  rewardSynapsesInPrevActiveLayerState(Layer, PALS_T, CurrentCorrectlyCell).
-
+% Перебираем все дендриты в клетке
+iteratedCell([], IteratedCell, _TargetSynapseX, _TargetSynapseY) ->
+  IteratedCell;
+iteratedCell([CurrentDendrite | Cell_T], IteratedCell, TargetSynapseX, TargetSynapseY) ->
+  iteratedCell(Cell_T, IteratedCell ++ [iteratedDendrite(CurrentDendrite, [], 0, TargetSynapseX, TargetSynapseY)], TargetSynapseX, TargetSynapseY).
 
 
-rewardSynapsesInCurrentlyPredirectedCells(_Layer, _PrevActiveLayerState, []) ->
-  false;
-rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, [{CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y} | CurrentCorrectlyCell_T]) ->
-  rewardSynapsesInPrevActiveLayerState(Layer, PrevActiveLayerState, {CurrentCorrectlyCell_X, CurrentCorrectlyCell_Y}),
-  rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, CurrentCorrectlyCell_T).
+% Перебираем клетки в строке клеток
+iteratedCellRow([], IteratedCellRow, _TargetSynapseX, _TargetSynapseY, _CurrentIndex, _TargetX) ->
+  IteratedCellRow;
+iteratedCellRow([CurrentCell | CellRow_T], IteratedCellRow, TargetSynapseX, TargetSynapseY, CurrentIndex, TargetX) when CurrentIndex == TargetX ->
+  iteratedCellRow(CellRow_T, IteratedCellRow ++ [iteratedCell(CurrentCell, [], TargetSynapseX, TargetSynapseY)],
+    TargetSynapseX, TargetSynapseY, CurrentIndex + 1, TargetX);
+iteratedCellRow([CurrentCell | CellRow_T], IteratedCellRow, TargetSynapseX, TargetSynapseY, CurrentIndex, TargetX) ->
+  iteratedCellRow(CellRow_T, IteratedCellRow ++ [CurrentCell], TargetSynapseX, TargetSynapseY, CurrentIndex + 1, TargetX).
+
+
+% Перебираем строки клеток в слое
+iteratedLayer([], IteratedLayer, _TargetSynapseX, _TargetSynapseY, _CurrentIndex, _TargetX, _TargetY) ->
+  IteratedLayer;
+iteratedLayer([CurrentCellRow | Layer_T], IteratedLayer, TargetSynapseX, TargetSynapseY, CurrentIndex, TargetX, TargetY) when CurrentIndex == TargetY ->
+  iteratedLayer(Layer_T, IteratedLayer ++ [iteratedCellRow(CurrentCellRow, [], TargetSynapseX, TargetSynapseY, 0, TargetX)],
+    TargetSynapseX, TargetSynapseY, CurrentIndex + 1, TargetX, TargetY);
+iteratedLayer([CurrentCellRow | Layer_T], IteratedLayer, TargetSynapseX, TargetSynapseY, CurrentIndex, TargetX, TargetY) ->
+  iteratedLayer(Layer_T, IteratedLayer ++ [CurrentCellRow], TargetSynapseX, TargetSynapseY, CurrentIndex + 1, TargetX, TargetY).
+
+
+% Ищем клетки, которые предсказали верный выстрел
+iteratedPrevActiveLayerState(Layer, [], _TargetSynapseX, _TargetSynapseY) ->
+  Layer;
+iteratedPrevActiveLayerState(Layer, [{ActiveCell_X, ActiveCell_Y} | T], TargetSynapseX, TargetSynapseY) ->
+  iteratedPrevActiveLayerState(
+    iteratedLayer(Layer, [], TargetSynapseX, TargetSynapseY, 0, ActiveCell_X, ActiveCell_Y),
+    T, TargetSynapseX, TargetSynapseY
+  ).
+
+
+% Ищем клетки, которые были верно предсказаны
+iteratedCorrectlyPredictedCells(Layer, _PrevActiveLayerState, []) ->
+  Layer;
+iteratedCorrectlyPredictedCells(Layer, PrevActiveLayerState, [{CorrectlyCell_X, CorrectlyCell_Y} | T]) ->
+  iteratedCorrectlyPredictedCells(
+    iteratedPrevActiveLayerState(Layer, PrevActiveLayerState, CorrectlyCell_X, CorrectlyCell_Y),
+    PrevActiveLayerState, T
+  ).
 
 
 % По сути, лишняя прослойка, но с ней нагляднее.
 rewardSynapses(Layer, PrevActiveLayerState, CurrentCorrectlyCell) ->
-  rewardSynapsesInCurrentlyPredirectedCells(Layer, PrevActiveLayerState, CurrentCorrectlyCell).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  iteratedCorrectlyPredictedCells(Layer, PrevActiveLayerState, CurrentCorrectlyCell).
