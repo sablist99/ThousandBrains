@@ -1,6 +1,7 @@
 -module('Main').
 
 -include("Model.hrl").
+
 %% API
 -export([main/0]).
 

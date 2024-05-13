@@ -138,11 +138,11 @@ searchCorrectlyPredictedCells(ActiveLayer, Layer, PrevActiveLayer, PrevPredictio
 
 % TODO Подумать о вынесении обращения к двумерному массиву в отдельную функцию
 setValuesForPattern([], _TargetValues) ->
-  true.
-%setValuesForPattern([CurrentDendrite | Dendrites_T], TargetValues) ->
-%  Synapse = lists:nth(TargetValues#targetValues.targetCoordinates_Y, lists:nth(TargetValues#targetValues.targetCoordinates_X, CurrentDendrite)),
-%  Synapse#synapse{permanenceValue = ?PERMANENCE_WEIGHT_BORDER, permanenceWeight = 1},
-%  setValuesForPattern(Dendrites_T, TargetValues).
+  true;
+setValuesForPattern([CurrentDendrite | Dendrites_T], TargetValues) ->
+  Synapse = lists:nth(TargetValues#targetValues.targetCoordinates_Y, lists:nth(TargetValues#targetValues.targetCoordinates_X, CurrentDendrite)),
+  Synapse#synapse{permanenceValue = ?PERMANENCE_WEIGHT_BORDER, permanenceWeight = 1},
+  setValuesForPattern(Dendrites_T, TargetValues).
 
 
 
@@ -202,7 +202,7 @@ selectCellAndSegmentForPatternCellHelper(TargetValues, Layer, [{X_PALS, Y_PALS} 
   ).
 
 
-
+% Вернет обновленный слой
 selectCellAndSegmentForPattern(Layer, WinColumns, PrevActiveLayerState, TargetM) ->
   selectCellAndSegmentForPatternCellHelper(#targetValues{
     column = lists:nth(0, WinColumns),

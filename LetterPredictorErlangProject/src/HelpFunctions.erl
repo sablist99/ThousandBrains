@@ -3,7 +3,7 @@
 -include("Model.hrl").
 
 %% API
--export([getStat/1, printMap/1, print100PoissonValue/0]).
+-export([getStat/1, printMap/1, print100PoissonValue/0, charToInt/1]).
 
 -define(STEP, 1).
 
@@ -61,3 +61,4 @@ print100PoissonValue(N) ->
 
 print100PoissonValue() -> print100PoissonValue(0).
 
+charToInt(H) -> H - 48.
