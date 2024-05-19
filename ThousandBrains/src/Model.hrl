@@ -21,7 +21,8 @@
 -define(PERMANENCE_THRESHOLD, 0.3).
 -define(ROUND_EPSILON, 10000).
 
--define(THETA_IN_B, 6).
+-define(THETA_IN_B_MIN, 4). % В статье значение параметра не уточняется
+-define(THETA_IN_B_MAX, 6).
 -define(THETA_OUT_B, 18).
 -define(THETA_OUT_C, 1).
 -define(THETA_OUT_P, 3).

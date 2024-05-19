@@ -12,7 +12,7 @@
 -include("Model.hrl").
 
 %% API
--export([getInLayer/0]).
+-export([initializeGlobalData/0]).
 
 
 % Определение наличия связи в зависимости от поргового значения
@@ -24,7 +24,7 @@ getPermanenceWeight(_Value) ->
 % Функция создания синапса
 getSynapseHelper(Value) ->
   #synapse{
-    guid = 'MyMath':getGUID(),
+    guid = 'MyMath':getGuid(),
     permanenceValue = Value,
     permanenceWeight = getPermanenceWeight(Value)}.
 
@@ -51,7 +51,7 @@ getInDendrite() -> getInDendriteHelper(0, #{}).
 getInCellHelper(CurrentDendrite, Cell) when CurrentDendrite == ?D ->
   Cell;
 getInCellHelper(CurrentDendrite, Cell) ->
-  getInCellHelper(CurrentDendrite + 1, maps:put('MyMath':getGUID(), getInDendrite(), Cell)).
+  getInCellHelper(CurrentDendrite + 1, maps:put('MyMath':getGuid(), getInDendrite(), Cell)).
 
 getInCell() -> getInCellHelper(0, #{}).
 
@@ -61,7 +61,7 @@ getInCell() -> getInCellHelper(0, #{}).
 getInMiniColumnHelper(CurrentCell, MiniColumn) when CurrentCell == ?M ->
   MiniColumn;
 getInMiniColumnHelper(CurrentCell, MiniColumn) ->
-  getInMiniColumnHelper(CurrentCell + 1, maps:put('MyMath':getGUID(), getInCell(), MiniColumn)).
+  getInMiniColumnHelper(CurrentCell + 1, maps:put('MyMath':getGuid(), getInCell(), MiniColumn)).
 
 getInMiniColumn() -> getInMiniColumnHelper(0, #{}).
 
@@ -74,3 +74,8 @@ getInLayerHelper(CurrentMiniColumn, Layer) ->
   getInLayerHelper(CurrentMiniColumn + 1, maps:put(CurrentMiniColumn, getInMiniColumn(), Layer)).
 
 getInLayer() -> getInLayerHelper(0, #{}).
+
+
+initializeGlobalData() ->
+  put(inputLayer, getInLayer()),
+  put(apicalDendrites, []).

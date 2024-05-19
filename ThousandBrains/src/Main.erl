@@ -10,7 +10,12 @@
 -author("Potap").
 
 %% API
--export([main/0]).
+-export([main/0, sendExternalSignal/1]).
+
+-include("Model.hrl").
 
 main() ->
-  'HelpFunctions':mapWriteToFile("./Out.txt", 'BrainInit':getInLayer()).
+  'BrainInit':initializeGlobalData().
+
+sendExternalSignal(Signal) ->
+  'PredictCellsInInputLayer':getPredictedCells(Signal).
