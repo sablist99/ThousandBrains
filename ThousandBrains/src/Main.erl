@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([main/0, sendExternalSignal/1]).
+-export([main/0, sendExternalSignal/1, sendFeedForwardSignal/1]).
 
 -include("Model.hrl").
 
@@ -18,4 +18,7 @@ main() ->
   'BrainInit':initializeGlobalData().
 
 sendExternalSignal(Signal) ->
-  'PredictCellsInInputLayer':getPredictedCells(Signal).
+  put(?PredictedCells, 'PredictCellsInInputLayer':getPredictedCells(Signal)).
+
+sendFeedForwardSignal(Signal) ->
+  put(?ActiveCells, 'ActivateCellsInInputLayer':getActiveCells(Signal)).

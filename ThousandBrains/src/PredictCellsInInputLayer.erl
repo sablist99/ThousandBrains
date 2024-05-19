@@ -14,27 +14,6 @@
 
 -include("Model.hrl").
 
-% Проверка существования синапса
-existSynapseInMap(Range, SynapsesMap) ->
-  case maps:find(Range, SynapsesMap) of
-    {ok, Value} ->
-      case Value#synapse.permanenceWeight of
-        true -> 1;
-        false -> 0
-      end;
-    _ -> 0
-  end.
-
-
-
-% Определяем порог активации дендрита (по наличию апикального дендрита)
-getThetaInB(CellGuid) ->
-  case lists:member(CellGuid, get(apicalDendrites)) of
-    true -> ?THETA_IN_B_MIN;
-    _ -> ?THETA_IN_B_MAX
-  end.
-
-
 % В этой функции определяется есть ли на дендрите достаточное количество синапсов, соответствующих входному сигналу
 % Первый аргумент - Входной сигнал L
 % SynapseMap - Мапа со значениями постоянства синапсов. Берется из входного слоя (Map<Range, Synapse>)
@@ -48,7 +27,7 @@ passedThetaInBThreshold([], _SynapsesMap, _SynapseCount, _ThetaInB) ->
   false;
 passedThetaInBThreshold([Range|T], SynapsesMap, SynapseCount, ThetaInB) ->
   % Рекурсивная обработка входных сигналов
-  passedThetaInBThreshold(T, SynapsesMap, SynapseCount + existSynapseInMap(Range, SynapsesMap), ThetaInB).
+  passedThetaInBThreshold(T, SynapsesMap, SynapseCount + 'CommonFunctions':existSynapseInMap(Range, SynapsesMap), ThetaInB).
 
 
 
@@ -71,22 +50,35 @@ findActiveDendrites(Signal, DendriteIterator, ActiveDendrites, ThetaInB) ->
   end.
 
 
+
 % В этой функции определяем предсказанные клетки
 % Signal - передается дальше для сравнения
 % CellIterator - итератор для перебора мапы с клетками
 % PredictedCells - мапа, где ключ - Guid предсказанной клетки, значение - список Guid дендритов, которые привели к предсказанию
-% TODO Определить, нужно ли сохранять наличие апикального дендрита на клетке, либо целесообразней определять это по месту требования еще раз
+% TODO Подумать, как избежать дублирования кода в case по поиску апикального дендрита
 findPredictedCells(Signal, CellIterator, PredictedCells) ->
   case maps:next(CellIterator) of
     % Когда перебрали все клетки в мапе (мини-столбце). Сразу вернем количество объектов в мапе, потому что сопоставление по пустоте недопустимо
     none -> {map_size(PredictedCells), PredictedCells};
     {CellGuid, DendriteMap, NewCellIterator} ->
       % Определяем, есть ли активные дендриты на клетке
-      case findActiveDendrites(Signal, maps:iterator(DendriteMap), [], getThetaInB(CellGuid)) of
-        % Если функция вернула пустой список, значит нет активных дендритов, а значит, клетка не станет предсказанной. Просто переходим к следующей итерации
-        [] -> findPredictedCells(Signal, NewCellIterator, PredictedCells);
-        % Иначе возвращен список активных дендритов, значит клетка предсказана (Так как достаточно одного активного дендрита)
-        ActiveDendrites -> findPredictedCells(Signal, NewCellIterator, maps:put(CellGuid, ActiveDendrites, PredictedCells))
+      case 'CommonFunctions':existActiveApicalDendrite(CellGuid) of
+        % Есть апикальный дендрит
+        true ->
+          case findActiveDendrites(Signal, maps:iterator(DendriteMap), [], ?THETA_IN_B_MIN) of
+            % Если функция вернула пустой список, значит нет активных дендритов, а значит, клетка не станет предсказанной. Просто переходим к следующей итерации
+            [] -> findPredictedCells(Signal, NewCellIterator, PredictedCells);
+            % Иначе возвращен список активных дендритов, значит клетка предсказана (Так как достаточно одного активного дендрита)
+            ActiveDendrites -> findPredictedCells(Signal, NewCellIterator, maps:put(CellGuid, {?HasActiveApicalDendrite, ActiveDendrites}, PredictedCells))
+          end;
+        % Нет апикального дендрита
+        false ->
+          case findActiveDendrites(Signal, maps:iterator(DendriteMap), [], ?THETA_IN_B_MAX) of
+            % Если функция вернула пустой список, значит нет активных дендритов, а значит, клетка не станет предсказанной. Просто переходим к следующей итерации
+            [] -> findPredictedCells(Signal, NewCellIterator, PredictedCells);
+            % Иначе возвращен список активных дендритов, значит клетка предсказана (Так как достаточно одного активного дендрита)
+            ActiveDendrites -> findPredictedCells(Signal, NewCellIterator, maps:put(CellGuid, {?NoActiveApicalDendrite, ActiveDendrites}, PredictedCells))
+          end
       end
   end.
 
@@ -108,4 +100,4 @@ findMiniColumnWithPredictedCells(Signal, MiniColumnIterator, MiniColumns) ->
 
 % Функция возвращает предсказанные клетки и дендриты, которые привели к деполяризации. Данные упакованы в иерархию, аналогичную структуре хранения данных
 getPredictedCells(Signal) ->
-  findMiniColumnWithPredictedCells(Signal, maps:iterator(get(inputLayer)), #{}).
+  findMiniColumnWithPredictedCells(Signal, maps:iterator(get(?InputLayer)), #{}).

@@ -33,3 +33,10 @@
 -define(P_FF_MINUS, 0.1).
 -define(P_OUT_PLUS, 0.5).
 -define(P_OUT_MINUS, 0.1).
+
+-define(ActiveCells, activeCells).
+-define(PredictedCells, predictedCells).
+-define(InputLayer, inputLayer).
+-define(ActiveApicalDendrites, activeApicalDendrites).
+-define(HasActiveApicalDendrite, hasActiveApicalDendrite).
+-define(NoActiveApicalDendrite, noActiveApicalDendrite).

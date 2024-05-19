@@ -77,5 +77,5 @@ getInLayer() -> getInLayerHelper(0, #{}).
 
 
 initializeGlobalData() ->
-  put(inputLayer, getInLayer()),
-  put(apicalDendrites, []).
+  put(?InputLayer, getInLayer()),
+  put(?ActiveApicalDendrites, []).
