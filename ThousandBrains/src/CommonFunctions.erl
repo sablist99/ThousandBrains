@@ -35,7 +35,8 @@ existActiveApicalDendrite(CellGuid) ->
 
 % Проверка на наличие мини-колонки в предсказанных
 hasMiniColumnInPredict(RangeOfColumnWithFeedForward) ->
-  case maps:find(RangeOfColumnWithFeedForward, get(?PredictedCells)) of
+% TODO Сделать прослойку для доступа к глобальным данным
+  case maps:find(RangeOfColumnWithFeedForward, get(?InPredictedCells)) of
     {ok, _Value} -> true;
     _ -> false
   end.

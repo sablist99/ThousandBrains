@@ -52,7 +52,7 @@ getActiveCellsInMiniColumn(RangeOfColumn, ActiveCells, PredictedCells) ->
       getCellsFromMapByIterator(
         maps:iterator( % Передаем в функцию итератор по мини-колонке
           maps:get(RangeOfColumn, % Получаем мини-колонку по разряду
-            get(?InputLayer) % Получаем исходную структуру данных
+            get(?InLayer) % Получаем исходную структуру данных
           )), []), ActiveCells);
     % Если да - проверяем, есть ли активный апикальный дендрит у предсказанных клеток
     true ->
@@ -85,4 +85,5 @@ getActiveCellsHelper([RangeOfColumnWithFeedForward | TFeedForward], ActiveCells,
 % Функция возвращает активные клетки. Данные упакованы в иерархию, аналогичную структуре хранения данных
 % FeedForward - входной сигнал (список разрядов)
 getActiveCells(FeedForward) ->
-  getActiveCellsHelper(FeedForward, #{}, get(?PredictedCells)).
+% TODO Сделать прослойку для доступа к глобальным данным
+  getActiveCellsHelper(FeedForward, #{}, get(?InPredictedCells)).

@@ -100,4 +100,4 @@ findMiniColumnWithPredictedCells(Signal, MiniColumnIterator, MiniColumns) ->
 
 % Функция возвращает предсказанные клетки и дендриты, которые привели к деполяризации. Данные упакованы в иерархию, аналогичную структуре хранения данных
 getPredictedCells(Signal) ->
-  findMiniColumnWithPredictedCells(Signal, maps:iterator(get(?InputLayer)), #{}).
+  findMiniColumnWithPredictedCells(Signal, maps:iterator(get(?InLayer)), #{}).

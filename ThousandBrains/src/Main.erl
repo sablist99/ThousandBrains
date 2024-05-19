@@ -17,8 +17,9 @@
 main() ->
   'BrainInit':initializeGlobalData().
 
+% TODO Сделать прослойку для доступа к глобальным данным
 sendExternalSignal(Signal) ->
-  put(?PredictedCells, 'PredictCellsInInputLayer':getPredictedCells(Signal)).
+  put(?InPredictedCells, 'PredictCellsInInputLayer':getPredictedCells(Signal)), ok.
 
 sendFeedForwardSignal(Signal) ->
-  put(?ActiveCells, 'ActivateCellsInInputLayer':getActiveCells(Signal)).
+  put(?InActiveCells, 'ActivateCellsInInputLayer':getActiveCells(Signal)), ok.

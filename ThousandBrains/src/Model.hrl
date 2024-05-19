@@ -34,9 +34,15 @@
 -define(P_OUT_PLUS, 0.5).
 -define(P_OUT_MINUS, 0.1).
 
--define(ActiveCells, activeCells).
--define(PredictedCells, predictedCells).
--define(InputLayer, inputLayer).
+-define(InActiveCells, inActiveCells).
+-define(InPredictedCells, inPredictedCells).
+-define(InLayer, inLayer).
+-define(OutActiveCells, outActiveCells).
+-define(OutLayer, outLayer).
+-define(FeedForward, feedForward).
+-define(FeedBack, feedBack).
+-define(AllInCells, allInCells).
+-define(AllOutCells, allOutCells).
 -define(ActiveApicalDendrites, activeApicalDendrites).
 -define(HasActiveApicalDendrite, hasActiveApicalDendrite).
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
