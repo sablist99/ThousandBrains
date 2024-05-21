@@ -110,23 +110,23 @@ getFeedBack() -> getSynapsesBetweenLayers(get(?AllOutCells), get(?AllInCells), #
 
 
 % Перебор клеток в мини-колонке
-getAllInCellsByCells(CellIterator, AllInCells) ->
+getAllInCellsByCells(CellIterator, AllInCells, ColumnRange) ->
   case maps:next(CellIterator) of
     none -> AllInCells;
     {CellGuid, _DendriteMap, NewCellIterator} ->
-      getAllInCellsByCells(NewCellIterator, lists:append(AllInCells, [CellGuid]))
+      getAllInCellsByCells(NewCellIterator, lists:append(AllInCells, [{ColumnRange, CellGuid}]), ColumnRange)
   end.
 
 % Перебор мини-колонок во входном слое
 getAllInCellsByMiniColumns(MiniColumnIterator, AllInCells) ->
   case maps:next(MiniColumnIterator) of
     none -> AllInCells;
-    {_ColumnRange, CellMap, NewMiniColumnIterator} ->
+    {ColumnRange, CellMap, NewMiniColumnIterator} ->
       getAllInCellsByMiniColumns(NewMiniColumnIterator,
-        getAllInCellsByCells(maps:iterator(CellMap), AllInCells))
+        getAllInCellsByCells(maps:iterator(CellMap), AllInCells, ColumnRange))
   end.
 
-% Функция возвращает Guid всех клеток входного слоя
+% Функция возвращает номер мини-колонки и Guid всех клеток входного слоя
 getAllInCells() -> getAllInCellsByMiniColumns(maps:iterator(get(?InLayer)), []).
 
 
@@ -136,8 +136,8 @@ getAllInCells() -> getAllInCellsByMiniColumns(maps:iterator(get(?InLayer)), []).
 getAllOutCellsHelper(CellIterator, AllOutCells) ->
   case maps:next(CellIterator) of
     none -> AllOutCells;
-    {_Range, {CellGuid, _Cell}, NewCellIterator} ->
-      getAllOutCellsHelper(NewCellIterator, lists:append(AllOutCells, [CellGuid]))
+    {Range, {CellGuid, _Cell}, NewCellIterator} ->
+      getAllOutCellsHelper(NewCellIterator, lists:append(AllOutCells, [{Range, CellGuid}]))
   end.
 
 % Функция возвращает Guid всех клеток выходного слоя

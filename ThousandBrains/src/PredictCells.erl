@@ -6,28 +6,31 @@
 %%% @end
 %%% Created : 19. май 2024 14:57
 %%%-------------------------------------------------------------------
--module('PredictCellsInInputLayer').
+-module('PredictCells').
 -author("Potap").
 
 %% API
--export([getPredictedCells/1]).
+-export([getPredictedCellsInInputLayer/1, getPredictedCellsInOutputLayer/3]).
 
 -include("Model.hrl").
 
 % В этой функции определяется есть ли на дендрите достаточное количество синапсов, соответствующих входному сигналу
-% Первый аргумент - Входной сигнал L
+% Первый аргумент - Входной сигнал (L - для входного слоя, Выходной слой - для выходного слоя)
 % SynapseMap - Мапа со значениями постоянства синапсов. Берется из входного слоя (Map<Range, Synapse>)
 % SynapseCount - Количество существующих синапсов (соответствующих входному сигналу)
-% ThetaInB - Порог активации дендрита
-passedThetaInBThreshold([], _SynapsesMap, SynapseCount, ThetaInB) when SynapseCount >= ThetaInB ->
+% Theta - Порог активации дендрита
+passedThetaInBThreshold([], _SynapsesMap, SynapseCount, Theta) when SynapseCount >= Theta ->
   % Если порог активации дендрита пройден
   true;
-passedThetaInBThreshold([], _SynapsesMap, _SynapseCount, _ThetaInB) ->
+passedThetaInBThreshold([], _SynapsesMap, _SynapseCount, _Theta) ->
   % Если порог активации НЕ пройден, то дендрит не добавляется
   false;
-passedThetaInBThreshold([Range|T], SynapsesMap, SynapseCount, ThetaInB) ->
+passedThetaInBThreshold([Range|T], SynapsesMap, SynapseCount, Theta) ->
   % Рекурсивная обработка входных сигналов
-  passedThetaInBThreshold(T, SynapsesMap, SynapseCount + 'CommonFunctions':existSynapseInMap(Range, SynapsesMap), ThetaInB).
+  case 'CommonFunctions':existSynapseInMap(Range, SynapsesMap) of
+    {1, _Value} -> passedThetaInBThreshold(T, SynapsesMap, SynapseCount + 1, Theta);
+    0 -> passedThetaInBThreshold(T, SynapsesMap, SynapseCount, Theta)
+  end.
 
 
 
@@ -35,17 +38,17 @@ passedThetaInBThreshold([Range|T], SynapsesMap, SynapseCount, ThetaInB) ->
 % Signal - передается дальше для сравнения
 % DendriteIterator - итератор для перебора мапы с дендритами
 % ActiveDendrites - out переменная, список для сохранения идентификаторов активных дендритов
-% ThetaInB - Порог активации дендрита
-findActiveDendrites(Signal, DendriteIterator, ActiveDendrites, ThetaInB) ->
+% Theta - Порог активации дендрита
+findActiveDendrites(Signal, DendriteIterator, ActiveDendrites, Theta) ->
   case maps:next(DendriteIterator) of
     % Когда перебрали все дендриты в мапе - возвращаем список GUID активных деднритов
     none -> ActiveDendrites;
     {DendriteGuid, SynapsesMap, NewDendriteIterator} ->
-      case passedThetaInBThreshold(Signal, SynapsesMap, 0, ThetaInB) of
+      case passedThetaInBThreshold(Signal, SynapsesMap, 0, Theta) of
         % Если на дендрите есть достаточно синапсов, то добавляем GUID дендрита в список активных
-        true -> findActiveDendrites(Signal, NewDendriteIterator, lists:append(ActiveDendrites, [DendriteGuid]), ThetaInB);
+        true -> findActiveDendrites(Signal, NewDendriteIterator, lists:append(ActiveDendrites, [DendriteGuid]), Theta);
         % Иначе просто переходим на следующую итерацию
-        false -> findActiveDendrites(Signal, NewDendriteIterator, ActiveDendrites, ThetaInB)
+        false -> findActiveDendrites(Signal, NewDendriteIterator, ActiveDendrites, Theta)
       end
   end.
 
@@ -99,5 +102,21 @@ findMiniColumnWithPredictedCells(Signal, MiniColumnIterator, MiniColumns) ->
 
 
 % Функция возвращает предсказанные клетки и дендриты, которые привели к деполяризации. Данные упакованы в иерархию, аналогичную структуре хранения данных
-getPredictedCells(Signal) ->
+getPredictedCellsInInputLayer(Signal) ->
   findMiniColumnWithPredictedCells(Signal, maps:iterator(get(?InLayer)), #{}).
+
+
+
+% Функция возвращает предсказанные клетки в выходном слое, основываясь на активных клетках предыдущего шага
+% Первый аргумент - сигнал, активные клетки с предыдущего шага
+getPredictedCellsInOutputLayer([], _OutCellsIterator, PredictedCells) ->
+  PredictedCells;
+getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, OutCellsIterator, PredictedCells) ->
+  case maps:next(OutCellsIterator) of
+    none -> PredictedCells;
+    {OutCellGuid, DendriteMap, NewCellIterator} ->
+      case findActiveDendrites(ActiveCellsInOutputLayerOnPreviousTimeStep, maps:iterator(DendriteMap), [], ?THETA_OUT_B) of
+        [] -> getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, NewCellIterator, PredictedCells);
+        ActiveDendrites -> getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, NewCellIterator, maps:put(OutCellGuid, ActiveDendrites, PredictedCells))
+      end
+  end.

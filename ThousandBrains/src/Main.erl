@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([main/0, sendExternalSignal/1, sendFeedForwardSignal/1]).
+-export([main/0, sendExternalSignal/1, sendFeedForwardSignal/1, getWinOut/0]).
 
 -include("Model.hrl").
 
@@ -19,7 +19,11 @@ main() ->
 
 % TODO Сделать прослойку для доступа к глобальным данным
 sendExternalSignal(Signal) ->
-  put(?InPredictedCells, 'PredictCellsInInputLayer':getPredictedCells(Signal)), ok.
+  put(?InPredictedCells, 'PredictCells':getPredictedCellsInInputLayer(Signal)), ok.
 
 sendFeedForwardSignal(Signal) ->
   put(?InActiveCells, 'ActivateCellsInInputLayer':getActiveCells(Signal)), ok.
+
+getWinOut() ->
+  put(?OutWin, 'ActivateCellsInOutputLayer':getOutWinCells()), ok.
+

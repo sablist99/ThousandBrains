@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([existSynapseInMap/2, existActiveApicalDendrite/1, hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1]).
+-export([existSynapseInMap/2, existSynapseInFeedForwardMap/3, existActiveApicalDendrite/1, hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1]).
 
 -include("Model.hrl").
 
@@ -19,7 +19,25 @@ existSynapseInMap(Range, SynapsesMap) ->
   case maps:find(Range, SynapsesMap) of
     {ok, Value} ->
       case Value#synapse.permanenceWeight of
-        true -> 1;
+        true -> {1, Value};
+        false -> 0
+      end;
+    _ -> 0
+  end.
+
+findSynapseByKeyInFeedForwardMap(Iterator, ActiveCellGuid, OutCellGuid) ->
+  case maps:next(Iterator) of
+    none -> none;
+    {{{_, ActiveCellGuid}, {_, OutCellGuid}}, Value, _NewIterator} ->
+      {ok, Value};
+    {_, _, NewIterator} -> findSynapseByKeyInFeedForwardMap(NewIterator, ActiveCellGuid, OutCellGuid)
+  end.
+
+existSynapseInFeedForwardMap(ActiveCellGuid, OutCellGuid, SynapsesMap) ->
+  case findSynapseByKeyInFeedForwardMap(maps:iterator(SynapsesMap), ActiveCellGuid, OutCellGuid) of
+    {ok, Value} ->
+      case Value#synapse.permanenceWeight of
+        true -> {1, Value};
         false -> 0
       end;
     _ -> 0
