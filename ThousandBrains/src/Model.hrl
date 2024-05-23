@@ -42,7 +42,6 @@
 -define(OutActiveCells, outActiveCells).
 -define(OutPreviousActivation, outPreviousActivation).
 -define(OutLayer, outLayer).
--define(OutWin, outWin). % Не используется
 
 -define(FeedForward, feedForward).
 -define(FeedBack, feedBack).
@@ -53,3 +52,5 @@
 % TODO После перехода на хранение составного ключа FeedBack - удалить
 -define(HasActiveApicalDendrite, hasActiveApicalDendrite).
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
+
+-define(FileDirectory, "tmp/").

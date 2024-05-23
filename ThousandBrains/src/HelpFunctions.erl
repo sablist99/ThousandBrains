@@ -10,13 +10,24 @@
 -author("Potap").
 
 %% API
--export([mapWriteToFile/2]).
+-export([mapWriteToFile/2, listWriteToFile/2]).
+
+-include("Model.hrl").
 
 % Функция вывода Map в файл с заданным именем
 mapWriteToFile(File, Map) ->
-  {ok, S} = file:open(File, write),
+  {ok, S} = file:open(?FileDirectory ++ File, write),
   maps:foreach(
     fun(Key, Value) ->
-      file:write_file(File, io_lib:fwrite("~p -> ~p \n", [Key, Value]), [append])
+      file:write_file(?FileDirectory ++ File, io_lib:fwrite("~p -> ~p \n", [Key, Value]), [append])
     end, Map),
+  file:close(S).
+
+% Функция вывода List в файл
+listWriteToFile(File, List) ->
+  {ok, S} = file:open(?FileDirectory ++ File, write),
+  lists:foreach(
+    fun(Value) ->
+      file:write_file(?FileDirectory ++ File, io_lib:fwrite("~p\n", [Value]), [append])
+    end, List),
   file:close(S).

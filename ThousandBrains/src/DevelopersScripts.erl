@@ -31,4 +31,10 @@ script_2(List) ->
 
 % Функция выводит в файлы все глобальные данные
 printGlobalData() ->
-  erlang:error(not_implemented).
+  'HelpFunctions':mapWriteToFile('InLayer.tb', 'GlobalDataService':getInLayer()),
+  'HelpFunctions':mapWriteToFile('OutLayer.tb', 'GlobalDataService':getOutLayer()),
+  'HelpFunctions':mapWriteToFile('FeedForward.tb', 'GlobalDataService':getFeedForward()),
+  'HelpFunctions':mapWriteToFile('FeedBack.tb', 'GlobalDataService':getFeedBack()),
+  'HelpFunctions':mapWriteToFile('InActiveLayer.tb', 'GlobalDataService':getInActiveCells()),
+  'HelpFunctions':mapWriteToFile('InPredictedCells.tb', 'GlobalDataService':getInPredictedCells()),
+  'HelpFunctions':listWriteToFile('OutActiveLayer.tb', 'GlobalDataService':getOutActiveCells()).
