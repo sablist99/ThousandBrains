@@ -101,22 +101,23 @@ findMiniColumnWithPredictedCells(Signal, MiniColumnIterator, MiniColumns) ->
   end.
 
 
+
 % Функция возвращает предсказанные клетки и дендриты, которые привели к деполяризации. Данные упакованы в иерархию, аналогичную структуре хранения данных
 getPredictedCellsInInputLayer(Signal) ->
-  findMiniColumnWithPredictedCells(Signal, maps:iterator(get(?InLayer)), #{}).
+  findMiniColumnWithPredictedCells(Signal, maps:iterator('GlobalDataService':getInLayer()), #{}).
 
 
 
 % Функция возвращает предсказанные клетки в выходном слое, основываясь на активных клетках предыдущего шага
-% Первый аргумент - сигнал, активные клетки с предыдущего шага
+% Первый аргумент - сигнал, активные клетки с предыдущего шага - мапа
 getPredictedCellsInOutputLayer([], _OutCellsIterator, PredictedCells) ->
   PredictedCells;
 getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, OutCellsIterator, PredictedCells) ->
   case maps:next(OutCellsIterator) of
     none -> PredictedCells;
-    {OutCellGuid, DendriteMap, NewCellIterator} ->
+    {Range, {_OutCellGuid, DendriteMap}, NewCellIterator} ->
       case findActiveDendrites(ActiveCellsInOutputLayerOnPreviousTimeStep, maps:iterator(DendriteMap), [], ?THETA_OUT_B) of
         [] -> getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, NewCellIterator, PredictedCells);
-        ActiveDendrites -> getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, NewCellIterator, maps:put(OutCellGuid, ActiveDendrites, PredictedCells))
+        ActiveDendrites -> getPredictedCellsInOutputLayer(ActiveCellsInOutputLayerOnPreviousTimeStep, NewCellIterator, maps:put(Range, ActiveDendrites, PredictedCells))
       end
   end.

@@ -102,10 +102,10 @@ getSynapsesBetweenLayers([CurrentFrom | FromT], To,  ResultMap) ->
   getSynapsesBetweenLayers(FromT, To, getSynapsesBetweenLayersHelper(To, CurrentFrom, ResultMap)).
 
 % Функция возвращает мапу с синапсами между входным и вЫходным слоем по ключу {CurrentInCell, CurrentOutCell}
-getFeedForward() -> getSynapsesBetweenLayers(get(?AllInCells), get(?AllOutCells), #{}).
+getFeedForward() -> getSynapsesBetweenLayers('GlobalDataService':getAllInCells(), 'GlobalDataService':getAllOutCells(), #{}).
 
 % Функция возвращает мапу с синапсами между вЫходным и входным слоем по ключу {CurrentOutCell, CurrentInCell}
-getFeedBack() -> getSynapsesBetweenLayers(get(?AllOutCells), get(?AllInCells), #{}).
+getFeedBack() -> getSynapsesBetweenLayers('GlobalDataService':getAllOutCells(), 'GlobalDataService':getAllInCells(), #{}).
 
 
 
@@ -127,7 +127,7 @@ getAllInCellsByMiniColumns(MiniColumnIterator, AllInCells) ->
   end.
 
 % Функция возвращает номер мини-колонки и Guid всех клеток входного слоя
-getAllInCells() -> getAllInCellsByMiniColumns(maps:iterator(get(?InLayer)), []).
+getAllInCells() -> getAllInCellsByMiniColumns(maps:iterator('GlobalDataService':getInLayer()), []).
 
 
 
@@ -141,16 +141,15 @@ getAllOutCellsHelper(CellIterator, AllOutCells) ->
   end.
 
 % Функция возвращает Guid всех клеток выходного слоя
-getAllOutCells() -> getAllOutCellsHelper(maps:iterator(get(?OutLayer)), []).
+getAllOutCells() -> getAllOutCellsHelper(maps:iterator('GlobalDataService':getOutLayer()), []).
 
 
 
 initializeGlobalData() ->
-  put(?InLayer, getInLayer()),
-  put(?OutLayer, getOutLayer()),
-  put(?AllInCells, getAllInCells()),
-  put(?AllOutCells, getAllOutCells()),
-  put(?FeedForward, getFeedForward()),
-  put(?FeedBack, getFeedBack()),
-  put(?ActiveApicalDendrites, []),
+  'GlobalDataService':putInLayer(getInLayer()),
+  'GlobalDataService':putOutLayer(getOutLayer()),
+  'GlobalDataService':putAllInCells(getAllInCells()),
+  'GlobalDataService':putAllOutCells(getAllOutCells()),
+  'GlobalDataService':putFeedForward(getFeedForward()),
+  'GlobalDataService':putFeedBack(getFeedBack()),
   ok.

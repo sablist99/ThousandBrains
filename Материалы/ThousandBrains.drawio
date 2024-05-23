@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-05-21T16:18:13.551Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="N_iY2f8Km1oE2co5xNx1" version="24.2.5" type="device">
+<mxfile host="Electron" modified="2024-05-23T11:05:49.327Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="zSb8rGvvvR87SHy_eL4H" version="24.2.5" type="device">
   <diagram name="Страница — 1" id="8p1Uz8YI7RTSl8BpVR2G">
-    <mxGraphModel dx="3470" dy="577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3676" dy="697" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1911,8 +1911,11 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-37" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="bymDcMpbiT3-x4ZsufIR-358" target="bymDcMpbiT3-x4ZsufIR-405">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-358" value="theta in b = min" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="4310" y="900" width="200" height="40" as="geometry" />
+          <mxGeometry x="4310" y="890" width="200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-390" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-359" target="bymDcMpbiT3-x4ZsufIR-365" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -1924,7 +1927,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-359" value="theta in b = max" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="900" width="200" height="40" as="geometry" />
+          <mxGeometry x="3910" y="890" width="200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-391" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-365" target="bymDcMpbiT3-x4ZsufIR-371" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -2007,16 +2010,16 @@
         <mxCell id="bymDcMpbiT3-x4ZsufIR-380" value="Сохраняем дендрит" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="4510" y="1340" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-381" value="CurrentPredictionState" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-381" value="InPredictedCells" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="4710" y="1340" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-402" value="Нужно сопоставить этот сигнал со всеми дендритами, чтобы понять, какие клетки деполяризуются" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.19;size=22;position=0.25;base=40;" parent="1" vertex="1">
-          <mxGeometry x="3870" y="225" width="160" height="115" as="geometry" />
+          <mxGeometry x="3870" y="180" width="160" height="115" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-405" value="Сохраняем идентификаторы активных клеток выходного слоя" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-405" value="Сохраняем идентификаторы апикальных дендритов" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="4310" y="951" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-406" value="CurrentPredictionState" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-406" value="InPredictedCells" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="4510" y="951" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-413" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-407" target="bymDcMpbiT3-x4ZsufIR-411" edge="1">
@@ -2048,14 +2051,14 @@
         <mxCell id="bymDcMpbiT3-x4ZsufIR-411" value="Сохраняем&amp;nbsp;&lt;span style=&quot;color: rgb(255, 255, 255); font-size: 11px;&quot;&gt;CurrentPredictionState&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="3710" y="1280" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-412" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;PredictionState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-412" value="&lt;div&gt;InPredictedCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="3910" y="1280" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-415" value="Обрабатывать нужно именно по мини-колонкам, потому что наличие активного апикального дендрита влияет на всю мини-колонку" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.19;size=22;position=0.25;base=40;" parent="1" vertex="1">
           <mxGeometry x="4070" y="412.5" width="160" height="115" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-416" value="Наличие активного апикального дендрита понижает порог предсказания для клетки (Но только для текущей)" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.19;size=22;position=0.25;base=40;" parent="1" vertex="1">
-          <mxGeometry x="4470" y="784" width="160" height="115" as="geometry" />
+          <mxGeometry x="4490" y="770" width="160" height="115" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-417" value="Сохраняем только те клетки, которые деполяризованы" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.56;size=22;position=0.25;base=40;" parent="1" vertex="1">
           <mxGeometry x="3640" y="1155" width="160" height="115" as="geometry" />
@@ -2197,13 +2200,13 @@
         <mxCell id="bymDcMpbiT3-x4ZsufIR-447" value="Активировать все клетки столбца" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="3710" y="1910" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-457" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ActivationState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-457" value="&lt;div&gt;InActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="4110" y="2030" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-458" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ActivationState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-458" value="&lt;div&gt;InActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="3910" y="1910" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-459" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ActivationState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-459" value="&lt;div&gt;InActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="4510" y="2030" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-464" value="Активация входного слоя&lt;div&gt;Формула 2&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;position2=0.49;size=20;position=0.55;base=40;" parent="1" vertex="1">
@@ -2259,55 +2262,27 @@
         <mxCell id="bymDcMpbiT3-x4ZsufIR-480" value="Аномалия?" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" parent="1" vertex="1">
           <mxGeometry x="3310" y="2240" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-484" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-486" target="bymDcMpbiT3-x4ZsufIR-509" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="3810" y="2640" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="3810" y="2570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-485" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-486" target="bymDcMpbiT3-x4ZsufIR-492" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="4210" y="2640" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="4210" y="2570" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-486" value="Есть еще необработанные&amp;nbsp;&lt;div&gt;клетки в выходном слое?&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=none;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="2520" width="200" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-487" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3850" y="2540" width="40" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-488" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="4130" y="2540" width="40" height="30" as="geometry" />
-        </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-491" value="Подсчет количества боковых связей у клеток выходного слоя&lt;div&gt;Формула 5`&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;position2=0.49;size=20;position=0.55;base=40;" parent="1" vertex="1">
-          <mxGeometry x="4030" y="2420" width="160" height="80" as="geometry" />
+          <mxGeometry x="4040" y="2440" width="160" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-502" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-492" target="bymDcMpbiT3-x4ZsufIR-501" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-492" value="Берем очередную клетку выходного слоя" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="4110" y="2641" width="200" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-498" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-494" target="bymDcMpbiT3-x4ZsufIR-486" edge="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-498" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-494" target="Z40ZJEeFA1uaessiFsEm-5" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="4010" y="2450" />
             </Array>
+            <mxPoint x="4010" y="2520" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-527" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-494" target="bymDcMpbiT3-x4ZsufIR-518" edge="1">
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="bymDcMpbiT3-x4ZsufIR-494" target="Z40ZJEeFA1uaessiFsEm-25">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="3600" y="2450" />
+              <mxPoint x="3620" y="2450" />
+              <mxPoint x="3620" y="2780" />
+              <mxPoint x="3790" y="2780" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-494" value="Количество активных&amp;nbsp;&lt;div&gt;клеток на предыдущем шаге&amp;nbsp;&lt;/div&gt;&lt;div&gt;больше нуля?&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=none;" parent="1" vertex="1">
+        <mxCell id="bymDcMpbiT3-x4ZsufIR-494" value="Количество&lt;div&gt;&amp;nbsp;активных&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;клеток выходного&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;слоя&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;на предыдущем шаге&amp;nbsp;&lt;/span&gt;&lt;div&gt;больше нуля?&lt;/div&gt;&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=none;" parent="1" vertex="1">
           <mxGeometry x="3710" y="2400" width="200" height="100" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-495" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
@@ -2316,140 +2291,70 @@
         <mxCell id="bymDcMpbiT3-x4ZsufIR-496" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
           <mxGeometry x="3930" y="2420" width="40" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-506" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-515" target="bymDcMpbiT3-x4ZsufIR-486" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="4210" y="2810" />
-              <mxPoint x="4440" y="2810" />
-              <mxPoint x="4440" y="2500" />
-              <mxPoint x="4020" y="2500" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-516" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-501" target="bymDcMpbiT3-x4ZsufIR-515" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-501" value="Считаем количество дендритов с необходимым количеством синапсов" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="4110" y="2700" width="200" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-505" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;OutPredictionState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
-          <mxGeometry x="4310" y="2700" width="120" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-507" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-509" target="bymDcMpbiT3-x4ZsufIR-518" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="3610" y="2945" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="3610" y="2880" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-508" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-509" target="bymDcMpbiT3-x4ZsufIR-517" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="4010" y="2946" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="4010" y="2880" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-509" value="Количество клеток с боковой&amp;nbsp;&lt;div&gt;поддержкой больше, чем&amp;nbsp;&lt;/div&gt;&lt;div&gt;минимальное необходимое&amp;nbsp;&lt;/div&gt;&lt;div&gt;количество активных клеток?&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3680" y="2810" width="260" height="140" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-510" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3650" y="2850" width="40" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-511" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3930" y="2850" width="40" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-512" value="Возможно это условие и не нужно, но тогда на первой итерации будет выполняться пустая работа" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;position2=0.88;size=20;position=0.5;base=50;" parent="1" vertex="1">
-          <mxGeometry x="3540" y="2340" width="160" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-515" value="кси = максимальное количество активных дендритов" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="4110" y="2760" width="200" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-537" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-517" target="bymDcMpbiT3-x4ZsufIR-530" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="4010" y="3050" />
-              <mxPoint x="3810" y="3050" />
-            </Array>
-            <mxPoint x="3910" y="3050" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-517" value="Активировать клетки, которые в WinOut и у которых боковая поддержка == кси" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="2970" width="200" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-536" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-518" target="bymDcMpbiT3-x4ZsufIR-530" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3610" y="3050" />
-              <mxPoint x="3810" y="3050" />
-            </Array>
-            <mxPoint x="3710" y="3050" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-518" value="Активиировать клетки, которые в WinOut&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3510" y="2970" width="200" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-525" value="Потому что тогда не хватит активных клеток" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.44;size=21;position=0.44;base=32;" parent="1" vertex="1">
-          <mxGeometry x="3610" y="2770" width="160" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-526" value="Не понятно" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;position2=0.38;size=21;position=0.44;base=32;" parent="1" vertex="1">
-          <mxGeometry x="3960" y="2810" width="140" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-528" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;OutActiveState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
-          <mxGeometry x="3710" y="2980" width="120" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="bymDcMpbiT3-x4ZsufIR-529" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;OutActiveState&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" parent="1" vertex="1">
-          <mxGeometry x="4110" y="2980" width="120" height="40" as="geometry" />
-        </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-540" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="bymDcMpbiT3-x4ZsufIR-530" target="bymDcMpbiT3-x4ZsufIR-539" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-530" value="Отправить сигнал в модуль адаптации" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3710" y="3070" width="200" height="40" as="geometry" />
+          <mxGeometry x="3910" y="3020" width="200" height="40" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-538" value="&lt;div&gt;Активация клеток выходного слоя&amp;nbsp;&lt;/div&gt;&lt;div&gt;Формула 5&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;position2=0.49;size=20;position=0.55;base=40;" parent="1" vertex="1">
-          <mxGeometry x="3820" y="2724" width="160" height="80" as="geometry" />
+          <mxGeometry x="4270" y="2720" width="160" height="80" as="geometry" />
         </mxCell>
         <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="bymDcMpbiT3-x4ZsufIR-539" target="tjp_t8mfC6t9Dn4BaOtZ-1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="4010" y="3180" />
+              <mxPoint x="4210" y="3130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="bymDcMpbiT3-x4ZsufIR-539" target="bymDcMpbiT3-x4ZsufIR-340">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="3810" y="3140.0000000000005" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="3810" y="3130" />
+              <mxPoint x="3810" y="3510" />
+              <mxPoint x="4890" y="3510" />
+              <mxPoint x="4890" y="310" />
+              <mxPoint x="3810" y="310" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-539" value="Нужно ли обучение?" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=none;" parent="1" vertex="1">
-          <mxGeometry x="3710" y="3130" width="200" height="100" as="geometry" />
+          <mxGeometry x="3910" y="3080" width="200" height="100" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-541" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3650" y="3150" width="40" height="30" as="geometry" />
+          <mxGeometry x="3850" y="3100" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="bymDcMpbiT3-x4ZsufIR-542" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
-          <mxGeometry x="3930" y="3150" width="40" height="30" as="geometry" />
+          <mxGeometry x="4130" y="3100" width="40" height="30" as="geometry" />
         </mxCell>
         <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="tjp_t8mfC6t9Dn4BaOtZ-1" target="tjp_t8mfC6t9Dn4BaOtZ-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-1" value="Найти общие клетки в предсказанных и активных клетках входного слоя.&lt;br&gt;Обновить значения постоянства по формуле 6 (+ апикальные)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="3250" width="200" height="80" as="geometry" />
+          <mxGeometry x="4110" y="3200" width="200" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-2" value="Найти клетки, которые стали активны, но не были предсказаны.&lt;br&gt;Выбрать дендрит с наибольшим соответствием сигналу L. Обновить значения постоянства по формуле 6" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="3350" width="200" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-10" value="Это значит, что клетки были активированы принудительно всем столбцом" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.13;size=20;position=0.19;base=32;" parent="1" vertex="1">
-          <mxGeometry x="4130" y="3320" width="160" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="uArb3Jjf_60aCGCY4buT-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="tjp_t8mfC6t9Dn4BaOtZ-11" target="uArb3Jjf_60aCGCY4buT-1" edge="1">
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="tjp_t8mfC6t9Dn4BaOtZ-2" target="tjp_t8mfC6t9Dn4BaOtZ-14">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-11" value="А не проще ли тогда сначала обработать все активные клетки по формуле 6, а затем урезать оставшиеся предсказанные, которые не выстрелили?" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;position2=0.38;size=21;position=0.44;base=32;" parent="1" vertex="1">
-          <mxGeometry x="4300" y="3320" width="190" height="130" as="geometry" />
+        <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-2" value="Найти клетки, которые стали активны, но не были предсказаны.&lt;br&gt;Выбрать дендрит с наибольшим соответствием сигналу L. Обновить значения постоянства по формуле 6" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4110" y="3300" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-10" value="Это значит, что клетки были активированы принудительно всем столбцом" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.13;size=20;position=0.19;base=32;" parent="1" vertex="1">
+          <mxGeometry x="4320" y="3270" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="tjp_t8mfC6t9Dn4BaOtZ-14" target="bymDcMpbiT3-x4ZsufIR-340">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4210" y="3500" />
+              <mxPoint x="4880" y="3500" />
+              <mxPoint x="4880" y="320" />
+              <mxPoint x="3820" y="320" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="tjp_t8mfC6t9Dn4BaOtZ-14" value="Не выстрелившие предсказанные клетки наказать" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="3910" y="3470" width="200" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="uArb3Jjf_60aCGCY4buT-1" value="В списке активных клеток не будет информации об активных дендритах. Поэтому нам нужно сопоставлять клетки со списком предсказаний.&lt;br&gt;Если не сопоставилось, значит клетка активирована принудительно, значит нужно выбирать наиболее подходящий дендрит" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;position2=0.38;size=21;position=0.44;base=32;" parent="1" vertex="1">
-          <mxGeometry x="4530" y="3300" width="190" height="170" as="geometry" />
+          <mxGeometry x="4110" y="3420" width="200" height="60" as="geometry" />
         </mxCell>
         <mxCell id="JsEt1e3dsk8ddZ-YIHwS-206" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="-2030" y="1710" width="120" height="160" as="geometry" />
@@ -3422,6 +3327,207 @@
         </mxCell>
         <mxCell id="-EtPTYYj3Xdtozq4yyzT-11" value="&lt;span style=&quot;text-align: center;&quot;&gt;Map&amp;lt;Разряд (N_IN),&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Tuple&amp;lt;ID клетки,&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Map&amp;lt;&lt;/span&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;ID дендрита,&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Tuple {&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial; text-align: center;&quot;&gt;Map&lt;/span&gt;&lt;span style=&quot;background-color: initial; text-align: center;&quot;&gt;&amp;lt;Разряд (L), // Базальные дендриты&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;Tuple{ID синапса,&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;Значение постоянства, Вес синапса}&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial; text-align: center;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Map&lt;/span&gt;&lt;span style=&quot;background-color: initial; text-align: center;&quot;&gt;&amp;lt;Разряд (L), // Базальные дендриты к соседним колонкам&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;Tuple{ID синапса,&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;Значение постоянства, Вес синапса}&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: center; background-color: initial;&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;position2=0.6;size=22;position=0.55;base=30;portConstraintRotation=0;direction=west;align=left;" parent="1" vertex="1">
           <mxGeometry x="1600" y="1860" width="460" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-1" value="Потому что должны активироваться клетки с НАИБОЛЬШЕЙ боковой поддержкой" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.94;size=17;position=0.69;base=30;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="4320" y="2923" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-2" value="В WinOut попадают клетки выходного слоя, на которые ссылается достаточное количество активных клеток входного слоя" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.94;size=17;position=0.69;base=30;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="4040" y="2276" width="160" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-5" target="Z40ZJEeFA1uaessiFsEm-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-5" value="Для каждой клетки выходного слоя считаем количество латеральных дендритов с выходным слоем" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3910" y="2520" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-6" target="Z40ZJEeFA1uaessiFsEm-24">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4020" y="2880" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="4210" y="2880" />
+              <mxPoint x="4210" y="2880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-6" value="кси = максимальное количество активных латеральных дендритов" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4110" y="2800" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-9" value="Количество клеток с&amp;nbsp;&lt;div&gt;боковой поддержкой больше,&amp;nbsp;&lt;/div&gt;&lt;div&gt;чем минимальное необходимое&amp;nbsp;&lt;div&gt;количество активных клеток?&lt;/div&gt;&lt;div&gt;(S)&lt;/div&gt;&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="3865" y="2620" width="290" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-9" target="Z40ZJEeFA1uaessiFsEm-25">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="3810" y="2790" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="3810" y="2700" />
+            </Array>
+            <mxPoint x="3865" y="2700" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-9" target="Z40ZJEeFA1uaessiFsEm-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4210" y="2790" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="4210" y="2700" />
+            </Array>
+            <mxPoint x="4155" y="2700" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-13" value="Нет" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="3850" y="2670" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-14" value="Да" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="4130" y="2670" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-23" value="Потому что иначе не хватит активных клеток" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.63;size=21;position=0.44;base=32;" vertex="1" parent="1">
+          <mxGeometry x="3740" y="2610" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-24" target="Z40ZJEeFA1uaessiFsEm-41">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4020" y="2980" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="4210" y="2940" />
+              <mxPoint x="4020" y="2940" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-24" value="Активировать клетки, которые в WinOut и у которых боковая поддержка == кси" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4110" y="2860" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-25" target="Z40ZJEeFA1uaessiFsEm-41">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3810" y="2940" />
+              <mxPoint x="4000" y="2940" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-25" value="Активиировать клетки, которые в WinOut&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3710" y="2800" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-33" value="&lt;font color=&quot;#18141d&quot;&gt;Ожидаем новый входной сигнал&lt;/font&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.63;size=21;position=0.44;base=32;" vertex="1" parent="1">
+          <mxGeometry x="3680" y="3050" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-38" value="&lt;div&gt;OutPredictedCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="4110" y="2540" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-39" value="&lt;div&gt;OutActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="3910" y="2814" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-40" value="&lt;div&gt;OutActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="4310" y="2870" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-41" target="bymDcMpbiT3-x4ZsufIR-530">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-41" value="Скопировать текущие активне клетки выходного слоя" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3910" y="2960" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-43" value="&lt;div&gt;OutPreviousActiveCells&lt;br&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Helvetica;fontSize=11;fontColor=#ffffff;labelBackgroundColor=none;fillColor=#008a00;strokeColor=#005700;" vertex="1" parent="1">
+          <mxGeometry x="4110" y="2960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-44" value="Активные клетки выходного слоя на предыдущем шаге.&lt;div&gt;Нужно для определения боковых связей на следующем шаге&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;position2=0.94;size=17;position=0.69;base=30;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="4200" y="3003" width="160" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-45" value="User" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="6188" y="1610" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-47" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;BrainService&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6320" y="1600" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-52" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-57" target="Z40ZJEeFA1uaessiFsEm-58">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6230" y="1194.58" as="sourcePoint" />
+            <mxPoint x="6390" y="1194.58" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-53" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-45" target="Z40ZJEeFA1uaessiFsEm-47">
+          <mxGeometry x="0.2157" width="160" relative="1" as="geometry">
+            <mxPoint x="6230" y="1504" as="sourcePoint" />
+            <mxPoint x="6390" y="1504" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-54" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;BrainInit&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6560" y="1420" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-55" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;PredictCells&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6560" y="1540" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-56" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;ActivateInCells&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6560" y="1660" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-57" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;ActivateOutCells&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6560" y="1780" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-58" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;GlobalDataService&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6960" y="1360" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-59" value="&lt;div style=&quot;background-color:#1e1f22;color:#bcbec4&quot;&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;&lt;div&gt;&lt;pre style=&quot;font-family:&#39;JetBrains Mono&#39;,monospace;font-size:9,8pt;&quot;&gt;DevelopersScripts&lt;/pre&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6320" y="1360" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-60" value="Developer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="6188" y="1370" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-64" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-47" target="Z40ZJEeFA1uaessiFsEm-54">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6218" y="1289" as="sourcePoint" />
+            <mxPoint x="6378" y="1289" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-65" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-59" target="Z40ZJEeFA1uaessiFsEm-47">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6210" y="1334.42" as="sourcePoint" />
+            <mxPoint x="6370" y="1334.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-66" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-47" target="Z40ZJEeFA1uaessiFsEm-57">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6222" y="1240" as="sourcePoint" />
+            <mxPoint x="6382" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-67" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-60" target="Z40ZJEeFA1uaessiFsEm-59">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6203" y="1359.8400000000001" as="sourcePoint" />
+            <mxPoint x="6363" y="1359.8400000000001" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-68" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-54" target="Z40ZJEeFA1uaessiFsEm-58">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6215" y="1265.42" as="sourcePoint" />
+            <mxPoint x="6375" y="1265.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-69" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-56" target="Z40ZJEeFA1uaessiFsEm-58">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6223" y="1220" as="sourcePoint" />
+            <mxPoint x="6383" y="1220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-70" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-47" target="Z40ZJEeFA1uaessiFsEm-56">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6230" y="1260" as="sourcePoint" />
+            <mxPoint x="6390" y="1260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-71" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-59" target="Z40ZJEeFA1uaessiFsEm-58">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6222" y="1305.42" as="sourcePoint" />
+            <mxPoint x="6382" y="1305.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-72" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-47" target="Z40ZJEeFA1uaessiFsEm-55">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6223" y="1285.42" as="sourcePoint" />
+            <mxPoint x="6383" y="1285.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Z40ZJEeFA1uaessiFsEm-74" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="Z40ZJEeFA1uaessiFsEm-55" target="Z40ZJEeFA1uaessiFsEm-58">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="6870" y="1499.17" as="sourcePoint" />
+            <mxPoint x="7030" y="1499.17" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

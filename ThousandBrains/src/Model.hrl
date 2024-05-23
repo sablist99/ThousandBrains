@@ -16,7 +16,7 @@
 -define(D, 10).
 -define(N_OUT, 512). % По статье - 4096
 -define(N_EXT, 240). % По статье - 2400
--define(S, 40).
+-define(S, 4). % По статье - 40
 -define(PERMANENCE_WEIGHT_BORDER, 0.35).
 -define(PERMANENCE_THRESHOLD, 0.3).
 -define(ROUND_EPSILON, 10000).
@@ -40,9 +40,9 @@
 -define(InLayer, inLayer).
 
 -define(OutActiveCells, outActiveCells).
--define(OutPredictedCells, outPredictedCells).
+-define(OutPreviousActivation, outPreviousActivation).
 -define(OutLayer, outLayer).
--define(OutWin, winOut).
+-define(OutWin, outWin). % Не используется
 
 -define(FeedForward, feedForward).
 -define(FeedBack, feedBack).
@@ -50,6 +50,6 @@
 -define(AllInCells, allInCells).
 -define(AllOutCells, allOutCells).
 
--define(ActiveApicalDendrites, activeApicalDendrites).
+% TODO После перехода на хранение составного ключа FeedBack - удалить
 -define(HasActiveApicalDendrite, hasActiveApicalDendrite).
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).

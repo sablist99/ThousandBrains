@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : 19. май 2024 15:56
 %%%-------------------------------------------------------------------
--module('ActivateCellsInInputLayer').
+-module('ActivateInCells').
 -author("Potap").
 
 %% API
@@ -52,7 +52,7 @@ getActiveCellsInMiniColumn(RangeOfColumn, ActiveCells, PredictedCells) ->
       getCellsFromMapByIterator(
         maps:iterator( % Передаем в функцию итератор по мини-колонке
           maps:get(RangeOfColumn, % Получаем мини-колонку по разряду
-            get(?InLayer) % Получаем исходную структуру данных
+            'GlobalDataService':getInLayer() % Получаем исходную структуру данных
           )), []), ActiveCells);
     % Если да - проверяем, есть ли активный апикальный дендрит у предсказанных клеток
     true ->
@@ -86,4 +86,4 @@ getActiveCellsHelper([RangeOfColumnWithFeedForward | TFeedForward], ActiveCells,
 % FeedForward - входной сигнал (список разрядов)
 getActiveCells(FeedForward) ->
 % TODO Сделать прослойку для доступа к глобальным данным
-  getActiveCellsHelper(FeedForward, #{}, get(?InPredictedCells)).
+  getActiveCellsHelper(FeedForward, #{}, 'GlobalDataService':getInPredictedCells()).
