@@ -41,6 +41,7 @@ getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(Iterator, ActiveCells
   end.
 
 
+
 % Получение списка активных клеток в мини-колонке
 % RangeOfColumn - номер мини-колонки (разряд)
 % ActiveCells - out переменная, содержит информаци об активных клетках. Map<разряд колонки, [Guid активных клеток]>
@@ -85,5 +86,4 @@ getActiveCellsHelper([RangeOfColumnWithFeedForward | TFeedForward], ActiveCells,
 % Функция возвращает активные клетки. Данные упакованы в иерархию, аналогичную структуре хранения данных
 % FeedForward - входной сигнал (список разрядов)
 getActiveCells(FeedForward) ->
-% TODO Сделать прослойку для доступа к глобальным данным
   getActiveCellsHelper(FeedForward, #{}, 'GlobalDataService':getInPredictedCells()).

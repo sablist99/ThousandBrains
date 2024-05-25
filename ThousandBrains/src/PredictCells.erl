@@ -67,12 +67,12 @@ findPredictedCells(Signal, CellIterator, PredictedCells) ->
       % Определяем, есть ли активные дендриты на клетке
       case 'CommonFunctions':existActiveApicalDendrite(CellGuid) of
         % Есть апикальный дендрит
-        true ->
+        {true, OutActiveCellRange} ->
           case findActiveDendrites(Signal, maps:iterator(DendriteMap), [], ?THETA_IN_B_MIN) of
             % Если функция вернула пустой список, значит нет активных дендритов, а значит, клетка не станет предсказанной. Просто переходим к следующей итерации
             [] -> findPredictedCells(Signal, NewCellIterator, PredictedCells);
             % Иначе возвращен список активных дендритов, значит клетка предсказана (Так как достаточно одного активного дендрита)
-            ActiveDendrites -> findPredictedCells(Signal, NewCellIterator, maps:put(CellGuid, {?HasActiveApicalDendrite, ActiveDendrites}, PredictedCells))
+            ActiveDendrites -> findPredictedCells(Signal, NewCellIterator, maps:put(CellGuid, {OutActiveCellRange, ActiveDendrites}, PredictedCells))
           end;
         % Нет апикального дендрита
         false ->

@@ -49,8 +49,6 @@
 -define(AllInCells, allInCells).
 -define(AllOutCells, allOutCells).
 
-% TODO После перехода на хранение составного ключа FeedBack - удалить
--define(HasActiveApicalDendrite, hasActiveApicalDendrite).
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
 
 -define(FileDirectory, "tmp/").

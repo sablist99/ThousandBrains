@@ -28,7 +28,7 @@
 getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([], _OutCellGuid, Synapses) ->
   Synapses;
 getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([ActiveCellGuid | ActiveCells], OutCellGuid, Synapses) ->
-  case 'CommonFunctions':existSynapseInFeedForwardMap(ActiveCellGuid, OutCellGuid, 'GlobalDataService':getFeedForward()) of
+  case 'CommonFunctions':existSynapseBetweenLayers(ActiveCellGuid, OutCellGuid, 'GlobalDataService':getFeedForward()) of
     {1, _Value} ->
       getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCells, OutCellGuid, lists:append(Synapses, [{ActiveCellGuid, OutCellGuid}]));
     0 ->
@@ -127,5 +127,5 @@ getActivateCells(OutPreviousActivation) ->
   end.
 
 % TODO Реализовать сохранение активации выходного слоя
-getActivateCells() -> getActivateCells(get(?OutPreviousActivation)).
+getActivateCells() -> getActivateCells('GlobalDataService':getOutPreviousActivation()).
 

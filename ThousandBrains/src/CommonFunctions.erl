@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([existSynapseInMap/2, existSynapseInFeedForwardMap/3, existActiveApicalDendrite/1, hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1, getListSize/1]).
+-export([existSynapseInMap/2, existSynapseBetweenLayers/3, existActiveApicalDendrite/1, hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1, getListSize/1]).
 
 -include("Model.hrl").
 
@@ -26,17 +26,18 @@ existSynapseInMap(Range, SynapsesMap) ->
   end.
 
 
-% Проверка существования синапса между клеткой входного и клеткой выходного слоя
-findSynapseByKeyInFeedForwardMap(Iterator, ActiveCellGuid, OutCellGuid) ->
+% Проверка существования синапса между клетками слоев
+findSynapseByKeyInMap(Iterator, FromCellGuid, ToCellGuid) ->
   case maps:next(Iterator) of
     none -> none;
-    {{{_, ActiveCellGuid}, {_, OutCellGuid}}, Value, _NewIterator} ->
+    {{{_, FromCellGuid}, {_, ToCellGuid}}, Value, _NewIterator} ->
       {ok, Value};
-    {_, _, NewIterator} -> findSynapseByKeyInFeedForwardMap(NewIterator, ActiveCellGuid, OutCellGuid)
+    {_, _, NewIterator} -> findSynapseByKeyInMap(NewIterator, FromCellGuid, ToCellGuid)
   end.
 
-existSynapseInFeedForwardMap(ActiveCellGuid, OutCellGuid, SynapsesMap) ->
-  case findSynapseByKeyInFeedForwardMap(maps:iterator(SynapsesMap), ActiveCellGuid, OutCellGuid) of
+% TODO Перейти на true/false
+existSynapseBetweenLayers(FromCellGuid, ToCellGuid, SynapsesMap) ->
+  case findSynapseByKeyInMap(maps:iterator(SynapsesMap), FromCellGuid, ToCellGuid) of
     {ok, Value} ->
       case Value#synapse.permanenceWeight of
         true -> {1, Value};
@@ -46,31 +47,44 @@ existSynapseInFeedForwardMap(ActiveCellGuid, OutCellGuid, SynapsesMap) ->
   end.
 
 
-% TODO переделать на обращение к FeedBack + изменить сохранение идентификатора апикального дендрита на составнок ключ
 % Проверка на наличие апикального дендрита у клетки по Guid
-existActiveApicalDendrite(CellGuid) ->
-%  lists:member(CellGuid, get(activeApicalDendrites)).
-  lists:member(CellGuid, []). % [] - заглушка
+existActiveApicalDendrite(_FromCellGuid, []) ->
+  false;
+existActiveApicalDendrite(_FromCellGuid, undefined) ->
+  false;
+existActiveApicalDendrite(FromCellGuid, [ActiveOutCell | H]) ->
+  case existSynapseBetweenLayers(FromCellGuid, ActiveOutCell, 'GlobalDataService':getFeedBack()) of
+    {1, _Value} -> {true, ActiveOutCell};
+    0 -> existActiveApicalDendrite(FromCellGuid, H)
+  end.
+existActiveApicalDendrite(FromCellGuid) ->
+  existActiveApicalDendrite(FromCellGuid, 'GlobalDataService':getOutActiveCells()).
 
 
 
 % Проверка на наличие мини-колонки в предсказанных
 hasMiniColumnInPredict(RangeOfColumnWithFeedForward) ->
-% TODO Сделать прослойку для доступа к глобальным данным
   case maps:find(RangeOfColumnWithFeedForward, 'GlobalDataService':getInPredictedCells()) of
     {ok, _Value} -> true;
     _ -> false
   end.
 
-
-
-% Определение наличия апикального дендрита хотя бы у одной клетки в мини-колонке
-hasActiveApicalDendriteInPredict(Iterator) ->
+hasActiveApicalDendriteInPredictByMiniColumn(Iterator) ->
   case maps:next(Iterator) of
     none -> false;
-    {_CellGuid, {?HasActiveApicalDendrite, _}, _NewIterator} -> true;
-    {_, _, NewIterator} -> hasActiveApicalDendriteInPredict(NewIterator)
+    {_CellGuid, {?NoActiveApicalDendrite, _}, NewIterator} -> hasActiveApicalDendriteInPredictByMiniColumn(NewIterator);
+    {_CellGuid, {_ApicalDendrite, _}, _NewIterator} -> true
+end.
+
+% Определение наличия апикального дендрита хотя бы у одной клетки в мини-колонке
+hasActiveApicalDendriteInPredict(LayerIterator, Ret) ->
+  case maps:next(LayerIterator) of
+    none -> Ret;
+    {_Range, MiniColumn, NewIterator} -> hasActiveApicalDendriteInPredict(NewIterator, hasActiveApicalDendriteInPredictByMiniColumn(maps:iterator(MiniColumn)))
   end.
+
+hasActiveApicalDendriteInPredict(LayerIterator) ->
+  hasActiveApicalDendriteInPredict(LayerIterator, false).
 
 
 % Количество элементов в списке

@@ -14,15 +14,20 @@
 
 -include("Model.hrl").
 
+% Заполнение слоев синапсами, создание связей между синапсами
 initializeBrain() ->
   'BrainInit':initializeGlobalData().
 
+% Отправка сигнала местонахождения (L)
 sendExternalSignal(Signal) ->
   'GlobalDataService':putInPredictedCells('PredictCells':getPredictedCellsInInputLayer(Signal)),
   ok.
 
+% Отправка сенсорного (прямого) сигнала
+%
 sendFeedForwardSignal(Signal) ->
   'GlobalDataService':putInActiveCells('ActivateInCells':getActiveCells(Signal)),
+  'GlobalDataService':putOutPreviousActivation('GlobalDataService':getOutActiveCells()),
   'GlobalDataService':putOutActiveCells('ActivateOutCells':getActivateCells()),
   ok.
 
