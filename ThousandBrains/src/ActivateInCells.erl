@@ -35,8 +35,7 @@ getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(Iterator, ActiveCells
     {CellGuid, _Value, NewIterator} ->
       case 'CommonFunctions':existActiveApicalDendriteByCellGuid(CellGuid) of
         % Есть апикальный дендрит, поэтому добавляем текущую клетку к списку активных
-      % TODO падение, потому что возвращается {true, Value}
-        true -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, lists:append(ActiveCells, [CellGuid]));
+        {true, _ActiveOutCellRange} -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, lists:append(ActiveCells, [CellGuid]));
         false -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, ActiveCells)
       end
   end.
