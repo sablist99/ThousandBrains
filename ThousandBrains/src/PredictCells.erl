@@ -65,7 +65,7 @@ findPredictedCells(Signal, CellIterator, PredictedCells) ->
     none -> {map_size(PredictedCells), PredictedCells};
     {CellGuid, DendriteMap, NewCellIterator} ->
       % Определяем, есть ли активные дендриты на клетке
-      case 'CommonFunctions':existActiveApicalDendrite(CellGuid) of
+      case 'CommonFunctions':existActiveApicalDendriteByCellGuid(CellGuid) of
         % Есть апикальный дендрит
         {true, OutActiveCellRange} ->
           case findActiveDendrites(Signal, maps:iterator(DendriteMap), [], ?THETA_IN_B_MIN) of

@@ -16,7 +16,7 @@
 
 -include("Model.hrl").
 
-
+% TODO Добавить общую проверку на undefined
 
 putInLayer(Layer) ->
   put(?InLayer, Layer).

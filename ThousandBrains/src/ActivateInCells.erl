@@ -33,8 +33,9 @@ getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(Iterator, ActiveCells
   case maps:next(Iterator) of
     none -> ActiveCells;
     {CellGuid, _Value, NewIterator} ->
-      case 'CommonFunctions':existActiveApicalDendrite(CellGuid) of
-        % Есть апикальный дендрит, поэтому добавляем текущую клетку к спсику активных
+      case 'CommonFunctions':existActiveApicalDendriteByCellGuid(CellGuid) of
+        % Есть апикальный дендрит, поэтому добавляем текущую клетку к списку активных
+      % TODO падение, потому что возвращается {true, Value}
         true -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, lists:append(ActiveCells, [CellGuid]));
         false -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, ActiveCells)
       end
@@ -43,10 +44,11 @@ getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(Iterator, ActiveCells
 
 
 % Получение списка активных клеток в мини-колонке
-% RangeOfColumn - номер мини-колонки (разряд)
+% RangeOfColumn - номер мини-колонки (разряд), которая выстрелила
 % ActiveCells - out переменная, содержит информаци об активных клетках. Map<разряд колонки, [Guid активных клеток]>
 % PredictedCells - Информация о деполяризованных клетках. Берется из глобальных данных
 getActiveCellsInMiniColumn(RangeOfColumn, ActiveCells, PredictedCells) ->
+  % Колонка была ранее предсказана?
   case 'CommonFunctions':hasMiniColumnInPredict(RangeOfColumn) of
     % Если нет - активируем все клетки
     false -> maps:put(RangeOfColumn,
@@ -57,7 +59,7 @@ getActiveCellsInMiniColumn(RangeOfColumn, ActiveCells, PredictedCells) ->
           )), []), ActiveCells);
     % Если да - проверяем, есть ли активный апикальный дендрит у предсказанных клеток
     true ->
-      case 'CommonFunctions':hasActiveApicalDendriteInPredict(maps:iterator(PredictedCells)) of
+      case 'CommonFunctions':existActiveApicalDendriteByRanges(RangeOfColumn) of
         % Если нет - активируем все предсказанные клетки
         false -> maps:put(RangeOfColumn, getCellsFromMapByIterator(
           maps:iterator( % Передаем в функцию итератор по мини-колонке

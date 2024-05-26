@@ -18,6 +18,7 @@
 -define(N_EXT, 240). % По статье - 2400
 -define(S, 4). % По статье - 40
 -define(PERMANENCE_WEIGHT_BORDER, 0.35).
+-define(POTENTIAL_SYNAPSE_BORDER, 0.17).
 -define(PERMANENCE_THRESHOLD, 0.3).
 -define(ROUND_EPSILON, 10000).
 
@@ -50,5 +51,6 @@
 -define(AllOutCells, allOutCells).
 
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
+-define(ID, id).
 
 -define(FileDirectory, "tmp/").

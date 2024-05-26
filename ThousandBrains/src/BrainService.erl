@@ -28,7 +28,7 @@ sendExternalSignal(Signal) ->
 sendFeedForwardSignal(Signal) ->
   'GlobalDataService':putInActiveCells('ActivateInCells':getActiveCells(Signal)),
   'GlobalDataService':putOutPreviousActivation('GlobalDataService':getOutActiveCells()),
-  'GlobalDataService':putOutActiveCells('ActivateOutCells':getActivateCells()),
+  'GlobalDataService':putOutActiveCells('ActivateOutCells':getOutActiveCells()),
   ok.
 
 getOutActiveCells() ->

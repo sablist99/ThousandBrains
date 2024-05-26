@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([getOutWinCells/0, getActivateCells/0]).
+-export([getOutWinCells/0, getOutActiveCells/0]).
 
 -include("Model.hrl").
 
@@ -25,21 +25,21 @@
 % ActiveCellGuid - текущая активная клетка, для которой ищем синапс с выходной клеткой
 % OutCellGuid - текущая выходная клетка, для которой ищем синапсы с активными клеткой
 % Synapses - out параметр, результирующая мапа, содержащая существующие синапсы
-getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([], _OutCellGuid, Synapses) ->
+getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([], _OutCellRange, Synapses) ->
   Synapses;
-getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([ActiveCellGuid | ActiveCells], OutCellGuid, Synapses) ->
-  case 'CommonFunctions':existSynapseBetweenLayers(ActiveCellGuid, OutCellGuid, 'GlobalDataService':getFeedForward()) of
-    {1, _Value} ->
-      getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCells, OutCellGuid, lists:append(Synapses, [{ActiveCellGuid, OutCellGuid}]));
-    0 ->
-      getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCells, OutCellGuid, Synapses)
+getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell([ActiveCellGuid | ActiveCells], OutCellRange, Synapses) ->
+  case 'CommonFunctions':existSynapseBetweenLayersByFGTR(ActiveCellGuid, OutCellRange, 'GlobalDataService':getFeedForward()) of
+    {true, _Value} ->
+      getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCells, OutCellRange, lists:append(Synapses, [{ActiveCellGuid, OutCellRange}]));
+    false ->
+      getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCells, OutCellRange, Synapses)
   end.
 
 
 
 % В этой функции происходит формирование списка существующих синапсов между выходной клеткой и активными клетками входного слоя
 % Вместе с этим проверяется, а достаточно ли этих синапсов для активации
-getSynapsesListBetweenInActiveCellsAndOutCell(ActiveCellsIterator, OutCellGuid, Synapses) ->
+getSynapsesListBetweenInActiveCellsAndOutCell(ActiveCellsIterator, OutCellRange, Synapses) ->
   case maps:next(ActiveCellsIterator) of
     % Проверяем - а достаточно ли синапсов у текущей выходной клетки
     none ->
@@ -48,28 +48,28 @@ getSynapsesListBetweenInActiveCellsAndOutCell(ActiveCellsIterator, OutCellGuid, 
         false -> []
       end;
     {_Range, ActiveCellsList, NewCellIterator} ->
-      getSynapsesListBetweenInActiveCellsAndOutCell(NewCellIterator, OutCellGuid, lists:append(Synapses, getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCellsList, OutCellGuid, Synapses)))
+      getSynapsesListBetweenInActiveCellsAndOutCell(NewCellIterator, OutCellRange, lists:append(Synapses, getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCellsList, OutCellRange, Synapses)))
   end.
 
 
 
 % В этой функции формируется список выигрышных клеток выходного слоя (тех клеток, у которых достаточно синапсов с активными кдетками входного слоя)
-getOutWinCellsHelper(OutCellsIterator, OutWin) ->
+getOutWinCells(OutCellsIterator, OutWin) ->
   case maps:next(OutCellsIterator) of
     none -> OutWin;
-    {Range, {OutCellGuid, _}, NewCellIterator} ->
-      case getSynapsesListBetweenInActiveCellsAndOutCell(maps:iterator('GlobalDataService':getInActiveCells()), OutCellGuid, []) of
+    {Range, {_OutCellGuid, _}, NewCellIterator} ->
+      case getSynapsesListBetweenInActiveCellsAndOutCell(maps:iterator('GlobalDataService':getInActiveCells()), Range, []) of
         % Если связь не прочная или ее вообще нет
-        [] -> getOutWinCellsHelper(NewCellIterator, OutWin);
+        [] -> getOutWinCells(NewCellIterator, OutWin);
         % Если есть достаточно синапсов, то объявляем клетку выигрышной
-        Synapses -> getOutWinCellsHelper(NewCellIterator, maps:put(Range, Synapses, OutWin))
+        Synapses -> getOutWinCells(NewCellIterator, maps:put(Range, Synapses, OutWin))
       end
   end.
 
 
 % Получение выигрышных клеток выходного слоя
 getOutWinCells() ->
-  getOutWinCellsHelper(maps:iterator('GlobalDataService':getOutLayer()), #{}).
+  getOutWinCells(maps:iterator('GlobalDataService':getOutLayer()), #{}).
 
 
 
@@ -112,11 +112,11 @@ getKsi(PredictedCells) ->
 
 % Получение активных клетов выходного слоя.
 % С учетом прямого и латерального сигнала
-getActivateCells([]) ->
+getOutActiveCells([]) ->
   getActiveCellsWithKsi(getOutWinCells(), 0);
-getActivateCells(undefined) ->
+getOutActiveCells(undefined) ->
   getActiveCellsWithKsi(getOutWinCells(), 0);
-getActivateCells(OutPreviousActivation) ->
+getOutActiveCells(OutPreviousActivation) ->
   case 'PredictCells':getPredictedCellsInOutputLayer(OutPreviousActivation, maps:iterator('GlobalDataService':getOutLayer()), #{}) of
     PredictedCells ->
       % Количество клеток с боковой поддержкой больше, чем минимальное количество активных клеток
@@ -127,5 +127,5 @@ getActivateCells(OutPreviousActivation) ->
   end.
 
 % TODO Реализовать сохранение активации выходного слоя
-getActivateCells() -> getActivateCells('GlobalDataService':getOutPreviousActivation()).
+getOutActiveCells() -> getOutActiveCells('GlobalDataService':getOutPreviousActivation()).
 

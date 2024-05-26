@@ -12,7 +12,7 @@
 -include("Model.hrl").
 
 %% API
--export([initializeGlobalData/0]).
+-export([initializeGlobalData/0, getSynapse/0]).
 
 
 % Определение наличия связи в зависимости от поргового значения
@@ -23,24 +23,35 @@ getPermanenceWeight(_Value) ->
 
 % Функция создания синапса
 getSynapseHelper(Value) ->
-  #synapse{
-    guid = 'MyMath':getGuid(),
-    permanenceValue = Value,
-    permanenceWeight = getPermanenceWeight(Value)}.
+  case Value < ?POTENTIAL_SYNAPSE_BORDER of
+    true -> none;
+    false ->
+      #synapse{
+        guid = 'MyMath':getId(),
+        permanenceValue = Value,
+        permanenceWeight = getPermanenceWeight(Value)}
+  end.
+
 
 getSynapse() ->
   getSynapseHelper('MyMath':getPoissonValue()).
 
 
 
+% Функция добавления синапса в дендрит. Добавляет в дендрит только в том случае, если вернулся "синапс" из которого потенциально может вырасти настоящий синапс Определяется пороговым значением.
+addSynapseInDendrite(_Key, Synapse, Dendrite) when Synapse == none ->
+  Dendrite;
+addSynapseInDendrite(Key, Synapse, Dendrite) ->
+  maps:put(Key, Synapse, Dendrite).
+
 % Функция создания дендрита клетки любого слоя
-% CurrentSynapse - счетчик, количество синапсов на текущем дендрите.
+% CurrentSynapseNumber - счетчик, количество синапсов на текущем дендрите.
 % Dendrite - out переменная, в которой копится результат (Map)
 % SynapseCount - количество синапсов на дендрите (меняется в зависимости от типа слоя)
-getDendriteHelper(CurrentSynapse, Dendrite, SynapseCount) when CurrentSynapse == SynapseCount ->
+getDendriteHelper(CurrentSynapseNumber, Dendrite, SynapseCount) when CurrentSynapseNumber == SynapseCount ->
   Dendrite;
-getDendriteHelper(CurrentSynapse, Dendrite, SynapseCount) ->
-  getDendriteHelper(CurrentSynapse + 1, maps:put(CurrentSynapse, getSynapse(), Dendrite), SynapseCount).
+getDendriteHelper(CurrentSynapseNumber, Dendrite, SynapseCount) ->
+  getDendriteHelper(CurrentSynapseNumber + 1, addSynapseInDendrite(CurrentSynapseNumber, getSynapse(), Dendrite), SynapseCount).
 
 getDendrite(SynapseCount) -> getDendriteHelper(0, #{}, SynapseCount).
 
@@ -53,7 +64,7 @@ getDendrite(SynapseCount) -> getDendriteHelper(0, #{}, SynapseCount).
 getCellHelper(CurrentDendrite, Cell, _SynapseCount) when CurrentDendrite == ?D ->
   Cell;
 getCellHelper(CurrentDendrite, Cell, SynapseCount) ->
-  getCellHelper(CurrentDendrite + 1, maps:put('MyMath':getGuid(), getDendrite(SynapseCount), Cell), SynapseCount).
+  getCellHelper(CurrentDendrite + 1, maps:put('MyMath':getId(), getDendrite(SynapseCount), Cell), SynapseCount).
 
 getCell(SynapseCount) -> getCellHelper(0, #{}, SynapseCount).
 
@@ -63,7 +74,7 @@ getCell(SynapseCount) -> getCellHelper(0, #{}, SynapseCount).
 getInMiniColumnHelper(CurrentCell, MiniColumn) when CurrentCell == ?M ->
   MiniColumn;
 getInMiniColumnHelper(CurrentCell, MiniColumn) ->
-  getInMiniColumnHelper(CurrentCell + 1, maps:put('MyMath':getGuid(), getCell(?N_EXT), MiniColumn)).
+  getInMiniColumnHelper(CurrentCell + 1, maps:put('MyMath':getId(), getCell(?N_EXT), MiniColumn)).
 
 getInMiniColumn() -> getInMiniColumnHelper(0, #{}).
 
@@ -83,7 +94,7 @@ getInLayer() -> getInLayerHelper(0, #{}).
 getOutLayerHelper(CurrentCell, Layer) when CurrentCell == ?N_OUT ->
   Layer;
 getOutLayerHelper(CurrentCell, Layer) ->
-  getOutLayerHelper(CurrentCell + 1, maps:put(CurrentCell, {'MyMath':getGuid(), getCell(?N_OUT)}, Layer)).
+  getOutLayerHelper(CurrentCell + 1, maps:put(CurrentCell, {'MyMath':getId(), getCell(?N_OUT)}, Layer)).
 
 getOutLayer() -> getOutLayerHelper(0, #{}).
 
@@ -93,7 +104,7 @@ getOutLayer() -> getOutLayerHelper(0, #{}).
 getSynapsesBetweenLayersHelper([], _CurrentInCell, ResultMap) ->
   ResultMap;
 getSynapsesBetweenLayersHelper([CurrentOutCell | TOut], CurrentInCell, ResultMap) ->
-  getSynapsesBetweenLayersHelper(TOut, CurrentInCell, maps:put({CurrentInCell, CurrentOutCell}, getSynapse() , ResultMap)).
+  getSynapsesBetweenLayersHelper(TOut, CurrentInCell, addSynapseInDendrite({CurrentInCell, CurrentOutCell}, getSynapse() , ResultMap)).
 
 % Обход клеток входного слоя
 getSynapsesBetweenLayers([], _To, ResultMap) ->
@@ -146,6 +157,7 @@ getAllOutCells() -> getAllOutCellsHelper(maps:iterator('GlobalDataService':getOu
 
 
 initializeGlobalData() ->
+  put(?ID, 0),
   'GlobalDataService':putInLayer(getInLayer()),
   'GlobalDataService':putOutLayer(getOutLayer()),
   'GlobalDataService':putAllInCells(getAllInCells()),

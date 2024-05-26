@@ -15,11 +15,15 @@
 -include("Model.hrl").
 
 % Функция вывода Map в файл с заданным именем
+% TODO Рассмотреть идею - сначала формировать большую строку, а затем разом писать ее в файл
 mapWriteToFile(File, Map) ->
   {ok, S} = file:open(?FileDirectory ++ File, write),
   maps:foreach(
     fun(Key, Value) ->
-      file:write_file(?FileDirectory ++ File, io_lib:fwrite("~p -> ~p \n", [Key, Value]), [append])
+      if
+        Value#synapse.permanenceWeight == false -> none;
+        true -> file:write_file(?FileDirectory ++ File, io_lib:fwrite("~p -> ~p \n", [Key, Value]), [append])
+      end
     end, Map),
   file:close(S).
 

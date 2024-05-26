@@ -10,7 +10,10 @@
 -author("Potap").
 
 %% API
--export([existSynapseInMap/2, existSynapseBetweenLayers/3, existActiveApicalDendrite/1, hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1, getListSize/1]).
+-export([existSynapseInMap/2, existActiveApicalDendriteByCellGuid/1,
+  hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1, getListSize/1, getMiniColumnsWithActiveApicalDendrite/0,
+  existActiveApicalDendriteByRanges/1, existSynapseBetweenLayersByRanges/3, findSynapseInMapByFRTG/3,
+  findSynapseInMapByFRTR/3, existSynapseBetweenLayersByFRTG/3, existSynapseBetweenLayersByFGTR/3]).
 
 -include("Model.hrl").
 
@@ -27,38 +30,81 @@ existSynapseInMap(Range, SynapsesMap) ->
 
 
 % Проверка существования синапса между клетками слоев
-findSynapseByKeyInMap(Iterator, FromCellGuid, ToCellGuid) ->
+% По рэнджу клетки входного слоя и guid клетки выходного слоя
+findSynapseInMapByFRTG(FromCellRange, ToCellGuid, Iterator) ->
   case maps:next(Iterator) of
     none -> none;
-    {{{_, FromCellGuid}, {_, ToCellGuid}}, Value, _NewIterator} ->
+    {{{FromCellRange, _}, {_, ToCellGuid}}, Value, _NewIterator} ->
       {ok, Value};
-    {_, _, NewIterator} -> findSynapseByKeyInMap(NewIterator, FromCellGuid, ToCellGuid)
+    {_, _, NewIterator} -> findSynapseInMapByFRTG(FromCellRange, ToCellGuid, NewIterator)
   end.
 
-% TODO Перейти на true/false
-existSynapseBetweenLayers(FromCellGuid, ToCellGuid, SynapsesMap) ->
-  case findSynapseByKeyInMap(maps:iterator(SynapsesMap), FromCellGuid, ToCellGuid) of
+% Проверка существования синапса между клетками слоев
+% По guid клетки входного слоя и рэнджу клетки выходного слоя
+findSynapseInMapByFGTR(FromCellGuid, ToCellRange, Iterator) ->
+  case maps:next(Iterator) of
+    none -> none;
+    {{{_, FromCellGuid}, {ToCellRange, _}}, Value, _NewIterator} ->
+      {ok, Value};
+    {_, _, NewIterator} -> findSynapseInMapByFGTR(FromCellGuid, ToCellRange, NewIterator)
+  end.
+
+% Проверка существования синапса между клетками слоев
+% По рэнджу клетки входного слоя и рэнджу клетки выходного слоя
+findSynapseInMapByFRTR(FromCellRange, ToCellRange, Iterator) ->
+  case maps:next(Iterator) of
+    none -> none;
+    {{{FromCellRange, _}, {ToCellRange, _}}, Value, _NewIterator} ->
+      {ok, Value};
+    {_, _, NewIterator} -> findSynapseInMapByFRTR(FromCellRange, ToCellRange, NewIterator)
+  end.
+
+
+% TODO Подумать, как параметризировать три функции ниже
+existSynapseBetweenLayersByFRTG(FromCellRange, ToCellGuid, SynapsesMap) ->
+  case findSynapseInMapByFRTG(FromCellRange, ToCellGuid, maps:iterator(SynapsesMap)) of
     {ok, Value} ->
       case Value#synapse.permanenceWeight of
-        true -> {1, Value};
-        false -> 0
+        true -> {true, Value};
+        false -> false
       end;
-    _ -> 0
+    _ -> false
+  end.
+
+existSynapseBetweenLayersByFGTR(FromCellGuid, ToCellRange, SynapsesMap) ->
+  case findSynapseInMapByFGTR(FromCellGuid, ToCellRange, maps:iterator(SynapsesMap)) of
+    {ok, Value} ->
+      case Value#synapse.permanenceWeight of
+        true -> {true, Value};
+        false -> false
+      end;
+    _ -> false
+  end.
+
+existSynapseBetweenLayersByRanges(FromRange, ToRange, SynapsesMap) ->
+  case findSynapseInMapByFRTR(FromRange, ToRange, maps:iterator(SynapsesMap)) of
+    {ok, Value} ->
+      case Value#synapse.permanenceWeight of
+        true -> {true, Value};
+        false -> false
+      end;
+    _ -> false
   end.
 
 
-% Проверка на наличие апикального дендрита у клетки по Guid
-existActiveApicalDendrite(_FromCellGuid, []) ->
+
+% Проверка на наличие апикального дендрита у клетки входного слоя по Guid
+existActiveApicalDendriteByCellGuid(_ToInCellGuid, []) ->
   false;
-existActiveApicalDendrite(_FromCellGuid, undefined) ->
+existActiveApicalDendriteByCellGuid(_ToInCellGuid, undefined) ->
   false;
-existActiveApicalDendrite(FromCellGuid, [ActiveOutCell | H]) ->
-  case existSynapseBetweenLayers(FromCellGuid, ActiveOutCell, 'GlobalDataService':getFeedBack()) of
-    {1, _Value} -> {true, ActiveOutCell};
-    0 -> existActiveApicalDendrite(FromCellGuid, H)
+existActiveApicalDendriteByCellGuid(ToInCellGuid, [ActiveOutCellRange | H]) ->
+  case existSynapseBetweenLayersByFRTG(ActiveOutCellRange, ToInCellGuid, 'GlobalDataService':getFeedBack()) of
+    {true, _Value} -> {true, ActiveOutCellRange};
+    false -> existActiveApicalDendriteByCellGuid(ToInCellGuid, H)
   end.
-existActiveApicalDendrite(FromCellGuid) ->
-  existActiveApicalDendrite(FromCellGuid, 'GlobalDataService':getOutActiveCells()).
+existActiveApicalDendriteByCellGuid(ToInCellGuid) ->
+  existActiveApicalDendriteByCellGuid(ToInCellGuid, 'GlobalDataService':getOutActiveCells()).
 
 
 
@@ -85,6 +131,42 @@ hasActiveApicalDendriteInPredict(LayerIterator, Ret) ->
 
 hasActiveApicalDendriteInPredict(LayerIterator) ->
   hasActiveApicalDendriteInPredict(LayerIterator, false).
+
+
+
+
+
+
+
+
+% Проверка на наличие апикального дендрита у клетки входного слоя по Guid
+existActiveApicalDendriteByRanges(_ToRange, []) ->
+  false;
+existActiveApicalDendriteByRanges(_ToRange, undefined) ->
+  false;
+existActiveApicalDendriteByRanges(ToRange, [ActiveOutCellRange | H]) ->
+  case existSynapseBetweenLayersByRanges(ActiveOutCellRange, ToRange, 'GlobalDataService':getFeedBack()) of
+    {true, _Value} -> true;
+    false -> existActiveApicalDendriteByRanges(ToRange, H)
+  end.
+existActiveApicalDendriteByRanges(ToRange) ->
+  existActiveApicalDendriteByRanges(ToRange, 'GlobalDataService':getOutActiveCells()).
+
+
+
+% Получение списка мини-колонок, у которых есть апикальный денднрит
+getMiniColumnsWithActiveApicalDendrite(LayerIterator, TargetColumns) ->
+  case maps:next(LayerIterator) of
+    none -> TargetColumns;
+    {Range, _MiniColumnMap, NewIterator} ->
+      case existActiveApicalDendriteByRanges(Range) of
+        true -> getMiniColumnsWithActiveApicalDendrite(NewIterator, lists:append(TargetColumns, [Range]));
+        false -> getMiniColumnsWithActiveApicalDendrite(NewIterator, TargetColumns)
+      end
+end.
+
+getMiniColumnsWithActiveApicalDendrite() -> getMiniColumnsWithActiveApicalDendrite(maps:iterator('GlobalDataService':getInLayer()), []).
+
 
 
 % Количество элементов в списке
