@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThousandBrainsVisualisation", "ThousandBrainsVisualisation\ThousandBrainsVisualisation.csproj", "{ADA1AC30-5A68-4500-8B34-CC32CBBBE259}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADA1AC30-5A68-4500-8B34-CC32CBBBE259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA1AC30-5A68-4500-8B34-CC32CBBBE259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA1AC30-5A68-4500-8B34-CC32CBBBE259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA1AC30-5A68-4500-8B34-CC32CBBBE259}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEEC65A1-7550-4FDC-90EA-2EF07230E255}
+	EndGlobalSection
+EndGlobal

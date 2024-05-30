@@ -1,3 +1,9 @@
 *.dtmp
 *.dump
 *.iml
+/ThousandBrainsVisualisation/ThousandBrainsVisualisation/obj
+*.bkp
+*.beam
+/ThousandBrains/tmp
+/ThousandBrainsVisualisation/.vs
+/ThousandBrainsVisualisation/ThousandBrainsVisualisation/bin/Debug/net8.0-windows
