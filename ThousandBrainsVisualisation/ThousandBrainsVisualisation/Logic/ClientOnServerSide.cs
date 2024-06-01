@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Net.Sockets;
-using System.Text;
 
-namespace ThousandBrainsVisualisation
+namespace ThousandBrainsVisualisation.Logic
 {
     public class ClientOnServerSide
     {
@@ -11,15 +10,15 @@ namespace ThousandBrainsVisualisation
         protected StreamReader Reader { get; }
         protected Stream BinaryReader { get; }
 
-        protected TcpClient client { get; }
-        protected Server server { get; }
+        protected TcpClient Client { get; }
+        protected Server Server { get; }
 
         public ClientOnServerSide(TcpClient tcpClient, Server serverObject)
         {
             Id = Guid.NewGuid();
-            client = tcpClient;
-            server = serverObject;
-            BinaryReader = client.GetStream();
+            Client = tcpClient;
+            Server = serverObject;
+            BinaryReader = Client.GetStream();
             Reader = new StreamReader(BinaryReader);
             Writer = new StreamWriter(BinaryReader);
         }
@@ -39,36 +38,37 @@ namespace ThousandBrainsVisualisation
                 {
                     try
                     {
-                        byte[] buffer = new byte[1024];
+                        byte[] buffer = new byte[10240];
                         binaryMessage = await Reader.ReadLineAsync();
                         if (string.IsNullOrEmpty(binaryMessage))
-                        { 
-                            continue; 
+                        {
+                            continue;
                         }
-                        server.nextSymbol(binaryMessage);
+                        Server.NextSymbol(binaryMessage);
                         binaryMessage = null;
                     }
                     catch (Exception e)
                     {
-                        server.nextSymbol(e.Message);
-                    break;
+                        Server.NextSymbol(e.Message);
+                        break;
                     }
                 }
             }
             catch (Exception e)
             {
-                server.nextSymbol(e.Message);
+                Server.NextSymbol(e.Message);
             }
             finally
             {
-                server.RemoveConnection(Id);
+                Server.RemoveConnection(Id);
             }
         }
         public void Close()
         {
             Writer.Close();
             Reader.Close();
-            client.Close();
+            Client.Close();
+            BinaryReader.Close();
         }
     }
 }

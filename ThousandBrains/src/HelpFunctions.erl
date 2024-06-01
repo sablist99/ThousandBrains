@@ -47,7 +47,7 @@ sendData(Socket, Structure) ->
   if
     is_map(Structure) -> sendMap(Socket, Structure);
     is_list(Structure) -> sendList(Socket, Structure);
-    is_record(Structure, synapse) -> 'VisualisationClient':sendInformMessage(Socket, "UNDEFINED");
+    is_record(Structure, synapse) -> sendSynapse(Socket, Structure);
     is_integer(Structure) -> 'VisualisationClient':sendSingleValue(Socket, Structure);
     true -> sendSimpleData(Socket, Structure)
   end.
@@ -69,16 +69,29 @@ sendList(Socket, List) ->
     end, List),
   'VisualisationClient':sendInformMessage(Socket, "ListEnd").
 
-sendSimpleData(Socket, Synapse) ->
-  case Synapse of
+sendSynapse(Socket, Synapse) ->
+  'VisualisationClient':sendInformMessage(Socket, "SynapseBegin"),
+  'VisualisationClient':sendSingleValue(Socket, Synapse#synapse.guid),
+  'VisualisationClient':sendFloatValue(Socket, Synapse#synapse.permanenceValue),
+  'VisualisationClient':sendBoolValue(Socket, Synapse#synapse.permanenceWeight),
+  'VisualisationClient':sendInformMessage(Socket, "SynapseEnd").
+
+sendSimpleData(Socket, Dendrites) ->
+  'VisualisationClient':sendInformMessage(Socket, "DendriteBegin"),
+  case Dendrites of
     {noActiveApicalDendrite, List} -> 'VisualisationClient':sendInformMessage(Socket, "false"), sendList(Socket, List);
     {ApicalDendrite, [H|T]} -> 'VisualisationClient':sendSingleValue(Socket, ApicalDendrite), sendList(Socket, [H|T]);
     _ -> 'VisualisationClient':sendInformMessage(Socket, "UNDEFINED")
-  end.
+  end,
+  'VisualisationClient':sendInformMessage(Socket, "DendriteEnd").
+
 
 
 sendInPredictCells(Socket) ->
-  'VisualisationClient':sendInformMessage(Socket, "InPredict"),
+  'VisualisationClient':sendInformMessage(Socket, "InLayer"),
+  sendData(Socket, 'GlobalDataService':getInLayer()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "PredictInLayer"),
   sendData(Socket, 'GlobalDataService':getInPredictedCells()),
   'VisualisationClient':sendInformMessage(Socket, "END").
 

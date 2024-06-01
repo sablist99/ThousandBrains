@@ -1,56 +1,54 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using ThousandBrainsVisualisation.ViewModel;
 
-namespace ThousandBrainsVisualisation
+namespace ThousandBrainsVisualisation.Logic
 {
     public class Server
     {
-        public Server(MainWindowViewModel mainWindowViewModel)
+        public Server(BrainFiller.BrainFiller brainFiller)
         {
-            MainWindowViewModel = mainWindowViewModel;
-            tcpListener = new TcpListener(IPAddress.Any, 8888); ;
-            clients = new List<ClientOnServerSide>();
+            TcpListener = new TcpListener(IPAddress.Any, 8888); ;
+            Clients = new List<ClientOnServerSide>();
+            BrainFiller = brainFiller;
         }
 
-        protected TcpListener tcpListener { get; set; }
-        protected IList<ClientOnServerSide> clients { get; set; }
+        protected TcpListener TcpListener { get; set; }
+        protected IList<ClientOnServerSide> Clients { get; set; }
 
-        MainWindowViewModel MainWindowViewModel { get; set; }
-
+        private BrainFiller.BrainFiller BrainFiller { get; set; }
 
         public void RemoveConnection(Guid id)
         {
-            ClientOnServerSide? client = clients.FirstOrDefault(c => c.Id == id);
+            ClientOnServerSide? client = Clients.FirstOrDefault(c => c.Id == id);
             if (client != null)
             {
-                clients.Remove(client);
+                Clients.Remove(client);
             }
             client?.Close();
         }
 
         public void Disconnect()
         {
-            foreach (var client in clients)
+            foreach (var client in Clients)
             {
                 client.Close();
             }
-            tcpListener.Stop();
+            TcpListener.Stop();
         }
 
         public async Task ListenAsync()
         {
             try
             {
-                tcpListener.Start();
+                TcpListener.Start();
                 Console.WriteLine("Сервер запущен. Ожидание подключений...");
 
                 while (true)
                 {
-                    TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
+                    TcpClient tcpClient = await TcpListener.AcceptTcpClientAsync();
 
                     ClientOnServerSide clientObject = new(tcpClient, this);
-                    clients.Add(clientObject);
+                    Clients.Add(clientObject);
                     Task.Run(clientObject.ProcessAsync);
                 }
             }
@@ -64,9 +62,9 @@ namespace ThousandBrainsVisualisation
             }
         }
 
-        public void nextSymbol(string? text)
+        public void NextSymbol(string? text)
         {
-            MainWindowViewModel.SynchronizedText += text + "\n";
+            BrainFiller.SendData(text);
         }
     }
 }
