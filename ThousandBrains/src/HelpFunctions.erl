@@ -56,7 +56,7 @@ sendMap(Socket, Map) ->
   'VisualisationClient':sendInformMessage(Socket, "MapBegin"),
   maps:foreach(
     fun(Key, Value) ->
-      'VisualisationClient':sendSingleValue(Socket, Key),
+      sendData(Socket, Key),
       sendData(Socket, Value)
     end, Map),
   'VisualisationClient':sendInformMessage(Socket, "MapEnd").
@@ -76,14 +76,36 @@ sendSynapse(Socket, Synapse) ->
   'VisualisationClient':sendBoolValue(Socket, Synapse#synapse.permanenceWeight),
   'VisualisationClient':sendInformMessage(Socket, "SynapseEnd").
 
-sendSimpleData(Socket, Dendrites) ->
-  'VisualisationClient':sendInformMessage(Socket, "DendriteBegin"),
-  case Dendrites of
-    {noActiveApicalDendrite, List} -> 'VisualisationClient':sendInformMessage(Socket, "false"), sendList(Socket, List);
-    {ApicalDendrite, [H|T]} -> 'VisualisationClient':sendSingleValue(Socket, ApicalDendrite), sendList(Socket, [H|T]);
+sendSimpleData(Socket, SimpleData) ->
+  case SimpleData of
+    {noActiveApicalDendrite, List} ->
+      'VisualisationClient':sendInformMessage(Socket, "DendriteBegin"),
+      'VisualisationClient':sendInformMessage(Socket, "false"),
+      sendList(Socket, List),
+      'VisualisationClient':sendInformMessage(Socket, "DendriteEnd");
+
+    {ApicalDendrite, [H | T]} ->
+      'VisualisationClient':sendInformMessage(Socket, "DendriteBegin"),
+      'VisualisationClient':sendSingleValue(Socket, ApicalDendrite),
+      sendList(Socket, [H | T]),
+      'VisualisationClient':sendInformMessage(Socket, "DendriteEnd");
+
+    {{Key1, Key2}, {Key3, Key4}} ->
+      'VisualisationClient':sendInformMessage(Socket, "FeedBegin"),
+      'VisualisationClient':sendSingleValue(Socket, Key1),
+      'VisualisationClient':sendSingleValue(Socket, Key2),
+      'VisualisationClient':sendSingleValue(Socket, Key3),
+      'VisualisationClient':sendSingleValue(Socket, Key4),
+      'VisualisationClient':sendInformMessage(Socket, "FeedEnd");
+
+    {CellGuid, Map} ->
+      'VisualisationClient':sendInformMessage(Socket, "OutColumnBegin"),
+      'VisualisationClient':sendSingleValue(Socket, CellGuid),
+      sendMap(Socket, Map),
+      'VisualisationClient':sendInformMessage(Socket, "OutColumnEnd");
+
     _ -> 'VisualisationClient':sendInformMessage(Socket, "UNDEFINED")
-  end,
-  'VisualisationClient':sendInformMessage(Socket, "DendriteEnd").
+  end.
 
 
 
@@ -93,6 +115,21 @@ sendInPredictCells(Socket) ->
   'VisualisationClient':sendInformMessage(Socket, "END"),
   'VisualisationClient':sendInformMessage(Socket, "PredictInLayer"),
   sendData(Socket, 'GlobalDataService':getInPredictedCells()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "ActiveInLayer"),
+  sendData(Socket, 'GlobalDataService':getInActiveCells()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "OutLayer"),
+  sendData(Socket, 'GlobalDataService':getOutLayer()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "ActiveOutLayer"),
+  sendData(Socket, 'GlobalDataService':getOutActiveCells()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "FeedForward"),
+  sendData(Socket, 'GlobalDataService':getFeedForward()),
+  'VisualisationClient':sendInformMessage(Socket, "END"),
+  'VisualisationClient':sendInformMessage(Socket, "FeedBack"),
+  sendData(Socket, 'GlobalDataService':getFeedBack()),
   'VisualisationClient':sendInformMessage(Socket, "END").
 
 
