@@ -9,10 +9,11 @@ namespace ThousandBrainsVisualisation.ViewModel
     {
         private readonly BrainModel Brain = new();
 
-        private const int CellSize = 10;
-        private const int CellMargin = 10;
-        private readonly SolidBrush UsuallyCellColor = new(Color.Gray);
-        //private readonly SolidBrush PredictedCellColor = new(Color.Gray);
+        private const int CellSize = 15;
+        private const int CellMargin = 12;
+        private readonly SolidBrush UsuallyCellBrush = new(Color.Gray);
+        private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
+        private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
 
         #region Brain OnPropertyChanged
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
@@ -23,7 +24,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 if (value != null)
                 {
                     Brain.InLayer = value;
-                    AddCells();
+                    DrawInCells();
                 };
             }
         }
@@ -36,7 +37,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 if (value != null)
                 {
                     Brain.PredictInLayer = value;
-                    OnPropertyChanged();
+                    DrawInCells();
                 };
             }
         }
@@ -49,7 +50,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 if (value != null)
                 {
                     Brain.ActiveInLayer = value;
-                    OnPropertyChanged();
+                    DrawInCells();
                 };
             }
         }
@@ -123,7 +124,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
-        private void AddCells()
+        private void DrawInCells()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -140,21 +141,42 @@ namespace ThousandBrainsVisualisation.ViewModel
                     int j = 0;
                     foreach (var cell in miniColumn.Value.OrderBy(c => c.Key))
                     {
-                        gfx.FillEllipse(UsuallyCellColor, 
-                            (CellSize * i) + CellMargin, 
-                            (CellSize * j) + CellMargin, 
-                            CellSize, 
+                        gfx.FillEllipse(
+                            SelectBrushForInLayer(miniColumn.Key, cell.Key),
+                            (CellSize * i) + CellMargin,
+                            (CellSize * j) + CellMargin,
+                            CellSize,
                             CellSize);
                         j++;
                     }
                     i++;
                 }
 
-                InLayerCells = BmpImageFromBmp(bmp);
+                InLayerCells = BitmapImageImageFromBitmap(bmp);
             });
         }
 
-        private BitmapImage BmpImageFromBmp(Bitmap bmp)
+        private SolidBrush SelectBrushForInLayer(int miniColumnKey, int cellKey)
+        {
+            if (PredictInLayer.TryGetValue(miniColumnKey, out Dictionary<int, Dendrites>? value) && value.ContainsKey(cellKey))
+            {
+                if (ActiveInLayer.ContainsKey(miniColumnKey))
+                {
+                    return ActiveCellBrush;
+                }
+                else
+                {
+                    return PredictedCellBrush;
+                }
+            }
+            else
+            {
+                return UsuallyCellBrush;
+            }
+        }
+
+
+        private BitmapImage BitmapImageImageFromBitmap(Bitmap bmp)
         {
             using (var memory = new System.IO.MemoryStream())
             {
@@ -170,11 +192,6 @@ namespace ThousandBrainsVisualisation.ViewModel
 
                 return bitmapImage;
             }
-        }
-
-        public MainWindowViewModel()
-        {
-
         }
     }
 }
