@@ -275,7 +275,7 @@ namespace ThousandBrainsVisualisation.BrainFiller
                     break;
 
                 case BrainFillerMode.FillActiveOutLayer:
-                    MainWindowViewModel.OutLayer = Map_OutLayer_Level_1;
+                    MainWindowViewModel.ActiveOutLayer = ActiveCellOutLayer;
                     break;
 
                 case BrainFillerMode.FillFeedForward:

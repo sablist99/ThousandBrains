@@ -9,13 +9,13 @@ namespace ThousandBrainsVisualisation.ViewModel
     {
         private readonly BrainModel Brain = new();
 
-        private const int CellSize = 15;
-        private const int CellMargin = 12;
+        private int ImageWidth;
+        private readonly int CellSize = 15;
+        private readonly int CellMargin = 12;
         private readonly SolidBrush UsuallyCellBrush = new(Color.Gray);
         private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
         private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
 
-        #region Brain OnPropertyChanged
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
             get => Brain.InLayer;
@@ -63,7 +63,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 if (value != null)
                 {
                     Brain.OutLayer = value;
-                    OnPropertyChanged();
+                    DrawOutCells();
                 };
             }
         }
@@ -76,7 +76,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 if (value != null)
                 {
                     Brain.ActiveOutLayer = value;
-                    OnPropertyChanged();
+                    DrawOutCells();
                 };
             }
         }
@@ -107,9 +107,6 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
-        #endregion
-
-
         private BitmapImage _inLayerCells = new();
         public BitmapImage InLayerCells
         {
@@ -124,12 +121,29 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
+        private BitmapImage _outLayerCells = new();
+        public BitmapImage OutLayerCells
+        {
+            get => _outLayerCells;
+            set
+            {
+                if (value != null)
+                {
+                    _outLayerCells = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        // TODO На текущий момент механизм отрисовки не универсальный. Значения подобраны так, чтобы корректно отображались 50 мини-колонок на экране 1920x1080
         private void DrawInCells()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                // Сохраняем ширину, чтобы остальные изображения были такими же
+                ImageWidth = InLayer.Count * CellSize + CellMargin * 2;
                 using var bmp = new Bitmap(
-                    InLayer.Count * CellSize + CellMargin * 2,
+                    ImageWidth,
                     InLayer.FirstOrDefault().Value.Count * CellSize + CellMargin * 2);
                 using var gfx = Graphics.FromImage(bmp);
 
@@ -156,6 +170,44 @@ namespace ThousandBrainsVisualisation.ViewModel
             });
         }
 
+        private void DrawOutCells()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                int cellsCount = OutLayer.Count;
+                int cellsInOneLineCount = (ImageWidth - CellMargin * 2) / CellSize;
+                int imageHeight = (cellsCount / cellsInOneLineCount) * CellSize + CellMargin * 2;
+                using var bmp = new Bitmap(
+                    ImageWidth,
+                    imageHeight + CellMargin * 2);
+                using var gfx = Graphics.FromImage(bmp);
+
+                gfx.Clear(Color.White);
+
+                int i = 0;
+                int j = 0;
+                foreach (var miniColumn in OutLayer.OrderBy(c => c.Key))
+                {
+                    int cellId = miniColumn.Value.Item1;
+                    if (i == cellsInOneLineCount)
+                    {
+                        i = 0;
+                        j++;
+                    }
+
+                    gfx.FillEllipse(
+                        SelectBrushForOutLayer(miniColumn.Key),
+                        (CellSize * i) + CellMargin,
+                        (CellSize * j) + CellMargin,
+                        CellSize,
+                        CellSize);
+                    i++;
+                }
+
+                OutLayerCells = BitmapImageImageFromBitmap(bmp);
+            });
+        }
+
         private SolidBrush SelectBrushForInLayer(int miniColumnKey, int cellKey)
         {
             if (PredictInLayer.TryGetValue(miniColumnKey, out Dictionary<int, Dendrites>? value) && value.ContainsKey(cellKey))
@@ -175,23 +227,33 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
-
-        private BitmapImage BitmapImageImageFromBitmap(Bitmap bmp)
+        private SolidBrush SelectBrushForOutLayer(int miniColumnKey)
         {
-            using (var memory = new System.IO.MemoryStream())
+            if (ActiveOutLayer.Contains(miniColumnKey))
             {
-                bmp.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
-
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                return bitmapImage;
+                return ActiveCellBrush;
             }
+            else
+            {
+                return UsuallyCellBrush;
+            }
+        }
+
+        private static BitmapImage BitmapImageImageFromBitmap(Bitmap bmp)
+        {
+            using var memory = new System.IO.MemoryStream();
+
+            bmp.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+            memory.Position = 0;
+
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memory;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
+            return bitmapImage;
         }
     }
 }

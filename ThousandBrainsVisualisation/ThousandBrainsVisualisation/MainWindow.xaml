@@ -20,7 +20,16 @@
                 <Border.Effect>
                     <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                 </Border.Effect>
-                <Image x:Name="InLayerView" Source="{Binding InLayerCells}" MaxWidth="{Binding InLayerCells.Width}"></Image>
+                <Image x:Name="InLayerView" Source="{Binding InLayerCells}" Stretch="None"></Image>
+            </Border>
+
+            <TextBlock>Выходной слой</TextBlock>
+
+            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                <Border.Effect>
+                    <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                </Border.Effect>
+                <Image x:Name="OutLayerView" Source="{Binding OutLayerCells}" Stretch="None"></Image>
             </Border>
         </StackPanel>
     </Grid>
