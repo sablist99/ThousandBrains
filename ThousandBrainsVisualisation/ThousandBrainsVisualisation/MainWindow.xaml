@@ -2,7 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid x:Name="MainGrid">
@@ -18,7 +20,7 @@
                 <Border.Effect>
                     <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                 </Border.Effect>
-                <ListBox x:Name="InLayerView" Height="100" ItemsSource="{Binding Ellipses}"></ListBox>
+                <Image x:Name="InLayerView" Source="{Binding InLayerCells}" MaxWidth="{Binding InLayerCells.Width}"></Image>
             </Border>
         </StackPanel>
     </Grid>

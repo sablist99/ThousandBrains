@@ -17,7 +17,7 @@
 -define(M, 16). % По статье - 16
 -define(D, 10). %
 -define(N_OUT, 512). % По статье - 4096
--define(N_EXT, 240). % По статье - 2400
+-define(N_EXT, 24). % По статье - 2400
 -define(S, 4). % По статье - 40
 -define(PERMANENCE_WEIGHT_BORDER, 0.35).
 -define(POTENTIAL_SYNAPSE_BORDER, 0.17).

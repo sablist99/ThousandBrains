@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using ThousandBrainsVisualisation.Logic;
 using ThousandBrainsVisualisation.ViewModel;
 
