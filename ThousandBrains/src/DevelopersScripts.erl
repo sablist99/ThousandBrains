@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([script_0/0, script_1/1, script_1_withHardCode/0, script_2/1, printGlobalData/0, printToFileThousandSynapses/0, script_3/0]).
+-export([script_0/0, script_1/1, script_1_withHardCode/0, script_2/1, printGlobalData/0, printToFileThousandSynapses/0, script_3/0, sendDataToVisualization/0]).
 
 % Инициализация синапсов во всех структурах
 script_0() ->
@@ -58,3 +58,7 @@ printGlobalData() ->
   'HelpFunctions':mapWriteToFile('InActiveLayer.tb', 'GlobalDataService':getInActiveCells()),
   'HelpFunctions':mapWriteToFile('InPredictedCells.tb', 'GlobalDataService':getInPredictedCells()),
   'HelpFunctions':listWriteToFile('OutActiveLayer.tb', 'GlobalDataService':getOutActiveCells()).
+
+% Отправка всех данных на модуль визуализации
+sendDataToVisualization() ->
+  'VisualisationSender':sendDataToVisualization().

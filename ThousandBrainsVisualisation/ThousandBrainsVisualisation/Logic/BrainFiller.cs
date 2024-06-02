@@ -6,7 +6,6 @@ namespace ThousandBrainsVisualisation.BrainFiller
 {
     public partial class BrainFiller(MainWindowViewModel mainWindowViewModel)
     {
-        // TODO Распределить код по регионам
         // TODO Добавить в каждом switch сообщение об ошибке, если попали в default 
 
         /*
@@ -17,7 +16,6 @@ namespace ThousandBrainsVisualisation.BrainFiller
          * класть данные в определенные словари
          */
 
-        private BrainModel Brain = new();
         private MainWindowViewModel MainWindowViewModel = mainWindowViewModel;
         private BrainFillerMode BrainFillerMode = BrainFillerMode.Wait;
         private DataStructureMode DataMode = DataStructureMode.None;
@@ -71,8 +69,10 @@ namespace ThousandBrainsVisualisation.BrainFiller
         // Структура FeedBack
         private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
 
+
         public void SendData(string? text)
         {
+
             // Отладочная строка для отображения полученных данных
             //MainWindowViewModel.SynchronizedText += text + "\n";
             switch (BrainFillerMode)
@@ -113,7 +113,7 @@ namespace ThousandBrainsVisualisation.BrainFiller
                             break;
 
                         case DataStructureMode.FeedMode:
-                            FeelFeed(text);
+                            FillFeed(text);
                             break;
 
                         default:
@@ -123,7 +123,283 @@ namespace ThousandBrainsVisualisation.BrainFiller
             }
         }
 
-        private void FeelFeed(string? text)
+        private void SetMode(string? text)
+        {
+            switch (text)
+            {
+                case InLayer:
+                    // Заполняем входной слой
+                    BrainFillerMode = BrainFillerMode.FillInLayer;
+                    break;
+
+                case OutLayer:
+                    // Заполняем вЫходной слой
+                    BrainFillerMode = BrainFillerMode.FillOutLayer;
+                    break;
+
+                case ActiveInLayer:
+                    // Заполняем активные клетки входного слоя
+                    BrainFillerMode = BrainFillerMode.FillActiveInLayer;
+                    break;
+
+                case ActiveOutLayer:
+                    // Заполняем активные клетки вЫходного слоя
+                    BrainFillerMode = BrainFillerMode.FillActiveOutLayer;
+                    break;
+
+                case PredictInLayer:
+                    // Заполняем предсказанные клетки входного слоя
+                    BrainFillerMode = BrainFillerMode.FillPredictInLayer;
+                    break;
+
+                case FeedForward:
+                    // Заполняем связь входного слоя с выходным
+                    BrainFillerMode = BrainFillerMode.FillFeedForward;
+                    break;
+
+                case FeedBack:
+                    // Заполняем связь выходного слоя с входным
+                    BrainFillerMode = BrainFillerMode.FillFeedBack;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void SetDataStructure(string? text)
+        {
+            switch (text)
+            {
+                case MapBegin:
+                    // Заполняем словарь/map/dictionary
+                    // Это может быть не первая логическая структура, поэтому надо запомнить, что заполняли ранее
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.MapMode;
+                    Map_CurrentLevel++;
+                    InitializeMap(Map_CurrentLevel);
+                    break;
+
+                case MapEnd:
+                    SaveMapValue();
+                    DataMode = DataStructureStack.Pop();
+                    Map_CurrentLevel--;
+                    break;
+
+
+                case ListBegin:
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.ListMode;
+                    InitializeList();
+                    break;
+
+                case ListEnd:
+                    SaveList();
+                    DataMode = DataStructureStack.Pop();
+                    break;
+
+
+                case SynapseBegin:
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.SynapseMode;
+                    Synapse = new();
+                    break;
+
+                case SynapseEnd:
+                    SaveSynapse();
+                    DataMode = DataStructureStack.Pop();
+                    break;
+
+
+                case DendriteBegin:
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.DendriteMode;
+                    ActiveDendrites = new();
+                    break;
+
+                case DendriteEnd:
+                    SaveDendrite();
+                    DataMode = DataStructureStack.Pop();
+                    break;
+
+
+                case OutColumnBegin:
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.OutColumnMode;
+                    break;
+
+                case OutColumnEnd:
+                    DataMode = DataStructureStack.Pop();
+                    break;
+
+
+                case FeedBegin:
+                    DataStructureStack.Push(DataMode);
+                    DataMode = DataStructureMode.FeedMode;
+                    InitializeFeed();
+                    break;
+
+                case FeedEnd:
+                    DataMode = DataStructureStack.Pop();
+                    break;
+
+
+                case End:
+                    SendFilledStructure();
+                    BrainFillerMode = BrainFillerMode.Wait;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void SendFilledStructure()
+        {
+            switch (BrainFillerMode)
+            {
+                case BrainFillerMode.FillInLayer:
+                    MainWindowViewModel.InLayer = Map_InLayer_Level_1;
+                    break;
+
+                case BrainFillerMode.FillPredictInLayer:
+                    MainWindowViewModel.PredictInLayer = Map_PredictInLayer_Level_1;
+                    break;
+
+                case BrainFillerMode.FillActiveInLayer:
+                    MainWindowViewModel.ActiveInLayer = Map_ActiveInLayer_Level_1;
+                    break;
+
+                case BrainFillerMode.FillOutLayer:
+                    MainWindowViewModel.OutLayer = Map_OutLayer_Level_1;
+                    break;
+
+                case BrainFillerMode.FillActiveOutLayer:
+                    MainWindowViewModel.OutLayer = Map_OutLayer_Level_1;
+                    break;
+
+                case BrainFillerMode.FillFeedForward:
+                    MainWindowViewModel.FeedForwardSynapses = FeedForwardSynapses;
+                    break;
+
+                case BrainFillerMode.FillFeedBack:
+                    MainWindowViewModel.FeedBackSynapses = FeedBackSynapses;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        #region Initialize 
+
+        private void InitializeFeed()
+        {
+            FeedKey_1 = FeedKey_2 = FeedKey_3 = FeedKey_4 = null;
+        }
+
+        private void InitializeList()
+        {
+            switch (BrainFillerMode)
+            {
+                case BrainFillerMode.FillPredictInLayer:
+                    ActiveLateralDendrites = [];
+                    break;
+
+                case BrainFillerMode.FillActiveInLayer:
+                    ActiveCellsIds = [];
+                    break;
+
+                case BrainFillerMode.FillActiveOutLayer:
+                    ActiveCellOutLayer = [];
+                    break;
+            }
+        }
+
+        private void InitializeMap(int mapCurrentLevel)
+        {
+            switch (BrainFillerMode)
+            {
+                case BrainFillerMode.FillInLayer:
+                    switch (Map_CurrentLevel)
+                    {
+                        case 1:
+                            Map_InLayer_Level_1 = [];
+                            break;
+                        case 2:
+                            Map_InLayer_Level_2 = [];
+                            break;
+                        case 3:
+                            Map_InLayer_Level_3 = [];
+                            break;
+                        case 4:
+                            Map_InLayer_Level_4 = [];
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case BrainFillerMode.FillPredictInLayer:
+                    switch (Map_CurrentLevel)
+                    {
+                        case 1:
+                            Map_PredictInLayer_Level_1 = [];
+                            break;
+                        case 2:
+                            Map_PredictInLayer_Level_2 = [];
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case BrainFillerMode.FillActiveInLayer:
+                    switch (Map_CurrentLevel)
+                    {
+                        case 1:
+                            Map_ActiveInLayer_Level_1 = [];
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case BrainFillerMode.FillOutLayer:
+                    switch (Map_CurrentLevel)
+                    {
+                        case 1:
+                            Map_OutLayer_Level_1 = [];
+                            break;
+                        case 2:
+                            Map_OutLayer_Level_2 = [];
+                            break;
+                        case 3:
+                            Map_OutLayer_Level_3 = [];
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+
+                case BrainFillerMode.FillFeedForward:
+                    FeedForwardSynapses = [];
+                    break;
+
+                case BrainFillerMode.FillFeedBack:
+                    FeedBackSynapses = [];
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Fill
+
+        private void FillFeed(string? text)
         {
             bool isNumber = int.TryParse(text, out var number);
             if (isNumber)
@@ -150,7 +426,7 @@ namespace ThousandBrainsVisualisation.BrainFiller
                             {
                                 FeedKey_4 = number;
                             }
-                            
+
                         }
                     }
                 }
@@ -281,169 +557,9 @@ namespace ThousandBrainsVisualisation.BrainFiller
             }
         }
 
-        private void SaveMapKey(int number)
-        {
-            switch (BrainFillerMode)
-            {
-                case BrainFillerMode.FillInLayer:
-                    switch (Map_CurrentLevel)
-                    {
-                        case 1:
-                            MapKey_InLayer_Level_1 = number;
-                            break;
-                        case 2:
-                            MapKey_InLayer_Level_2 = number;
-                            break;
-                        case 3:
-                            MapKey_InLayer_Level_3 = number;
-                            break;
-                        case 4:
-                            MapKey_InLayer_Level_4 = number;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
+        #endregion
 
-                case BrainFillerMode.FillPredictInLayer:
-                    switch (Map_CurrentLevel)
-                    {
-                        case 1:
-                            MapKey_PredictInLayer_Level_1 = number;
-                            break;
-                        case 2:
-                            MapKey_PredictInLayer_Level_2 = number;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case BrainFillerMode.FillActiveInLayer:
-                    switch (Map_CurrentLevel)
-                    {
-                        case 1:
-                            MapKey_ActiveInLayer_Level_1 = number;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case BrainFillerMode.FillOutLayer:
-                    switch (Map_CurrentLevel)
-                    {
-                        case 1:
-                            MapKey_OutLayer_Level_1 = number;
-                            break;
-                        case 2:
-                            MapKey_OutLayer_Level_2 = number;
-                            break;
-                        case 3:
-                            MapKey_OutLayer_Level_3 = number;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        private void SetDataStructure(string? text)
-        {
-            switch (text)
-            {
-                case MapBegin:
-                    // Заполняем словарь/map/dictionary
-                    // Это может быть не первая логическая структура, поэтому надо запомнить, что заполняли ранее
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.MapMode;
-                    Map_CurrentLevel++;
-                    InitializeMap(Map_CurrentLevel);
-                    break;
-
-                case MapEnd:
-                    SaveMapValue();
-                    DataMode = DataStructureStack.Pop();
-                    Map_CurrentLevel--;
-                    break;
-
-
-                case ListBegin:
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.ListMode;
-                    InitializeList();
-                    break;
-
-                case ListEnd:
-                    SaveList();
-                    DataMode = DataStructureStack.Pop();
-                    break;
-
-
-                case SynapseBegin:
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.SynapseMode;
-                    Synapse = new();
-                    break;
-
-                case SynapseEnd:
-                    SaveSynapse();
-                    DataMode = DataStructureStack.Pop();
-                    break;
-
-
-                case DendriteBegin:
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.DendriteMode;
-                    ActiveDendrites = new();
-                    break;
-
-                case DendriteEnd:
-                    SaveDendrite();
-                    DataMode = DataStructureStack.Pop();
-                    break;
-
-
-                case OutColumnBegin:
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.OutColumnMode;
-                    break;
-
-                case OutColumnEnd:
-                    DataMode = DataStructureStack.Pop();
-                    break;
-
-
-                case FeedBegin:
-                    DataStructureStack.Push(DataMode);
-                    DataMode = DataStructureMode.FeedMode;
-                    InitializeFeed();
-                    break;
-
-                case FeedEnd:
-                    DataMode = DataStructureStack.Pop();
-                    break;
-
-
-                case End:
-                    BrainFillerMode = BrainFillerMode.Wait;
-                    break;
-
-
-                default:
-                    break;
-            }
-        }
-
-        private void InitializeFeed()
-        {
-            FeedKey_1 = FeedKey_2 = FeedKey_3 = FeedKey_4 = null;
-        }
-
+        #region Save
         private void SaveDendrite()
         {
             switch (BrainFillerMode)
@@ -541,25 +657,7 @@ namespace ThousandBrainsVisualisation.BrainFiller
             }
         }
 
-        private void InitializeList()
-        {
-            switch (BrainFillerMode)
-            {
-                case BrainFillerMode.FillPredictInLayer:
-                    ActiveLateralDendrites = [];
-                    break;
-
-                case BrainFillerMode.FillActiveInLayer:
-                    ActiveCellsIds = [];
-                    break;
-
-                case BrainFillerMode.FillActiveOutLayer:
-                    ActiveCellOutLayer = [];
-                    break;
-            }
-        }
-
-        private void InitializeMap(int mapCurrentLevel)
+        private void SaveMapKey(int number)
         {
             switch (BrainFillerMode)
             {
@@ -567,16 +665,16 @@ namespace ThousandBrainsVisualisation.BrainFiller
                     switch (Map_CurrentLevel)
                     {
                         case 1:
-                            Map_InLayer_Level_1 = [];
+                            MapKey_InLayer_Level_1 = number;
                             break;
                         case 2:
-                            Map_InLayer_Level_2 = [];
+                            MapKey_InLayer_Level_2 = number;
                             break;
                         case 3:
-                            Map_InLayer_Level_3 = [];
+                            MapKey_InLayer_Level_3 = number;
                             break;
                         case 4:
-                            Map_InLayer_Level_4 = [];
+                            MapKey_InLayer_Level_4 = number;
                             break;
                         default:
                             break;
@@ -587,10 +685,10 @@ namespace ThousandBrainsVisualisation.BrainFiller
                     switch (Map_CurrentLevel)
                     {
                         case 1:
-                            Map_PredictInLayer_Level_1 = [];
+                            MapKey_PredictInLayer_Level_1 = number;
                             break;
                         case 2:
-                            Map_PredictInLayer_Level_2 = [];
+                            MapKey_PredictInLayer_Level_2 = number;
                             break;
                         default:
                             break;
@@ -601,7 +699,7 @@ namespace ThousandBrainsVisualisation.BrainFiller
                     switch (Map_CurrentLevel)
                     {
                         case 1:
-                            Map_ActiveInLayer_Level_1 = [];
+                            MapKey_ActiveInLayer_Level_1 = number;
                             break;
                         default:
                             break;
@@ -612,75 +710,25 @@ namespace ThousandBrainsVisualisation.BrainFiller
                     switch (Map_CurrentLevel)
                     {
                         case 1:
-                            Map_OutLayer_Level_1 = [];
+                            MapKey_OutLayer_Level_1 = number;
                             break;
                         case 2:
-                            Map_OutLayer_Level_2 = [];
+                            MapKey_OutLayer_Level_2 = number;
                             break;
                         case 3:
-                            Map_OutLayer_Level_3 = [];
+                            MapKey_OutLayer_Level_3 = number;
                             break;
                         default:
                             break;
                     }
                     break;
 
-                case BrainFillerMode.FillFeedForward:
-                    FeedForwardSynapses = [];
-                    break;
-
-                case BrainFillerMode.FillFeedBack:
-                    FeedBackSynapses = [];
-                    break;
-
                 default:
                     break;
             }
         }
 
-        private void SetMode(string? text)
-        {
-            switch (text)
-            {
-                case InLayer:
-                    // Заполняем входной слой
-                    BrainFillerMode = BrainFillerMode.FillInLayer;
-                    break;
 
-                case OutLayer:
-                    // Заполняем вЫходной слой
-                    BrainFillerMode = BrainFillerMode.FillOutLayer;
-                    break;
-
-                case ActiveInLayer:
-                    // Заполняем активные клетки входного слоя
-                    BrainFillerMode = BrainFillerMode.FillActiveInLayer;
-                    break;
-
-                case ActiveOutLayer:
-                    // Заполняем активные клетки вЫходного слоя
-                    BrainFillerMode = BrainFillerMode.FillActiveOutLayer;
-                    break;
-
-                case PredictInLayer:
-                    // Заполняем предсказанные клетки входного слоя
-                    BrainFillerMode = BrainFillerMode.FillPredictInLayer;
-                    break;
-
-                case FeedForward:
-                    // Заполняем связь входного слоя с выходным
-                    BrainFillerMode = BrainFillerMode.FillFeedForward;
-                    break;
-
-                case FeedBack:
-                    // Заполняем связь выходного слоя с входным
-                    BrainFillerMode = BrainFillerMode.FillFeedBack;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
+        #endregion
     }
 }

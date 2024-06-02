@@ -8,6 +8,8 @@
 %%%-------------------------------------------------------------------
 -author("Potap").
 
+% TODO Разнести define по разным файлам
+
 -record(synapse, {guid, permanenceValue, permanenceWeight :: boolean()}).
 
 -define(N_C, 1).
@@ -35,6 +37,9 @@
 -define(P_OUT_PLUS, 0.5).
 -define(P_OUT_MINUS, 0.1).
 
+-define(IP_ADDRESS, {127, 0, 0, 1}).
+-define(PORT, 8888).
+
 
 -define(InActiveCells, inActiveCells).
 -define(InPredictedCells, inPredictedCells).
@@ -53,4 +58,34 @@
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
 -define(ID, id).
 
+
 -define(FileDirectory, "tmp/").
+
+
+-define(StructureName_InLayer, "InLayer").
+-define(StructureName_PredictInLayer, "PredictInLayer").
+-define(StructureName_ActiveInLayer, "ActiveInLayer").
+-define(StructureName_OutLayer, "OutLayer").
+-define(StructureName_ActiveOutLayer, "ActiveOutLayer").
+-define(StructureName_FeedForward, "FeedForward").
+-define(StructureName_FeedBack, "FeedBack").
+-define(StructureEnd, "END").
+
+-define(MarkerMapBegin, "MapBegin").
+-define(MarkerMapEnd, "MapEnd").
+-define(MarkerListBegin, "ListBegin").
+-define(MarkerListEnd, "ListEnd").
+-define(MarkerDendriteBegin, "DendriteBegin").
+-define(MarkerDendriteEnd, "DendriteEnd").
+-define(MarkerSynapseBegin, "SynapseBegin").
+-define(MarkerSynapseEnd, "SynapseEnd").
+-define(MarkerFeedBegin, "FeedBegin").
+-define(MarkerFeedEnd, "FeedEnd").
+-define(MarkerOutColumnBegin, "OutColumnBegin").
+-define(MarkerOutColumnEnd, "OutColumnEnd").
+-define(MarkerUndefined, "UNDEFINED").
+-define(MarkerFalse, "false").
+
+-define(TrueString, "true").
+-define(FalseString, "false").
+

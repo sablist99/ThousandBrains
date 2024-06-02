@@ -10,18 +10,18 @@
         public Dictionary<int,
                   Dictionary<int, Dendrites>> PredictInLayer;
 
-        private Dictionary<int,
+        public Dictionary<int,
                     List<int>> ActiveInLayer;
 
-        private Dictionary<int,
+        public Dictionary<int,
                     (int, Dictionary<int,
                              Dictionary<int, Synapse>>)> OutLayer;
 
-        private List<int> ActiveOutLayer;
+        public List<int> ActiveOutLayer;
 
-        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
+        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
 
-        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
+        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
 
         public BrainModel()
         {

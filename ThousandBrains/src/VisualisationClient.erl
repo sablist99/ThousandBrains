@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([sendInformMessage/2, sendSingleValue/2, sendFloatValue/2, sendBoolValue/2]).
+-export([sendInformMessage/2, sendIntegerValue/2, sendFloatValue/2, sendBoolValue/2]).
 -define(Port, 8888).
 
 % Создание сокета {ok, Socket} = gen_tcp:connect({127, 0, 0, 1}, 8888, [binary, {active,true}]).
@@ -18,7 +18,7 @@
 sendInformMessage(Socket, Message) ->
   gen_tcp:send(Socket, Message ++ "\n").
 
-sendSingleValue(Socket, Value) ->
+sendIntegerValue(Socket, Value) ->
   gen_tcp:send(Socket, integer_to_list(Value) ++ "\n").
 
 sendFloatValue(Socket, Value) ->

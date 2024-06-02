@@ -49,14 +49,15 @@ namespace ThousandBrainsVisualisation.Logic
                     }
                     catch (Exception e)
                     {
-                        Server.NextSymbol(e.Message);
+                        //Server.NextSymbol(e.Message);
                         break;
                     }
                 }
             }
             catch (Exception e)
             {
-                Server.NextSymbol(e.Message);
+                // TODO написать обработчик с всплывающим окном или другим визуальным отображением
+                //Server.NextSymbol(e.Message);
             }
             finally
             {
