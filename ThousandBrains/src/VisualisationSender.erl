@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([sendDataToVisualization/0]).
+-export([sendDataToVisualization/0, initializeSocket/0, sendInLayer/0]).
 
 -include("Model.hrl").
 
@@ -40,7 +40,15 @@ sendDataToVisualization() ->
   sendData(Socket, 'GlobalDataService':getFeedBack()),
   'VisualisationClient':sendInformMessage(Socket, ?StructureEnd).
 
+% TODO Написать прослойку для доступа к сокету + проверку на его существование
+initializeSocket() ->
+  {ok, Socket} = gen_tcp:connect(?IP_ADDRESS, ?PORT, [binary, {active, true}]),
+  put(socket, Socket).
 
+sendInLayer() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_InLayer),
+  sendData(get(socket), 'GlobalDataService':getInLayer()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
 
 sendData(Socket, Structure) ->
   if

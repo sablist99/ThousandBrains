@@ -23,6 +23,11 @@
 
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
 
+        public List<int> LocationSignal;
+
+        //TODO Реализовать передачу настроек мозга по TCP
+        public const int LocationSignalSize = 100;
+
         public BrainModel()
         {
             InLayer = [];
@@ -32,6 +37,7 @@
             ActiveOutLayer = [];
             FeedForwardSynapses = [];
             FeedBackSynapses = [];
+            LocationSignal = [];
         }
     }
 }
