@@ -3,19 +3,19 @@ using System.Net.Sockets;
 
 namespace ThousandBrainsVisualisation.Logic
 {
+    public delegate void SendDataEventHandler(string? text);
     public class Server
     {
-        public Server(BrainFiller.BrainFiller brainFiller)
+        public Server()
         {
-            TcpListener = new TcpListener(IPAddress.Any, 8888); ;
-            Clients = new List<ClientOnServerSide>();
-            BrainFiller = brainFiller;
+            TcpListener = new TcpListener(IPAddress.Any, 8888);
+            Clients = [];
         }
+
+        public event SendDataEventHandler SendData = delegate { };
 
         protected TcpListener TcpListener { get; set; }
         protected IList<ClientOnServerSide> Clients { get; set; }
-
-        private BrainFiller.BrainFiller BrainFiller { get; set; }
 
         public void RemoveConnection(Guid id)
         {
@@ -64,7 +64,7 @@ namespace ThousandBrainsVisualisation.Logic
 
         public void NextSymbol(string? text)
         {
-            BrainFiller.SendData(text);
+            SendData(text);
         }
     }
 }

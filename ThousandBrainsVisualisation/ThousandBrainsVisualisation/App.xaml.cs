@@ -1,7 +1,7 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
+using ThousandBrainsVisualisation.BrainFillerNS;
+using ThousandBrainsVisualisation.Logic;
+using ThousandBrainsVisualisation.Model;
 using ThousandBrainsVisualisation.ViewModel;
 
 namespace ThousandBrainsVisualisation
@@ -11,20 +11,35 @@ namespace ThousandBrainsVisualisation
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        private BrainModel Brain;
+        private MainWindowViewModel MainWindowViewModel;
+        private BrainFiller BrainFiller;
+        private Server Server;
+        public App()
         {
-            base.OnStartup(e);
+            Brain = new();
+            MainWindowViewModel = new(Brain);
+
+            Brain.UpdateInCells += MainWindowViewModel.DrawInCells;
+            Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
+
+            BrainFiller = new(Brain);
+            Server = new();
+
+            Server.SendData += SendData;
+            
+            Task.Run(() => Server.ListenAsync());
         }
 
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
+            MainWindow.DataContext = MainWindowViewModel;
         }
 
-        protected override void OnLoadCompleted(NavigationEventArgs e)
+        private void SendData(string? data)
         {
-            base.OnLoadCompleted(e);
+            BrainFiller.SendData(data);
         }
     }
-
 }

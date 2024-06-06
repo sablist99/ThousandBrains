@@ -27,3 +27,5 @@ https://habr.com/ru/articles/103114/
 https://habr.com/ru/articles/219967/
 
 https://ru.stackoverflow.com/questions/1154557/Вызывающим-потоком-должен-быть-sta-поскольку-этого-требуют-большинство-компонен
+
+https://habr.com/ru/articles/306590/

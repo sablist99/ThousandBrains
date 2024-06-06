@@ -1,10 +1,9 @@
 ﻿using System.Globalization;
 using ThousandBrainsVisualisation.Model;
-using ThousandBrainsVisualisation.ViewModel;
 
-namespace ThousandBrainsVisualisation.BrainFiller
+namespace ThousandBrainsVisualisation.BrainFillerNS
 {
-    public partial class BrainFiller(MainWindowViewModel mainWindowViewModel)
+    public partial class BrainFiller(BrainModel brain)
     {
         // TODO Добавить в каждом switch сообщение об ошибке, если попали в default 
 
@@ -16,13 +15,13 @@ namespace ThousandBrainsVisualisation.BrainFiller
          * класть данные в определенные словари
          */
 
-        private MainWindowViewModel MainWindowViewModel = mainWindowViewModel;
+        private BrainModel brain = brain;
         private BrainFillerMode BrainFillerMode = BrainFillerMode.Wait;
         private DataStructureMode DataMode = DataStructureMode.None;
         private Stack<DataStructureMode> DataStructureStack = new();
 
         private int Map_CurrentLevel = 0;
-        private Synapse Synapse;
+        private Synapse Synapse = new();
         private int? FeedKey_1;
         private int? FeedKey_2;
         private int? FeedKey_3;
@@ -33,41 +32,41 @@ namespace ThousandBrainsVisualisation.BrainFiller
         private int MapKey_InLayer_Level_2;
         private int MapKey_InLayer_Level_3;
         private int MapKey_InLayer_Level_4;
-        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> Map_InLayer_Level_1; // Колонки
-        private Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>> Map_InLayer_Level_2; // Клетки в колонке
-        private Dictionary<int, Dictionary<int, Synapse>> Map_InLayer_Level_3; // Дендриты
-        private Dictionary<int, Synapse> Map_InLayer_Level_4; // Синапсы
+        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> Map_InLayer_Level_1 = []; // Колонки
+        private Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>> Map_InLayer_Level_2 = []; // Клетки в колонке
+        private Dictionary<int, Dictionary<int, Synapse>> Map_InLayer_Level_3 = []; // Дендриты
+        private Dictionary<int, Synapse> Map_InLayer_Level_4 = []; // Синапсы
 
         // Структура PredictInLayer
         private int MapKey_PredictInLayer_Level_1;
         private int MapKey_PredictInLayer_Level_2;
-        private Dictionary<int, Dictionary<int, Dendrites>> Map_PredictInLayer_Level_1;
-        private Dictionary<int, Dendrites> Map_PredictInLayer_Level_2;
-        private List<int> ActiveLateralDendrites;
-        private Dendrites ActiveDendrites;
+        private Dictionary<int, Dictionary<int, Dendrites>> Map_PredictInLayer_Level_1 = [];
+        private Dictionary<int, Dendrites> Map_PredictInLayer_Level_2 = [];
+        private List<int> ActiveLateralDendrites = [];
+        private Dendrites ActiveDendrites = new();
 
         // Структура ActiveInLayer
         private int MapKey_ActiveInLayer_Level_1;
-        private Dictionary<int, List<int>> Map_ActiveInLayer_Level_1;
-        private List<int> ActiveCellsIds;
+        private Dictionary<int, List<int>> Map_ActiveInLayer_Level_1 = [];
+        private List<int> ActiveCellsIds = [];
 
         // Структура OutLayer
         private int MapKey_OutLayer_Level_1;
         private int MapKey_OutLayer_Level_2;
         private int MapKey_OutLayer_Level_3;
-        private Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> Map_OutLayer_Level_1;
+        private Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> Map_OutLayer_Level_1 = [];
         private int CellGuid_OutLayer;
-        private Dictionary<int, Dictionary<int, Synapse>> Map_OutLayer_Level_2;
-        private Dictionary<int, Synapse> Map_OutLayer_Level_3;
+        private Dictionary<int, Dictionary<int, Synapse>> Map_OutLayer_Level_2 = [];
+        private Dictionary<int, Synapse> Map_OutLayer_Level_3 = [];
 
         // Структура ActiveOutLayer
-        private List<int> ActiveCellOutLayer;
+        private List<int> ActiveCellOutLayer = [];
 
         // Структура FeedForward
-        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
+        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses = [];
 
         // Структура FeedBack
-        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
+        private Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses = [];
 
 
         public void SendData(string? text)
@@ -259,31 +258,31 @@ namespace ThousandBrainsVisualisation.BrainFiller
             switch (BrainFillerMode)
             {
                 case BrainFillerMode.FillInLayer:
-                    MainWindowViewModel.InLayer = Map_InLayer_Level_1;
+                    brain.InLayer = Map_InLayer_Level_1;
                     break;
 
                 case BrainFillerMode.FillPredictInLayer:
-                    MainWindowViewModel.PredictInLayer = Map_PredictInLayer_Level_1;
+                    brain.PredictInLayer = Map_PredictInLayer_Level_1;
                     break;
 
                 case BrainFillerMode.FillActiveInLayer:
-                    MainWindowViewModel.ActiveInLayer = Map_ActiveInLayer_Level_1;
+                    brain.ActiveInLayer = Map_ActiveInLayer_Level_1;
                     break;
 
                 case BrainFillerMode.FillOutLayer:
-                    MainWindowViewModel.OutLayer = Map_OutLayer_Level_1;
+                    brain.OutLayer = Map_OutLayer_Level_1;
                     break;
 
                 case BrainFillerMode.FillActiveOutLayer:
-                    MainWindowViewModel.ActiveOutLayer = ActiveCellOutLayer;
+                    brain.ActiveOutLayer = ActiveCellOutLayer;
                     break;
 
                 case BrainFillerMode.FillFeedForward:
-                    MainWindowViewModel.FeedForwardSynapses = FeedForwardSynapses;
+                    brain.FeedForwardSynapses = FeedForwardSynapses;
                     break;
 
                 case BrainFillerMode.FillFeedBack:
-                    MainWindowViewModel.FeedBackSynapses = FeedBackSynapses;
+                    brain.FeedBackSynapses = FeedBackSynapses;
                     break;
 
                 default:

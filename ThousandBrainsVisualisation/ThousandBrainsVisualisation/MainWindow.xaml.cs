@@ -1,6 +1,4 @@
 ﻿using System.Windows;
-using ThousandBrainsVisualisation.Logic;
-using ThousandBrainsVisualisation.ViewModel;
 
 namespace ThousandBrainsVisualisation
 {
@@ -12,17 +10,6 @@ namespace ThousandBrainsVisualisation
         public MainWindow()
         {
             InitializeComponent();
-            
-            MainWindowViewModel mainWindowViewModel = new();
-            DataContext = mainWindowViewModel;
-
-            BrainFiller.BrainFiller brainFiller = new(mainWindowViewModel);
-
-            Server server = new(brainFiller);
-            Task.Run(() => server.ListenAsync());
-
         }
-
-
     }
 }

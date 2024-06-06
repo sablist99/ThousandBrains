@@ -1,4 +1,4 @@
-﻿namespace ThousandBrainsVisualisation.BrainFiller
+﻿namespace ThousandBrainsVisualisation.BrainFillerNS
 {
     public partial class BrainFiller
     {

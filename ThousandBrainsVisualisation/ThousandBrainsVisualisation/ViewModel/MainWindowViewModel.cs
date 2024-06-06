@@ -1,15 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using ThousandBrainsVisualisation.Model;
 
 namespace ThousandBrainsVisualisation.ViewModel
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainWindowViewModel(BrainModel brain) : BaseViewModel
     {
-        private readonly BrainModel Brain = new();
-
+        private readonly BrainModel Brain = brain;
         private int ImageOutLayerWidth;
         private int ImageOutLayerHeight;
         private int CellsInOneLineCount = 1;
@@ -22,69 +20,30 @@ namespace ThousandBrainsVisualisation.ViewModel
         private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
         private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
 
+
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
             get => Brain.InLayer;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.InLayer = value;
-                    DrawInCells();
-                };
-            }
         }
 
         public Dictionary<int, Dictionary<int, Dendrites>> PredictInLayer
         {
             get => Brain.PredictInLayer;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.PredictInLayer = value;
-                    DrawInCells();
-                };
-            }
         }
 
         public Dictionary<int, List<int>> ActiveInLayer
         {
             get => Brain.ActiveInLayer;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.ActiveInLayer = value;
-                    DrawInCells();
-                };
-            }
         }
 
         public Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> OutLayer
         {
             get => Brain.OutLayer;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.OutLayer = value;
-                    DrawOutCells();
-                };
-            }
         }
 
         public List<int> ActiveOutLayer
         {
             get => Brain.ActiveOutLayer;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.ActiveOutLayer = value;
-                    DrawOutCells();
-                };
-            }
         }
 
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses
@@ -185,7 +144,8 @@ namespace ThousandBrainsVisualisation.ViewModel
         #endregion
 
         // TODO На текущий момент механизм отрисовки не универсальный. Значения подобраны так, чтобы корректно отображались 50 мини-колонок на экране 1920x1080
-        private void DrawInCells()
+        // TODO Обернуть в try/catch, потому что при неверной последовательности команд erlang клеток может не быть
+        public void DrawInCells()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -219,7 +179,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             });
         }
 
-        private void DrawOutCells()
+        public void DrawOutCells()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -391,7 +351,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             {
                 return updateDendritesCommand ??= new RelayCommand(obj =>
                 {
-                    UpdateDendrites(0, 4925);
+                    UpdateDendrites(1, 9948);
                 });
             }
         }

@@ -1,23 +1,78 @@
 ﻿namespace ThousandBrainsVisualisation.Model
 {
+    public delegate void UpdateInCellsEventHandler();
+    public delegate void UpdateOutCellsEventHandler();
     public class BrainModel
     {
-        public Dictionary<int,
-                  Dictionary<int,
-                    Dictionary<int,
-                        Dictionary<int, Synapse>>>> InLayer;
+        private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> inLayer;
+        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
+        {
+            get => inLayer;
+            set
+            {
+                if (value != null)
+                {
+                    inLayer = value;
+                    UpdateInCells();
+                };
+            }
+        }
 
-        public Dictionary<int,
-                  Dictionary<int, Dendrites>> PredictInLayer;
+        private Dictionary<int, Dictionary<int, Dendrites>> predictInLayer;
+        public Dictionary<int, Dictionary<int, Dendrites>> PredictInLayer
+        {
+            get => predictInLayer;
+            set
+            {
+                if (value != null)
+                {
+                    predictInLayer = value;
+                    UpdateInCells();
+                };
+            }
+        }
 
-        public Dictionary<int,
-                    List<int>> ActiveInLayer;
+        private Dictionary<int, List<int>> activeInLayer;
+        public Dictionary<int, List<int>> ActiveInLayer
+        {
+            get => activeInLayer;
+            set
+            {
+                if (value != null)
+                {
+                    activeInLayer = value;
+                    UpdateInCells();
+                };
+            }
+        }
 
-        public Dictionary<int,
-                    (int, Dictionary<int,
-                             Dictionary<int, Synapse>>)> OutLayer;
+        private Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> outLayer;
+        public Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> OutLayer
+        {
+            get => outLayer;
+            set
+            {
+                if (value != null)
+                {
+                    outLayer = value;
+                    UpdateOutCells();
+                };
+            }
+        }
 
-        public List<int> ActiveOutLayer;
+        private List<int> activeOutLayer;
+        public List<int> ActiveOutLayer
+        {
+            get => activeOutLayer;
+            set
+            {
+                if (value != null)
+                {
+                    activeOutLayer = value;
+                    UpdateOutCells();
+                };
+            }
+        }
 
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
 
@@ -28,13 +83,16 @@
         //TODO Реализовать передачу настроек мозга по TCP
         public const int LocationSignalSize = 100;
 
+        public event UpdateInCellsEventHandler UpdateInCells = delegate { };
+        public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
+
         public BrainModel()
         {
-            InLayer = [];
-            PredictInLayer = [];
-            ActiveInLayer = [];
-            OutLayer = [];
-            ActiveOutLayer = [];
+            inLayer = [];
+            predictInLayer = [];
+            activeInLayer = [];
+            outLayer = [];
+            activeOutLayer = [];
             FeedForwardSynapses = [];
             FeedBackSynapses = [];
             LocationSignal = [];
