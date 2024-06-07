@@ -4,14 +4,10 @@
 %%% @doc
 %%%
 %%% @end
-%%% Created : 14. май 2024 2:00
+%%% Created : 07. июнь 2024 22:29
 %%%-------------------------------------------------------------------
--module('Main').
+-module('ExternalAPI').
 -author("Potap").
 
 %% API
--export([main/0]).
-
-main() ->
-  'VisualisationClient':initializeSocket(),
-  'VisualisationClient':runReceiver().
+-export([]).

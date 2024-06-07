@@ -12,7 +12,7 @@
 %% API
 -export([getOutWinCells/0, getOutActiveCells/0]).
 
--include("Model.hrl").
+-include("Model/BrainSettings.hrl").
 
 % Описание алгоритма
 % Берем клетку выходного слоя. И для каждой такой клетки перебираем активные клетки входного слоя.

@@ -2,6 +2,9 @@
 {
     public delegate void UpdateInCellsEventHandler();
     public delegate void UpdateOutCellsEventHandler();
+    public delegate void UpdateLocationSignalEventHandler();
+    public delegate void UpdateNeedBrainInitializeEventHandler();
+
     public class BrainModel
     {
         private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> inLayer;
@@ -78,13 +81,41 @@
 
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
 
-        public List<int> LocationSignal;
+        private List<int> locationSignal = [];
+        public List<int> LocationSignal
+        {
+            get => locationSignal;
+            set
+            {
+                if (value != null)
+                {
+                    locationSignal = value;
+                    UpdateLocationSignal();
+                };
+            }
+        }
+
+        private bool needBrainInitialize = false;
+        public bool NeedBrainInitialize 
+        { 
+            get => needBrainInitialize; 
+            set 
+            {
+                needBrainInitialize = value;
+                if (value == true) 
+                { 
+                    UpdateNeedBrainInitialize(); 
+                }
+            } 
+        }
 
         //TODO Реализовать передачу настроек мозга по TCP
         public const int LocationSignalSize = 100;
 
         public event UpdateInCellsEventHandler UpdateInCells = delegate { };
         public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
+        public event UpdateLocationSignalEventHandler UpdateLocationSignal = delegate { };
+        public event UpdateNeedBrainInitializeEventHandler UpdateNeedBrainInitialize = delegate { };
 
         public BrainModel()
         {

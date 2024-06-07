@@ -14,7 +14,7 @@
   putAllOutCells/1, getAllOutCells/0, putFeedForward/1, getFeedForward/0, putFeedBack/1, getFeedBack/0,
   putInPredictedCells/1, getInPredictedCells/0, putOutActiveCells/1, getOutActiveCells/0, putInActiveCells/1, getInActiveCells/0, putOutPreviousActivation/1, getOutPreviousActivation/0]).
 
--include("Model.hrl").
+-include("Model/Model.hrl").
 
 % TODO Добавить общую проверку на undefined
 

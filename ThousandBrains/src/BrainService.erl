@@ -12,8 +12,6 @@
 %% API
 -export([initializeBrain/0, sendExternalSignal/1, sendFeedForwardSignal/1, getOutActiveCells/0]).
 
--include("Model.hrl").
-
 % Заполнение слоев синапсами, создание связей между синапсами
 initializeBrain() ->
   'BrainInit':initializeGlobalData().
@@ -24,7 +22,6 @@ sendExternalSignal(Signal) ->
   ok.
 
 % Отправка сенсорного (прямого) сигнала
-%
 sendFeedForwardSignal(Signal) ->
   'GlobalDataService':putInActiveCells('ActivateInCells':getActiveCells(Signal)),
   'GlobalDataService':putOutPreviousActivation('GlobalDataService':getOutActiveCells()),

@@ -4,14 +4,9 @@
 %%% @doc
 %%%
 %%% @end
-%%% Created : 14. май 2024 2:00
+%%% Created : 07. июнь 2024 22:34
 %%%-------------------------------------------------------------------
--module('Main').
 -author("Potap").
 
-%% API
--export([main/0]).
-
-main() ->
-  'VisualisationClient':initializeSocket(),
-  'VisualisationClient':runReceiver().
+-define(IP_ADDRESS, {127, 0, 0, 1}).
+-define(PORT, 8888).

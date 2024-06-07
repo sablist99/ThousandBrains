@@ -6,7 +6,8 @@
         xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel" 
         d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="845" Width="1700">
+        Title="MainWindow" Height="845" Width="1700"
+        IsEnabled="{Binding IsBusy}">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
@@ -23,6 +24,9 @@
     <StackPanel>
         <Menu Height="25" VerticalAlignment="Top">
             <MenuItem Header="Управление">
+                <MenuItem Header="Карта мозга" >
+                    <MenuItem Header="Инициализация" Command="{Binding BrainInitializeCommand}"></MenuItem>
+                </MenuItem>
                 <MenuItem Header="Сигнал местоположения" >
                     <MenuItem Header="Редактировать"></MenuItem>
                     <MenuItem Header="Отправить" Command="{Binding SendLocationSignalCommand}"></MenuItem>

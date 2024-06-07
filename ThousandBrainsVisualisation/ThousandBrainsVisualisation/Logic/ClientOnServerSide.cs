@@ -23,7 +23,7 @@ namespace ThousandBrainsVisualisation.Logic
             Writer = new StreamWriter(BinaryReader);
         }
 
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string? message)
         {
             await Writer.WriteLineAsync(message);
             await Writer.FlushAsync();

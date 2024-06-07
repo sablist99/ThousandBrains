@@ -22,12 +22,14 @@ namespace ThousandBrainsVisualisation
 
             Brain.UpdateInCells += MainWindowViewModel.DrawInCells;
             Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
+            Brain.UpdateLocationSignal += SendDataToClient;
+            Brain.UpdateNeedBrainInitialize += UpdateNeedBrainInitialize;
 
             BrainFiller = new(Brain);
             Server = new();
 
-            Server.SendData += SendData;
-            
+            Server.SendDataToApplication += SendDataToApplication;
+
             Task.Run(() => Server.ListenAsync());
         }
 
@@ -37,9 +39,25 @@ namespace ThousandBrainsVisualisation
             MainWindow.DataContext = MainWindowViewModel;
         }
 
-        private void SendData(string? data)
+        private void SendDataToApplication(string? data)
         {
             BrainFiller.SendData(data);
+        }
+
+        private void UpdateNeedBrainInitialize()
+        {
+            Server.SendDataToClient(BrainFiller.NeedBrainInitialize);
+            Brain.NeedBrainInitialize = false;
+        }
+
+        private void SendDataToClient()
+        {
+            Server.SendDataToClient(BrainFiller.LocationSignalBegin);
+            foreach (int i in Brain.LocationSignal)
+            {
+                Server.SendDataToClient(i.ToString());
+            }
+            Server.SendDataToClient(BrainFiller.LocationSignalEnd);
         }
     }
 }

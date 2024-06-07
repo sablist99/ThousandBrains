@@ -23,5 +23,9 @@
         private const string FeedEnd = "FeedEnd";
         private const string End = "END";
         private const string False = "false";
+
+        public const string LocationSignalBegin = "LocationSignalBegin";
+        public const string LocationSignalEnd = "LocationSignalEnd";
+        public const string NeedBrainInitialize = "NeedBrainInitialize";
     }
 }

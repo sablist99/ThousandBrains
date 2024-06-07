@@ -10,14 +10,16 @@
 -author("Potap").
 
 %% API
--export([sendDataToVisualization/0, initializeSocket/0, sendInLayer/0]).
+-export([sendDataToVisualization/0, sendInLayer/0, handleCommand/1]).
 
--include("Model.hrl").
+-include("Model/Commands.hrl").
+-include("Model/ServerSettings.hrl").
+-include("Model/Model.hrl").
 
 % TODO на каждую структуру создать отдельную функцию. Определиться с сохранением сокета
 
 sendDataToVisualization() ->
-  {ok, Socket} = gen_tcp:connect(?IP_ADDRESS, ?PORT, [binary, {active, true}]),
+  {ok, Socket} = gen_tcp:connect(?IP_ADDRESS, ?PORT, [binary, {active, false}]),
   'VisualisationClient':sendInformMessage(Socket, ?StructureName_InLayer),
   sendData(Socket, 'GlobalDataService':getInLayer()),
   'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
@@ -41,9 +43,15 @@ sendDataToVisualization() ->
   'VisualisationClient':sendInformMessage(Socket, ?StructureEnd).
 
 % TODO Написать прослойку для доступа к сокету + проверку на его существование
-initializeSocket() ->
-  {ok, Socket} = gen_tcp:connect(?IP_ADDRESS, ?PORT, [binary, {active, true}]),
-  put(socket, Socket).
+
+
+handleCommand(Command) ->
+  case Command of
+    ?NeedBrainInitialize ->
+      'BrainService':initializeBrain(),
+      sendInLayer();
+    _ -> error
+  end.
 
 sendInLayer() ->
   'VisualisationClient':sendInformMessage(get(socket), ?StructureName_InLayer),

@@ -9,7 +9,8 @@
 -module('BrainInit').
 -author("Potap").
 
--include("Model.hrl").
+-include("Model/BrainSettings.hrl").
+-include("Model/Model.hrl").
 
 %% API
 -export([initializeGlobalData/0, getSynapse/0]).

@@ -12,7 +12,8 @@
 %% API
 -export([getPredictedCellsInInputLayer/1, getPredictedCellsInOutputLayer/3]).
 
--include("Model.hrl").
+-include("Model/BrainSettings.hrl").
+-include("Model/Model.hrl").
 
 % В этой функции определяется есть ли на дендрите достаточное количество синапсов, соответствующих входному сигналу
 % Первый аргумент - Входной сигнал (L - для входного слоя, Выходной слой - для выходного слоя)

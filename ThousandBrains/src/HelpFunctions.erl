@@ -12,7 +12,8 @@
 %% API
 -export([mapWriteToFile/2, listWriteToFile/2]).
 
--include("Model.hrl").
+-include("Model/ProjectSettings.hrl").
+-include("Model/Model.hrl").
 
 % Функция вывода Map в файл с заданным именем
 % TODO Рассмотреть идею - сначала формировать большую строку, а затем разом писать ее в файл

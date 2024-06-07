@@ -12,8 +12,6 @@
 %% API
 -export([getActiveCells/1]).
 
--include("Model.hrl").
-
 % Получение списка Guid всех клеток из мапы (из мини-колонки) через итератор
 % Iterator - итератор для перебора клеток
 % ActiveCells - out переменная, список Guid активных клеток

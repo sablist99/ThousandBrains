@@ -9,7 +9,8 @@
 -module('MyMath').
 -author("Potap").
 
--include("Model.hrl").
+-include("Model/BrainSettings.hrl").
+-include("Model/Model.hrl").
 
 %% API
 -export([getPoissonValue/0, getId/0, getGuid/0]).

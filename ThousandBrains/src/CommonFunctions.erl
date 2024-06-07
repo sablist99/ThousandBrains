@@ -15,7 +15,7 @@
   existActiveApicalDendriteByRanges/1, existSynapseBetweenLayersByRanges/3, findSynapseInMapByFRTG/3,
   findSynapseInMapByFRTR/3, existSynapseBetweenLayersByFRTG/3, existSynapseBetweenLayersByFGTR/3]).
 
--include("Model.hrl").
+-include("Model/Model.hrl").
 
 % Проверка существования синапса
 existSynapseInMap(Range, SynapsesMap) ->

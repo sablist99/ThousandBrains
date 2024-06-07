@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace ThousandBrainsVisualisation.Logic
 {
-    public delegate void SendDataEventHandler(string? text);
+    public delegate void SendDataToApplicationEventHandler(string? text);
     public class Server
     {
         public Server()
@@ -12,7 +12,7 @@ namespace ThousandBrainsVisualisation.Logic
             Clients = [];
         }
 
-        public event SendDataEventHandler SendData = delegate { };
+        public event SendDataToApplicationEventHandler SendDataToApplication = delegate { };
 
         protected TcpListener TcpListener { get; set; }
         protected IList<ClientOnServerSide> Clients { get; set; }
@@ -62,9 +62,17 @@ namespace ThousandBrainsVisualisation.Logic
             }
         }
 
+        public async Task SendDataToClient(string? data)
+        {
+            foreach(var client in Clients)
+            {
+                await client.SendMessage(data);
+            }
+        }
+
         public void NextSymbol(string? text)
         {
-            SendData(text);
+            SendDataToApplication(text);
         }
     }
 }

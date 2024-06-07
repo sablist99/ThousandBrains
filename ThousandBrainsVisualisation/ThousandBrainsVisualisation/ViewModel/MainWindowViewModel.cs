@@ -20,7 +20,17 @@ namespace ThousandBrainsVisualisation.ViewModel
         private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
         private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
 
-
+        private bool _isBusy = true;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+            }
+        }
+        
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
             get => Brain.InLayer;
@@ -351,7 +361,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             {
                 return updateDendritesCommand ??= new RelayCommand(obj =>
                 {
-                    UpdateDendrites(1, 9948);
+                    UpdateDendrites(0, 1516);
                 });
             }
         }
@@ -368,9 +378,21 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
+        private RelayCommand? brainInitializeCommand;
+        public RelayCommand BrainInitializeCommand
+        {
+            get
+            {
+                return brainInitializeCommand ??= new RelayCommand(obj =>
+                {
+                    Brain.NeedBrainInitialize = true;
+                });
+            }
+        }
+
         private void SendLocationSignal()
         {
-            throw new NotImplementedException();
+            Brain.LocationSignal = [1, 2, 3, 4, 5, 6, 7];
         }
     }
 }
