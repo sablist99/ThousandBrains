@@ -9,6 +9,7 @@
 
     public class BrainModel
     {
+        #region Data
         private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> inLayer;
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
@@ -88,8 +89,9 @@
 
 
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
+        #endregion Data
 
-
+        #region ExternalData
         private List<int> locationSignal = [];
         public List<int> LocationSignal
         {
@@ -117,8 +119,9 @@
                 };
             }
         }
+        #endregion
 
-
+        #region VM data
         private bool needBrainInitialize = false;
         public bool NeedBrainInitialize
         {
@@ -146,6 +149,19 @@
                 }
             }
         }
+        #endregion
+
+        public bool HasActiveLateralDendrite(int miniColumnKey, int cellKey, int dendriteKey) => PredictInLayer.ContainsKey(miniColumnKey) 
+                                                                                            && PredictInLayer[miniColumnKey].ContainsKey(cellKey)
+                                                                                            && PredictInLayer[miniColumnKey][cellKey].ActiveLateralDendrites.Contains(dendriteKey);
+
+        //TODO Добавить условия
+        public int GetExistSynapseCountInDendrite(int miniColumnKey, int cellKey, int dendriteKey) => InLayer[miniColumnKey][cellKey][dendriteKey].Where(s => s.Value.Weight == true).Count();
+        public int GetActiveSynapseCountInDendrite(int miniColumnKey, int cellKey, int dendriteKey) => InLayer[miniColumnKey][cellKey][dendriteKey].Where(s => s.Value.Weight == true && LocationSignal.Contains(s.Key)).Count();
+
+        public bool IsActiveCellInLayer(int miniColumnKey, int cellKey) => ActiveInLayer.ContainsKey(miniColumnKey) && ActiveInLayer[miniColumnKey].Contains(cellKey);
+        public bool IsPredictCellInLayer(int miniColumnKey, int cellKey) => PredictInLayer.ContainsKey(miniColumnKey) && PredictInLayer[miniColumnKey].ContainsKey(cellKey);
+        public bool IsActiveCellOutLayer(int miniColumnKey) => ActiveOutLayer.Contains(miniColumnKey);
 
         //TODO Реализовать передачу настроек мозга по TCP
         public const int LocationSignalSize = 100;

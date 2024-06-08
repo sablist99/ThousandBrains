@@ -42,6 +42,8 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
+        private Tuple<int, int>? selectedCell;
+
         #region Model
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
@@ -198,6 +200,16 @@ namespace ThousandBrainsVisualisation.ViewModel
                     i++;
                 }
 
+                if (selectedCell != null)
+                {
+                    gfx.DrawEllipse(
+                        new Pen(Color.Black, 1),
+                        (CellSize * selectedCell.Item1) + CellMargin,
+                        (CellSize * selectedCell.Item2) + CellMargin,
+                        CellSize,
+                        CellSize);
+                }
+
                 InLayerCells = BitmapImageImageFromBitmap(bmp);
             });
         }
@@ -237,18 +249,26 @@ namespace ThousandBrainsVisualisation.ViewModel
             });
         }
 
-        private void UpdateDendrites(int miniColumnKey, int cellKey)
+        public void SelectCell(int x, int y)
         {
+            int miniColumnKey = (x - CellMargin) / CellSize;
+            int cellIndex = (y - CellMargin) / CellSize;
             BasalDendrites = [];
-            // Пренебрегаем проверкой на наличие ключей
-            foreach (var dendrite in InLayer.GetValueOrDefault(miniColumnKey).GetValueOrDefault(cellKey).OrderBy(d => d.Key))
+            if (InLayer.ContainsKey(miniColumnKey) && InLayer[miniColumnKey].Count >= cellIndex)
             {
-                BasalDendrites.Add(
-                    new DendriteView()
-                    {
-                        Info = GetDendriteInfo(miniColumnKey, cellKey, dendrite.Key),
-                        Image = GetDentriteImage(miniColumnKey, dendrite.Value)
-                    });
+                // Этот замут нужен для того, чтобы обратиться к клетке не по ID, а по порядковому номеру, который соответствует выводу на картинке
+                var cell = InLayer[miniColumnKey].OrderBy(c => c.Key).ToList().ElementAt(cellIndex);
+                selectedCell = new Tuple<int, int>(miniColumnKey, cellIndex);
+                DrawInCells();
+                foreach (var dendrite in cell.Value.OrderBy(d => d.Key))
+                {
+                    BasalDendrites.Add(
+                        new DendriteView()
+                        {
+                            Info = GetDendriteInfo(miniColumnKey, cell.Key, dendrite.Key),
+                            Image = GetDentriteImage(miniColumnKey, cell.Key, dendrite.Key, dendrite.Value)
+                        });
+                }
             }
         }
 
@@ -256,15 +276,14 @@ namespace ThousandBrainsVisualisation.ViewModel
         {
             string result = string.Empty;
 
-            Dictionary<int, Synapse> dendrite = InLayer[miniColumnKey][cellKey][dendriteKey];
-
-            result += "Активность: " + (PredictInLayer[miniColumnKey][cellKey].ActiveLateralDendrites.Contains(dendriteKey) ? "Да " : "Нет ");
-            result += "Количество активных синапсов: " + dendrite.Where(s => s.Value.Weight == true).Count();
+            result += "Активность: " + (Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey) ? "Да " : "Нет ");
+            result += "Количество существующих синапсов: " + Brain.GetExistSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
+            result += "Количество активных синапсов: " + Brain.GetActiveSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
 
             return result;
         }
 
-        private BitmapImage GetDentriteImage(int miniColumnKey, Dictionary<int, Synapse> dendrite)
+        private BitmapImage GetDentriteImage(int miniColumnKey, int cellKey, int dendriteKey, Dictionary<int, Synapse> dendrite)
         {
             int ImageDendriteHeight = (int)Math.Ceiling((decimal)BrainModel.LocationSignalSize / CellsInOneLineCount) * CellSize + CellMargin * 2;
             using var bmp = new Bitmap(ImageOutLayerWidth, ImageDendriteHeight);
@@ -285,7 +304,7 @@ namespace ThousandBrainsVisualisation.ViewModel
 
                 dendrite.TryGetValue(s, out Synapse? synapse);
                 gfx.FillEllipse(
-                    SelectBrushForDendrite(miniColumnKey, synapse),
+                    SelectBrushForDendrite(synapse, s),
                     (CellSize * i) + CellMargin,
                     (CellSize * j) + CellMargin,
                     CellSize,
@@ -293,18 +312,26 @@ namespace ThousandBrainsVisualisation.ViewModel
                 i++;
             }
 
+            // Todo Разобраться с повторяющимся вызовом
+            if (Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey))
+            {
+                gfx.DrawRectangle(
+                    new Pen(Color.Green, 3),
+                    1, 1, ImageOutLayerWidth-3, ImageDendriteHeight-3);
+            }
+
             return BitmapImageImageFromBitmap(bmp);
         }
 
         private SolidBrush SelectBrushForInLayer(int miniColumnKey, int cellKey)
         {
-            if (ActiveInLayer.ContainsKey(miniColumnKey) && ActiveInLayer[miniColumnKey].Contains(cellKey))
+            if (Brain.IsActiveCellInLayer(miniColumnKey, cellKey))
             {
                 return ActiveCellBrush;
             }
             else
             {
-                if (PredictInLayer.ContainsKey(miniColumnKey) && PredictInLayer[miniColumnKey].ContainsKey(cellKey))
+                if (Brain.IsPredictCellInLayer(miniColumnKey, cellKey))
                 {
                     return PredictedCellBrush;
                 }
@@ -315,7 +342,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
-        private SolidBrush SelectBrushForDendrite(int miniColumnKey, Synapse? synapse)
+        private SolidBrush SelectBrushForDendrite(Synapse? synapse, int indexInLocation)
         {
             if (synapse == null)
             {
@@ -323,7 +350,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
             if (synapse.Weight)
             {
-                if (LocationSignal.Contains(miniColumnKey))
+                if (LocationSignal.Contains(indexInLocation))
                 {
                     return ActiveCellBrush;
                 }
@@ -340,7 +367,7 @@ namespace ThousandBrainsVisualisation.ViewModel
 
         private SolidBrush SelectBrushForOutLayer(int miniColumnKey)
         {
-            if (ActiveOutLayer.Contains(miniColumnKey))
+            if (Brain.IsActiveCellOutLayer(miniColumnKey))
             {
                 return ActiveCellBrush;
             }
@@ -367,18 +394,6 @@ namespace ThousandBrainsVisualisation.ViewModel
             return bitmapImage;
         }
 
-
-        private RelayCommand? updateDendritesCommand;
-        public RelayCommand UpdateDendritesCommand
-        {
-            get
-            {
-                return updateDendritesCommand ??= new RelayCommand(obj =>
-                {
-                    UpdateDendrites(0, 1516);
-                });
-            }
-        }
 
         private RelayCommand? brainInitializeCommand;
         public RelayCommand BrainInitializeCommand

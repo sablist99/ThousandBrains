@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ThousandBrainsVisualisation.ViewModel;
 
 namespace ThousandBrainsVisualisation
 {
@@ -10,6 +11,12 @@ namespace ThousandBrainsVisualisation
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void InLayerViewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(InLayerView);
+           ((MainWindowViewModel)DataContext).SelectCell((int)p.X, (int)p.Y);
         }
     }
 }
