@@ -20,9 +20,12 @@
 -define(MarkerFeedEnd, "FeedEnd").
 -define(MarkerOutColumnBegin, "OutColumnBegin").
 -define(MarkerOutColumnEnd, "OutColumnEnd").
--define(NeedBrainInitialize, "NeedBrainInitialize").
 -define(MarkerUndefined, "UNDEFINED").
 -define(MarkerFalse, "false").
+
+-define(NeedBrainInitialize, "NeedBrainInitialize").
+-define(LocationSignalBegin, "LocationSignalBegin").
+-define(LocationSignalEnd, "LocationSignalEnd").
 
 -define(StructureName_InLayer, "InLayer").
 -define(StructureName_PredictInLayer, "PredictInLayer").

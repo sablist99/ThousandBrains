@@ -24,5 +24,7 @@
 -define(AllInCells, allInCells).
 -define(AllOutCells, allOutCells).
 
+-define(LocationSignal, locationSignal).
+
 -define(NoActiveApicalDendrite, noActiveApicalDendrite).
 -define(ID, id).

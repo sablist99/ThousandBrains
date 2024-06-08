@@ -12,9 +12,12 @@
 %% API
 -export([putInLayer/1, getInLayer/0, putOutLayer/1, getOutLayer/0, putAllInCells/1, getAllInCells/0,
   putAllOutCells/1, getAllOutCells/0, putFeedForward/1, getFeedForward/0, putFeedBack/1, getFeedBack/0,
-  putInPredictedCells/1, getInPredictedCells/0, putOutActiveCells/1, getOutActiveCells/0, putInActiveCells/1, getInActiveCells/0, putOutPreviousActivation/1, getOutPreviousActivation/0]).
+  putInPredictedCells/1, getInPredictedCells/0, putOutActiveCells/1, getOutActiveCells/0, putInActiveCells/1,
+  getInActiveCells/0, putOutPreviousActivation/1, getOutPreviousActivation/0, putSenderMode/1, getSenderMode/0,
+  putLocationSignal/1, getLocationSignal/0, appendLocationSignal/1]).
 
 -include("Model/Model.hrl").
+-include("Model/SenderMode.hrl").
 
 % TODO Добавить общую проверку на undefined
 
@@ -95,3 +98,22 @@ putOutPreviousActivation(OutActiveCells) ->
 
 getOutPreviousActivation()->
   get(?OutPreviousActivation).
+
+
+
+putSenderMode(Mode) ->
+  put(?SenderMode, Mode).
+
+getSenderMode()->
+  get(?SenderMode).
+
+
+
+putLocationSignal(LocationSignal) ->
+  put(?LocationSignal, LocationSignal).
+
+getLocationSignal() ->
+  get(?LocationSignal).
+
+appendLocationSignal(Signal) ->
+  put(?LocationSignal, lists:append(getLocationSignal(), [Signal])).

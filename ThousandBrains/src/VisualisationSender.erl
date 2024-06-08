@@ -10,11 +10,12 @@
 -author("Potap").
 
 %% API
--export([sendDataToVisualization/0, sendInLayer/0, handleCommand/1]).
+-export([sendDataToVisualization/0, handleCommand/1]).
 
 -include("Model/Commands.hrl").
--include("Model/ServerSettings.hrl").
 -include("Model/Model.hrl").
+-include("Model/SenderMode.hrl").
+-include("Model/ServerSettings.hrl").
 
 % TODO на каждую структуру создать отдельную функцию. Определиться с сохранением сокета
 
@@ -46,17 +47,46 @@ sendDataToVisualization() ->
 
 
 handleCommand(Command) ->
-  case Command of
-    ?NeedBrainInitialize ->
-      'BrainService':initializeBrain(),
-      sendInLayer();
-    _ -> error
+  % Если нам прислали число, то определяем для чего оно пришло. Иначе это буквенная команда
+  case 'HelpFunctions':getIntegerFromString(Command) of
+    false ->
+      case Command of
+        ?NeedBrainInitialize ->
+          'BrainService':initializeBrain(),
+          sendInLayer();
+        ?LocationSignalBegin ->
+          % Устанавливаем режим для распознавания чисел и обнуляем старый сигнал
+          'GlobalDataService':putSenderMode(?LocationSignalMode),
+          'GlobalDataService':putLocationSignal([]);
+        ?LocationSignalEnd ->
+          % Сбрасываем режим, отправляем сигнал мозгу и данные в модуль визуализации
+          'GlobalDataService':putSenderMode(?NoneSenderMode),
+          'BrainService':sendExternalSignal('GlobalDataService':getLocationSignal()),
+          'GlobalDataService':getInPredictedCells(),
+          sendPredictInLayer();
+        _ -> error
+      end;
+    % У нас число
+    _ ->
+      case 'GlobalDataService':getSenderMode() of
+        % Заполняем сигнал местоположения
+        ?LocationSignalMode ->
+          'GlobalDataService':appendLocationSignal('HelpFunctions':getIntegerFromString(Command));
+        _ -> error
+      end
   end.
 
 sendInLayer() ->
   'VisualisationClient':sendInformMessage(get(socket), ?StructureName_InLayer),
   sendData(get(socket), 'GlobalDataService':getInLayer()),
   'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+sendPredictInLayer() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_PredictInLayer),
+  sendData(get(socket), 'GlobalDataService':getInPredictedCells()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+
 
 sendData(Socket, Structure) ->
   if

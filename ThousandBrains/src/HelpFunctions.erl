@@ -10,7 +10,7 @@
 -author("Potap").
 
 %% API
--export([mapWriteToFile/2, listWriteToFile/2]).
+-export([mapWriteToFile/2, listWriteToFile/2, getIntegerFromString/1]).
 
 -include("Model/ProjectSettings.hrl").
 -include("Model/Model.hrl").
@@ -36,3 +36,19 @@ listWriteToFile(File, List) ->
       file:write_file(?FileDirectory ++ File, io_lib:fwrite("~p\n", [Value]), [append])
     end, List),
   file:close(S).
+
+% Функция получает на вход строку.
+% Если получилось преобразовать в число, то вернет это число.
+% Иначе вернет false
+getIntegerFromString(X) ->
+  case string:to_integer(X) of
+    {A, B} ->
+      if
+        % Если получилось распарсить и такм не оказалось посторонних символов
+        length(B) == 0 -> A;
+        % Если есть мусор, то это не число
+        true -> false
+      end;
+    % Не получилось распарсить
+    _ -> false
+  end.

@@ -13,7 +13,7 @@
 -include("Model/Model.hrl").
 
 %% API
--export([initializeGlobalData/0, getSynapse/0]).
+-export([initializeGlobalData/0, getSynapse/0, getInLayer/0]).
 
 
 % Определение наличия связи в зависимости от поргового значения
