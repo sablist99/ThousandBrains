@@ -2,8 +2,10 @@
 {
     public delegate void UpdateInCellsEventHandler();
     public delegate void UpdateOutCellsEventHandler();
-    public delegate void UpdateLocationSignalEventHandler();
-    public delegate void UpdateNeedBrainInitializeEventHandler();
+    public delegate void SendLocationSignalEventHandler();
+    public delegate void SendSensorySignalEventHandler();
+    public delegate void SetNeedBrainInitializeEventHandler();
+    public delegate void SetNeedBrainPrintEventHandler();
 
     public class BrainModel
     {
@@ -97,7 +99,21 @@
                 if (value != null)
                 {
                     locationSignal = value;
-                    UpdateLocationSignal();
+                    SendLocationSignal();
+                };
+            }
+        }
+
+        private List<int> sensorySignal = [];
+        public List<int> SensorySignal
+        {
+            get => sensorySignal;
+            set
+            {
+                if (value != null)
+                {
+                    sensorySignal = value;
+                    SendSensorySignal();
                 };
             }
         }
@@ -112,7 +128,21 @@
                 needBrainInitialize = value;
                 if (value == true)
                 {
-                    UpdateNeedBrainInitialize();
+                    SetNeedBrainInitialize();
+                }
+            }
+        }
+
+        private bool needBrainPrint = false;
+        public bool NeedBrainPrint
+        {
+            get => needBrainPrint;
+            set
+            {
+                needBrainPrint = value;
+                if (value == true)
+                {
+                    SetNeedBrainPrint();
                 }
             }
         }
@@ -122,8 +152,10 @@
 
         public event UpdateInCellsEventHandler UpdateInCells = delegate { };
         public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
-        public event UpdateLocationSignalEventHandler UpdateLocationSignal = delegate { };
-        public event UpdateNeedBrainInitializeEventHandler UpdateNeedBrainInitialize = delegate { };
+        public event SendLocationSignalEventHandler SendLocationSignal = delegate { };
+        public event SendSensorySignalEventHandler SendSensorySignal = delegate { };
+        public event SetNeedBrainInitializeEventHandler SetNeedBrainInitialize = delegate { };
+        public event SetNeedBrainInitializeEventHandler SetNeedBrainPrint = delegate { };
         
         public BrainModel()
         {

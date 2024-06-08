@@ -19,20 +19,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:BrushColorConverter x:Key="ColorConverter"/>
     </Window.Resources>
-    
+
     <Grid>
         <StackPanel>
             <Menu Height="25" VerticalAlignment="Top">
                 <MenuItem Header="Управление">
-                    <MenuItem Header="Карта мозга" >
+                    <MenuItem Header="Кортикальная колонка" >
                         <MenuItem Header="Инициализация" Command="{Binding BrainInitializeCommand}"></MenuItem>
+                        <MenuItem Header="Вывод в файл" Command="{Binding BrainPrintCommand}"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Сигнал местоположения" >
                         <MenuItem Header="Редактировать"></MenuItem>
                         <MenuItem Header="Отправить" Command="{Binding SendLocationSignalCommand}"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Сенсорный сигнал" >
+                        <MenuItem Header="Редактировать"></MenuItem>
+                        <MenuItem Header="Отправить" Command="{Binding SendSensorySignalCommand}"></MenuItem>
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="Выход" ></MenuItem>
@@ -46,6 +52,17 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="10 10 10 10">
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                        <TextBlock Margin="0 0 10 0">Активное подключение</TextBlock>
+                        
+                        <Ellipse Width="10" Height="10" HorizontalAlignment="Left">
+                            <Ellipse.Fill>
+                                <SolidColorBrush Color="{Binding HasActiveConnection, Converter={StaticResource ColorConverter}}" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </StackPanel>
+
                     <TextBlock>Входной слой</TextBlock>
 
                     <Button Style="{StaticResource ImageButtonStyle}" Command="{Binding UpdateDendritesCommand}">
@@ -98,7 +115,7 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
-        
+
         <Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Visibility="{Binding Path=IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid>
                 <TextBlock Margin="0" TextWrapping="Wrap" Text="Обмен данными..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="#7EFFFFFF"/>

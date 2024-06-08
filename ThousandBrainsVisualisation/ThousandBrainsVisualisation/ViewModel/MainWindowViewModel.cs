@@ -31,6 +31,17 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
+        private bool _hasActiveConnection = false;
+        public bool HasActiveConnection
+        {
+            get => _hasActiveConnection;
+            set
+            {
+                _hasActiveConnection = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Model
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
@@ -188,7 +199,6 @@ namespace ThousandBrainsVisualisation.ViewModel
                 }
 
                 InLayerCells = BitmapImageImageFromBitmap(bmp);
-                IsBusy = false;
             });
         }
 
@@ -224,7 +234,6 @@ namespace ThousandBrainsVisualisation.ViewModel
                 }
 
                 OutLayerCells = BitmapImageImageFromBitmap(bmp);
-                IsBusy = false;
             });
         }
 
@@ -289,20 +298,20 @@ namespace ThousandBrainsVisualisation.ViewModel
 
         private SolidBrush SelectBrushForInLayer(int miniColumnKey, int cellKey)
         {
-            if (PredictInLayer.TryGetValue(miniColumnKey, out Dictionary<int, Dendrites>? value) && value.ContainsKey(cellKey))
+            if (ActiveInLayer.ContainsKey(miniColumnKey) && ActiveInLayer[miniColumnKey].Contains(cellKey))
             {
-                if (ActiveInLayer.ContainsKey(miniColumnKey))
-                {
-                    return ActiveCellBrush;
-                }
-                else
-                {
-                    return PredictedCellBrush;
-                }
+                return ActiveCellBrush;
             }
             else
             {
-                return UsuallyCellBrush;
+                if (PredictInLayer.ContainsKey(miniColumnKey) && PredictInLayer[miniColumnKey].ContainsKey(cellKey))
+                {
+                    return PredictedCellBrush;
+                }
+                else
+                {
+                    return UsuallyCellBrush;
+                }
             }
         }
 
@@ -358,6 +367,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             return bitmapImage;
         }
 
+
         private RelayCommand? updateDendritesCommand;
         public RelayCommand UpdateDendritesCommand
         {
@@ -366,18 +376,6 @@ namespace ThousandBrainsVisualisation.ViewModel
                 return updateDendritesCommand ??= new RelayCommand(obj =>
                 {
                     UpdateDendrites(0, 1516);
-                });
-            }
-        }
-
-        private RelayCommand? sendLocationSignasCommand;
-        public RelayCommand SendLocationSignalCommand
-        {
-            get
-            {
-                return sendLocationSignasCommand ??= new RelayCommand(obj =>
-                {
-                    SendLocationSignal();
                 });
             }
         }
@@ -395,10 +393,53 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
+        private RelayCommand? brainPrintCommand;
+        public RelayCommand BrainPrintCommand
+        {
+            get
+            {
+                return brainPrintCommand ??= new RelayCommand(obj =>
+                {
+                    //IsBusy = true;
+                    Brain.NeedBrainPrint = true;
+                });
+            }
+        }
+
+        private RelayCommand? sendLocationSignasCommand;
+        public RelayCommand SendLocationSignalCommand
+        {
+            get
+            {
+                return sendLocationSignasCommand ??= new RelayCommand(obj =>
+                {
+                    SendLocationSignal();
+                });
+            }
+        }
         private void SendLocationSignal()
         {
             IsBusy = true;
-            Brain.LocationSignal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+            Brain.LocationSignal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+        }
+
+
+        private RelayCommand? sendSensorySignasCommand;
+        public RelayCommand SendSensorySignalCommand
+        {
+            get
+            {
+                return sendSensorySignasCommand ??= new RelayCommand(obj =>
+                {
+                    SendSensorySignal();
+                });
+            }
+        }
+
+        private void SendSensorySignal()
+        {
+            IsBusy = true;
+            Brain.SensorySignal = [6, 7, 8];
         }
     }
 }

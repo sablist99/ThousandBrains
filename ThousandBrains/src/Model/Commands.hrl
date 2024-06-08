@@ -24,8 +24,11 @@
 -define(MarkerFalse, "false").
 
 -define(NeedBrainInitialize, "NeedBrainInitialize").
+-define(NeedBrainPrint, "NeedBrainPrint").
 -define(LocationSignalBegin, "LocationSignalBegin").
 -define(LocationSignalEnd, "LocationSignalEnd").
+-define(SensorySignalBegin, "SensorySignalBegin").
+-define(SensorySignalEnd, "SensorySignalEnd").
 
 -define(StructureName_InLayer, "InLayer").
 -define(StructureName_PredictInLayer, "PredictInLayer").

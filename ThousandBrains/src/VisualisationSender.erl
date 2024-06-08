@@ -10,42 +10,17 @@
 -author("Potap").
 
 %% API
--export([sendDataToVisualization/0, handleCommand/1]).
+-export([handleCommand/1]).
 
 -include("Model/Commands.hrl").
 -include("Model/Model.hrl").
 -include("Model/SenderMode.hrl").
 -include("Model/ServerSettings.hrl").
 
-% TODO на каждую структуру создать отдельную функцию. Определиться с сохранением сокета
+% TODO на каждую структуру создать отдельную функцию
+% TODO Написать проверку на существование сокета
 
-sendDataToVisualization() ->
-  {ok, Socket} = gen_tcp:connect(?IP_ADDRESS, ?PORT, [binary, {active, false}]),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_InLayer),
-  sendData(Socket, 'GlobalDataService':getInLayer()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_PredictInLayer),
-  sendData(Socket, 'GlobalDataService':getInPredictedCells()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_ActiveInLayer),
-  sendData(Socket, 'GlobalDataService':getInActiveCells()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_OutLayer),
-  sendData(Socket, 'GlobalDataService':getOutLayer()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_ActiveOutLayer),
-  sendData(Socket, 'GlobalDataService':getOutActiveCells()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_FeedForward),
-  sendData(Socket, 'GlobalDataService':getFeedForward()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureName_FeedBack),
-  sendData(Socket, 'GlobalDataService':getFeedBack()),
-  'VisualisationClient':sendInformMessage(Socket, ?StructureEnd).
-
-% TODO Написать прослойку для доступа к сокету + проверку на его существование
-
-
+% Обработка сообщений, полученных от модуля визуализации
 handleCommand(Command) ->
   % Если нам прислали число, то определяем для чего оно пришло. Иначе это буквенная команда
   case 'HelpFunctions':getIntegerFromString(Command) of
@@ -53,18 +28,36 @@ handleCommand(Command) ->
       case Command of
         ?NeedBrainInitialize ->
           'BrainService':initializeBrain(),
-          sendInLayer();
+          sendInLayer(),
+          sendOutLayer();
+
+        ?NeedBrainPrint ->
+          'HelpFunctions':printGlobalData();
+
         ?LocationSignalBegin ->
-          % Устанавливаем режим для распознавания чисел и обнуляем старый сигнал
+          % Устанавливаем режим для распознавания сигнала местоположения и обнуляем старый сигнал
           'GlobalDataService':putSenderMode(?LocationSignalMode),
           'GlobalDataService':putLocationSignal([]);
         ?LocationSignalEnd ->
           % Сбрасываем режим, отправляем сигнал мозгу и данные в модуль визуализации
           'GlobalDataService':putSenderMode(?NoneSenderMode),
           'BrainService':sendExternalSignal('GlobalDataService':getLocationSignal()),
-          'GlobalDataService':getInPredictedCells(),
           sendPredictInLayer();
-        _ -> error
+
+        ?SensorySignalBegin ->
+          % Устанавливаем режим для распознавания сенсорного сигнала и обнуляем старый сигнал
+          'GlobalDataService':putSenderMode(?SensorySignalMode),
+          'GlobalDataService':putSensorySignal([]);
+        ?SensorySignalEnd ->
+          % Сбрасываем режим, отправляем сигнал мозгу и данные в модуль визуализации
+          'GlobalDataService':putSenderMode(?NoneSenderMode),
+          'BrainService':sendFeedForwardSignal('GlobalDataService':getSensorySignal()),
+          sendActiveInLayer(),
+          sendActiveOutLayer();
+
+        _ ->
+          io:format("Поступила неизвестная команда: ~p", [Command])
+
       end;
     % У нас число
     _ ->
@@ -72,19 +65,49 @@ handleCommand(Command) ->
         % Заполняем сигнал местоположения
         ?LocationSignalMode ->
           'GlobalDataService':appendLocationSignal('HelpFunctions':getIntegerFromString(Command));
+        % Заполняем сенсорный сигнал
+        ?SensorySignalMode ->
+          'GlobalDataService':appendSensorySignal('HelpFunctions':getIntegerFromString(Command));
         _ -> error
       end
   end.
+
+
 
 sendInLayer() ->
   'VisualisationClient':sendInformMessage(get(socket), ?StructureName_InLayer),
   sendData(get(socket), 'GlobalDataService':getInLayer()),
   'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
 
+sendOutLayer() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_OutLayer),
+  sendData(get(socket), 'GlobalDataService':getOutLayer()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
 sendPredictInLayer() ->
   'VisualisationClient':sendInformMessage(get(socket), ?StructureName_PredictInLayer),
   sendData(get(socket), 'GlobalDataService':getInPredictedCells()),
   'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+sendActiveInLayer() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_ActiveInLayer),
+  sendData(get(socket), 'GlobalDataService':getInActiveCells()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+sendActiveOutLayer() ->
+'VisualisationClient':sendInformMessage(get(socket), ?StructureName_ActiveOutLayer),
+sendData(get(socket), 'GlobalDataService':getOutActiveCells()),
+'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+%sendFeedForward() ->
+%  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedForward),
+%  sendData(get(socket), 'GlobalDataService':getFeedForward()),
+%  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+%
+%sendFeedBack() ->
+%  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedBack),
+%  sendData(get(socket), 'GlobalDataService':getFeedBack()),
+%  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
 
 
 
@@ -97,8 +120,6 @@ sendData(Socket, Structure) ->
     true -> sendSimpleData(Socket, Structure)
   end.
 
-
-
 sendMap(Socket, Map) ->
   'VisualisationClient':sendInformMessage(Socket, ?MarkerMapBegin),
   maps:foreach(
@@ -108,8 +129,6 @@ sendMap(Socket, Map) ->
     end, Map),
   'VisualisationClient':sendInformMessage(Socket, ?MarkerMapEnd).
 
-
-
 sendList(Socket, List) ->
   'VisualisationClient':sendInformMessage(Socket, ?MarkerListBegin),
   lists:foreach(
@@ -118,16 +137,12 @@ sendList(Socket, List) ->
     end, List),
   'VisualisationClient':sendInformMessage(Socket, ?MarkerListEnd).
 
-
-
 sendSynapse(Socket, Synapse) ->
   'VisualisationClient':sendInformMessage(Socket, ?MarkerSynapseBegin),
   'VisualisationClient':sendIntegerValue(Socket, Synapse#synapse.guid),
   'VisualisationClient':sendFloatValue(Socket, Synapse#synapse.permanenceValue),
   'VisualisationClient':sendBoolValue(Socket, Synapse#synapse.permanenceWeight),
   'VisualisationClient':sendInformMessage(Socket, ?MarkerSynapseEnd).
-
-
 
 sendSimpleData(Socket, SimpleData) ->
   case SimpleData of

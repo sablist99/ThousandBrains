@@ -3,6 +3,9 @@ using ThousandBrainsVisualisation.Model;
 
 namespace ThousandBrainsVisualisation.BrainFillerNS
 {
+    public delegate void BeginGetDataEventHandler();
+    public delegate void EndGetDataEventHandler();
+
     public partial class BrainFiller(BrainModel brain)
     {
         // TODO Добавить в каждом switch сообщение об ошибке, если попали в default 
@@ -19,6 +22,9 @@ namespace ThousandBrainsVisualisation.BrainFillerNS
         private BrainFillerMode BrainFillerMode = BrainFillerMode.Wait;
         private DataStructureMode DataMode = DataStructureMode.None;
         private Stack<DataStructureMode> DataStructureStack = new();
+        
+        public event BeginGetDataEventHandler BeginGetData = delegate { };
+        public event EndGetDataEventHandler EndGetData = delegate { };
 
         private int Map_CurrentLevel = 0;
         private Synapse Synapse = new();
@@ -124,6 +130,7 @@ namespace ThousandBrainsVisualisation.BrainFillerNS
 
         private void SetMode(string? text)
         {
+            BeginGetData();
             switch (text)
             {
                 case InLayer:
@@ -246,6 +253,7 @@ namespace ThousandBrainsVisualisation.BrainFillerNS
                 case End:
                     SendFilledStructure();
                     BrainFillerMode = BrainFillerMode.Wait;
+                    EndGetData();
                     break;
 
                 default:

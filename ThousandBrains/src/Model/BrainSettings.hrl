@@ -12,7 +12,7 @@
 -define(N_IN, 50). % По статье - 150
 -define(M, 16). % По статье - 16
 -define(D, 10). %
--define(N_OUT, 100). % По статье - 4096
+-define(N_OUT, 200). % По статье - 4096
 -define(N_EXT, 100). % По статье - 2400
 -define(S, 4). % По статье - 40
 -define(PERMANENCE_WEIGHT_BORDER, 0.35).

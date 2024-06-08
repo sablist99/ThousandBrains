@@ -11,3 +11,4 @@
 -define(SenderMode, senderMode).
 -define(NoneSenderMode, 0).
 -define(LocationSignalMode, 1).
+-define(SensorySignalMode, 2).

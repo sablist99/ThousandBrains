@@ -4,6 +4,7 @@ using System.Net.Sockets;
 namespace ThousandBrainsVisualisation.Logic
 {
     public delegate void SendDataToApplicationEventHandler(string? text);
+    public delegate void ChangeConnectionsCountEventHandler(int count);
     public class Server
     {
         public Server()
@@ -13,6 +14,7 @@ namespace ThousandBrainsVisualisation.Logic
         }
 
         public event SendDataToApplicationEventHandler SendDataToApplication = delegate { };
+        public event ChangeConnectionsCountEventHandler ChangeConnectionsCount = delegate { };
 
         protected TcpListener TcpListener { get; set; }
         protected IList<ClientOnServerSide> Clients { get; set; }
@@ -25,6 +27,7 @@ namespace ThousandBrainsVisualisation.Logic
                 Clients.Remove(client);
             }
             client?.Close();
+            ChangeConnectionsCount(Clients.Count);
         }
 
         public void Disconnect()
@@ -49,6 +52,7 @@ namespace ThousandBrainsVisualisation.Logic
 
                     ClientOnServerSide clientObject = new(tcpClient, this);
                     Clients.Add(clientObject);
+                    ChangeConnectionsCount(Clients.Count);
                     Task.Run(clientObject.ProcessAsync);
                 }
             }

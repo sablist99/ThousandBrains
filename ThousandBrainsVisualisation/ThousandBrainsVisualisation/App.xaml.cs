@@ -23,13 +23,18 @@ namespace ThousandBrainsVisualisation
             Brain.UpdateInCells += MainWindowViewModel.DrawInCells;
             Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
             Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
-            Brain.UpdateLocationSignal += SendDataToClient;
-            Brain.UpdateNeedBrainInitialize += UpdateNeedBrainInitialize;
+            Brain.SendLocationSignal += SendLocationSignalToClient;
+            Brain.SendSensorySignal += SendSensorySignalToClient;
+            Brain.SetNeedBrainInitialize += SetNeedBrainInitialize;
+            Brain.SetNeedBrainPrint += SetNeedBrainPrint;
 
             BrainFiller = new(Brain);
-            Server = new();
+            BrainFiller.BeginGetData += SetIsBusy;
+            BrainFiller.EndGetData += UnSetIsBusy;
 
+            Server = new();
             Server.SendDataToApplication += SendDataToApplication;
+            Server.ChangeConnectionsCount += SetHasActiveConnection;
 
             Task.Run(() => Server.ListenAsync());
         }
@@ -45,20 +50,54 @@ namespace ThousandBrainsVisualisation
             BrainFiller.SendData(data);
         }
 
-        private void UpdateNeedBrainInitialize()
+        private void SetHasActiveConnection(int count)
         {
-            Server.SendDataToClient(BrainFiller.NeedBrainInitialize);
+            // Todo обнулять данные, если нет колонок
+            MainWindowViewModel.HasActiveConnection = count > 0;
+        }
+
+        private void SetIsBusy()
+        {
+            MainWindowViewModel.IsBusy = true;
+        }
+
+        private void UnSetIsBusy()
+        {
+            MainWindowViewModel.IsBusy = false;
+        }
+
+        // TODO Переделать на асинхронные методы
+        private void SetNeedBrainInitialize()
+        {
+            Server.SendDataToClient(BrainCommands.NeedBrainInitialize);
             Brain.NeedBrainInitialize = false;
         }
 
-        private void SendDataToClient()
+        private void SetNeedBrainPrint()
         {
-            Server.SendDataToClient(BrainFiller.LocationSignalBegin);
+            Server.SendDataToClient(BrainCommands.NeedBrainPrint);
+            Brain.NeedBrainPrint = false;
+        }
+
+        private void SendLocationSignalToClient()
+        {
+            Server.SendDataToClient(BrainCommands.LocationSignalBegin);
             foreach (int i in Brain.LocationSignal)
             {
                 Server.SendDataToClient(i.ToString());
             }
-            Server.SendDataToClient(BrainFiller.LocationSignalEnd);
+            Server.SendDataToClient(BrainCommands.LocationSignalEnd);
         }
+
+        private void SendSensorySignalToClient()
+        {
+            Server.SendDataToClient(BrainCommands.SensorySignalBegin);
+            foreach (int i in Brain.SensorySignal)
+            {
+                Server.SendDataToClient(i.ToString());
+            }
+            Server.SendDataToClient(BrainCommands.SensorySignalEnd);
+        }
+
     }
 }
