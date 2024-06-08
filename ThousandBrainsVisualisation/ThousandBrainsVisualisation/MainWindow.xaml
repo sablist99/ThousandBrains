@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:ThousandBrainsVisualisation.Converters" 
         xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel" 
         d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="845" Width="1700"
-        IsEnabled="{Binding IsBusy}">
+        Title="MainWindow" Height="845" Width="1700">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
@@ -19,80 +19,90 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </Window.Resources>
-
-    <StackPanel>
-        <Menu Height="25" VerticalAlignment="Top">
-            <MenuItem Header="Управление">
-                <MenuItem Header="Карта мозга" >
-                    <MenuItem Header="Инициализация" Command="{Binding BrainInitializeCommand}"></MenuItem>
-                </MenuItem>
-                <MenuItem Header="Сигнал местоположения" >
-                    <MenuItem Header="Редактировать"></MenuItem>
-                    <MenuItem Header="Отправить" Command="{Binding SendLocationSignalCommand}"></MenuItem>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Выход" ></MenuItem>
-            </MenuItem>
-        </Menu>
         
-        <Grid x:Name="MainGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+    
+    <Grid>
+        <StackPanel>
+            <Menu Height="25" VerticalAlignment="Top">
+                <MenuItem Header="Управление">
+                    <MenuItem Header="Карта мозга" >
+                        <MenuItem Header="Инициализация" Command="{Binding BrainInitializeCommand}"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Сигнал местоположения" >
+                        <MenuItem Header="Редактировать"></MenuItem>
+                        <MenuItem Header="Отправить" Command="{Binding SendLocationSignalCommand}"></MenuItem>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Выход" ></MenuItem>
+                </MenuItem>
+            </Menu>
 
-            <StackPanel Grid.Column="0" Margin="10 10 10 10">
-                <TextBlock>Входной слой</TextBlock>
+            <Grid x:Name="MainGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <Button Style="{StaticResource ImageButtonStyle}" Command="{Binding UpdateDendritesCommand}">
+                <StackPanel Grid.Column="0" Margin="10 10 10 10">
+                    <TextBlock>Входной слой</TextBlock>
+
+                    <Button Style="{StaticResource ImageButtonStyle}" Command="{Binding UpdateDendritesCommand}">
+                        <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                            <Border.Effect>
+                                <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                            </Border.Effect>
+                            <Image x:Name="InLayerView" Source="{Binding InLayerCells}" Stretch="None"></Image>
+                        </Border>
+                    </Button>
+
+                    <TextBlock>Выходной слой</TextBlock>
+
                     <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
                         <Border.Effect>
                             <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                         </Border.Effect>
-                        <Image x:Name="InLayerView" Source="{Binding InLayerCells}" Stretch="None"></Image>
+                        <Image x:Name="OutLayerView" Source="{Binding OutLayerCells}" Stretch="None"></Image>
                     </Border>
-                </Button>
+                </StackPanel>
 
-                <TextBlock>Выходной слой</TextBlock>
+                <StackPanel Grid.Column="1" Margin="10 10 10 10">
 
-                <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
-                    <Border.Effect>
-                        <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
-                    </Border.Effect>
-                    <Image x:Name="OutLayerView" Source="{Binding OutLayerCells}" Stretch="None"></Image>
-                </Border>
-            </StackPanel>
+                    <TextBlock>Дендриты</TextBlock>
 
-            <StackPanel Grid.Column="1" Margin="10 10 10 10">
+                    <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                        </Border.Effect>
+                        <StackPanel>
 
-                <TextBlock>Дендриты</TextBlock>
+                            <TextBlock>Апикальный дендрит</TextBlock>
 
-                <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
-                    <Border.Effect>
-                        <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
-                    </Border.Effect>
-                    <StackPanel>
+                            <Image x:Name="ApicalDendriteView" Source="{Binding ApicalDendrite}" Stretch="None"/>
 
-                        <TextBlock>Апикальный дендрит</TextBlock>
+                            <TextBlock>Базальные дендриты</TextBlock>
 
-                        <Image x:Name="ApicalDendriteView" Source="{Binding ApicalDendrite}" Stretch="None"/>
-
-                        <TextBlock>Базальные дендриты</TextBlock>
-
-                        <ListView x:Name="Dendrites" ItemsSource="{Binding BasalDendrites}" Height="700" ScrollViewer.VerticalScrollBarVisibility="Visible" HorizontalContentAlignment="Center">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Path=Info}"/>
-                                        <Image Source="{Binding   Path=Image}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </Grid>
-    </StackPanel>
+                            <ListView x:Name="Dendrites" ItemsSource="{Binding BasalDendrites}" Height="700" ScrollViewer.VerticalScrollBarVisibility="Visible" HorizontalContentAlignment="Center">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Path=Info}"/>
+                                            <Image Source="{Binding   Path=Image}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        
+        <Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Visibility="{Binding Path=IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+                <TextBlock Margin="0" TextWrapping="Wrap" Text="Обмен данными..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="#7EFFFFFF"/>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

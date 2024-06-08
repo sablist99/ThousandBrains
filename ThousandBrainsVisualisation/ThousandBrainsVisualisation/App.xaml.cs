@@ -22,6 +22,7 @@ namespace ThousandBrainsVisualisation
 
             Brain.UpdateInCells += MainWindowViewModel.DrawInCells;
             Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
+            Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
             Brain.UpdateLocationSignal += SendDataToClient;
             Brain.UpdateNeedBrainInitialize += UpdateNeedBrainInitialize;
 

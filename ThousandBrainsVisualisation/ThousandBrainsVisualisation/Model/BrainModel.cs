@@ -21,6 +21,7 @@
             }
         }
 
+
         private Dictionary<int, Dictionary<int, Dendrites>> predictInLayer;
         public Dictionary<int, Dictionary<int, Dendrites>> PredictInLayer
         {
@@ -34,6 +35,7 @@
                 };
             }
         }
+
 
         private Dictionary<int, List<int>> activeInLayer;
         public Dictionary<int, List<int>> ActiveInLayer
@@ -49,6 +51,7 @@
             }
         }
 
+
         private Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> outLayer;
         public Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> OutLayer
         {
@@ -62,6 +65,7 @@
                 };
             }
         }
+
 
         private List<int> activeOutLayer;
         public List<int> ActiveOutLayer
@@ -77,9 +81,12 @@
             }
         }
 
+
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
 
+
         public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
+
 
         private List<int> locationSignal = [];
         public List<int> LocationSignal
@@ -95,18 +102,19 @@
             }
         }
 
+
         private bool needBrainInitialize = false;
-        public bool NeedBrainInitialize 
-        { 
-            get => needBrainInitialize; 
-            set 
+        public bool NeedBrainInitialize
+        {
+            get => needBrainInitialize;
+            set
             {
                 needBrainInitialize = value;
-                if (value == true) 
-                { 
-                    UpdateNeedBrainInitialize(); 
+                if (value == true)
+                {
+                    UpdateNeedBrainInitialize();
                 }
-            } 
+            }
         }
 
         //TODO Реализовать передачу настроек мозга по TCP
@@ -116,7 +124,7 @@
         public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
         public event UpdateLocationSignalEventHandler UpdateLocationSignal = delegate { };
         public event UpdateNeedBrainInitializeEventHandler UpdateNeedBrainInitialize = delegate { };
-
+        
         public BrainModel()
         {
             inLayer = [];

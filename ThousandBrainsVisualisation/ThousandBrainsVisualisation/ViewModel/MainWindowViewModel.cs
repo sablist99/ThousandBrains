@@ -20,7 +20,7 @@ namespace ThousandBrainsVisualisation.ViewModel
         private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
         private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
 
-        private bool _isBusy = true;
+        private bool _isBusy = false;
         public bool IsBusy
         {
             get => _isBusy;
@@ -30,7 +30,8 @@ namespace ThousandBrainsVisualisation.ViewModel
                 OnPropertyChanged();
             }
         }
-        
+
+        #region Model
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
             get => Brain.InLayer;
@@ -94,6 +95,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 };
             }
         }
+        #endregion
 
         #region Bitmaps
         private BitmapImage _inLayerCells = new();
@@ -186,6 +188,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 }
 
                 InLayerCells = BitmapImageImageFromBitmap(bmp);
+                IsBusy = false;
             });
         }
 
@@ -221,6 +224,7 @@ namespace ThousandBrainsVisualisation.ViewModel
                 }
 
                 OutLayerCells = BitmapImageImageFromBitmap(bmp);
+                IsBusy = false;
             });
         }
 
@@ -310,7 +314,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
             if (synapse.Weight)
             {
-                if (LocationSignal.Contains(miniColumnKey)) 
+                if (LocationSignal.Contains(miniColumnKey))
                 {
                     return ActiveCellBrush;
                 }
@@ -385,6 +389,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             {
                 return brainInitializeCommand ??= new RelayCommand(obj =>
                 {
+                    IsBusy = true;
                     Brain.NeedBrainInitialize = true;
                 });
             }
@@ -392,6 +397,7 @@ namespace ThousandBrainsVisualisation.ViewModel
 
         private void SendLocationSignal()
         {
+            IsBusy = true;
             Brain.LocationSignal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
         }
     }
