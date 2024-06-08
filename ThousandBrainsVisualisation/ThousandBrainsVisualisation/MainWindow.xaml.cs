@@ -16,7 +16,13 @@ namespace ThousandBrainsVisualisation
         private void InLayerViewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Point p = e.GetPosition(InLayerView);
-           ((MainWindowViewModel)DataContext).SelectCell((int)p.X, (int)p.Y);
+            ((MainWindowViewModel)DataContext).SelectInCell((int)p.X, (int)p.Y);
+        }
+
+        private void OutLayerViewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point p = e.GetPosition(OutLayerView);
+            ((MainWindowViewModel)DataContext).SelectOutCell((int)p.X, (int)p.Y);
         }
     }
 }

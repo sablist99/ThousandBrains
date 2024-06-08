@@ -7,7 +7,7 @@
         xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel" 
         d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="845" Width="1700">
+        Title="ThousandBrains" Height="845" Width="1700" Icon="./Resources/Icon.png">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
@@ -55,7 +55,7 @@
 
                     <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                         <TextBlock Margin="0 0 10 0">Активное подключение</TextBlock>
-                        
+
                         <Ellipse Width="10" Height="10" HorizontalAlignment="Left">
                             <Ellipse.Fill>
                                 <SolidColorBrush Color="{Binding HasActiveConnection, Converter={StaticResource ColorConverter}}" />
@@ -65,14 +65,30 @@
 
                     <TextBlock>Входной слой</TextBlock>
 
-                    <Button Style="{StaticResource ImageButtonStyle}">
-                        <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
-                            <Border.Effect>
-                                <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
-                            </Border.Effect>
-                            <Image x:Name="InLayerView" MouseDown="InLayerViewMouseDown" Source="{Binding InLayerCells}" Stretch="None"></Image>
-                        </Border>
-                    </Button>
+                    <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                        </Border.Effect>
+                        <Image x:Name="InLayerView" MouseDown="InLayerViewMouseDown" Source="{Binding InLayerCells}" Stretch="None"></Image>
+                    </Border>
+
+                    <TextBlock>FeedBack (Апикальный дендрит)</TextBlock>
+
+                    <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                        </Border.Effect>
+                        <Image x:Name="FeedBackView" Source="{Binding FeedBackSynapsesBitmap}" Stretch="None"></Image>
+                    </Border>
+
+                    <TextBlock>FeedForward</TextBlock>
+
+                    <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                        </Border.Effect>
+                        <Image x:Name="FeedForwardView" Source="{Binding FeedForwardSynapsesBitmap}" Stretch="None"></Image>
+                    </Border>
 
                     <TextBlock>Выходной слой</TextBlock>
 
@@ -80,7 +96,7 @@
                         <Border.Effect>
                             <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                         </Border.Effect>
-                        <Image x:Name="OutLayerView" Source="{Binding OutLayerCells}" Stretch="None"></Image>
+                        <Image x:Name="OutLayerView" MouseDown="OutLayerViewMouseDown" Source="{Binding OutLayerCells}" Stretch="None"></Image>
                     </Border>
                 </StackPanel>
 
@@ -93,10 +109,6 @@
                             <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                         </Border.Effect>
                         <StackPanel>
-
-                            <TextBlock>Апикальный дендрит</TextBlock>
-
-                            <Image x:Name="ApicalDendriteView" Source="{Binding ApicalDendrite}" Stretch="None"/>
 
                             <TextBlock>Базальные дендриты</TextBlock>
 

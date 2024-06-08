@@ -43,17 +43,17 @@ getSynapsesListBetweenInActiveCellsAndOutCell(ActiveCellsIterator, OutCellRange,
   case maps:next(ActiveCellsIterator) of
     % Проверяем - а достаточно ли синапсов у текущей выходной клетки
     none ->
-      case 'CommonFunctions':getListSize(Synapses) > ?THETA_OUT_P of
+      case 'CommonFunctions':getListSize(Synapses) >= ?THETA_OUT_P of
         true -> Synapses;
         false -> []
       end;
     {_Range, ActiveCellsList, NewCellIterator} ->
-      getSynapsesListBetweenInActiveCellsAndOutCell(NewCellIterator, OutCellRange, lists:append(Synapses, getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCellsList, OutCellRange, Synapses)))
+      getSynapsesListBetweenInActiveCellsAndOutCell(NewCellIterator, OutCellRange, getSynapsesListBetweenInActiveCellsFromOneMiniColumnAndOutCell(ActiveCellsList, OutCellRange, Synapses))
   end.
 
 
 
-% В этой функции формируется список выигрышных клеток выходного слоя (тех клеток, у которых достаточно синапсов с активными кдетками входного слоя)
+% В этой функции формируется список выигрышных клеток выходного слоя (тех клеток, у которых достаточно синапсов с активными клетками входного слоя)
 getOutWinCells(OutCellsIterator, OutWin) ->
   case maps:next(OutCellsIterator) of
     none -> OutWin;

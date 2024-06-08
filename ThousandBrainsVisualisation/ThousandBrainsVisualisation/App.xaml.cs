@@ -12,17 +12,20 @@ namespace ThousandBrainsVisualisation
     public partial class App : Application
     {
         private BrainModel Brain;
+        private Painter Painter;
         private MainWindowViewModel MainWindowViewModel;
         private BrainFiller BrainFiller;
         private Server Server;
         public App()
         {
             Brain = new();
-            MainWindowViewModel = new(Brain);
+            Painter = new();
+            MainWindowViewModel = new(Brain, Painter);
 
-            Brain.UpdateInCells += MainWindowViewModel.DrawInCells;
-            Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
-            Brain.UpdateOutCells += MainWindowViewModel.DrawOutCells;
+            Painter.MainWindowViewModel = MainWindowViewModel;
+
+            Brain.UpdateInCells += Painter.DrawInCells;
+            Brain.UpdateOutCells += Painter.DrawOutCells;
             Brain.SendLocationSignal += SendLocationSignalToClient;
             Brain.SendSensorySignal += SendSensorySignalToClient;
             Brain.SetNeedBrainInitialize += SetNeedBrainInitialize;

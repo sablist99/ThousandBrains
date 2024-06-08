@@ -29,6 +29,8 @@ handleCommand(Command) ->
         ?NeedBrainInitialize ->
           'BrainService':initializeBrain(),
           sendInLayer(),
+          sendFeedBack(),
+          sendFeedForward(),
           sendOutLayer();
 
         ?NeedBrainPrint ->
@@ -99,15 +101,15 @@ sendActiveOutLayer() ->
 sendData(get(socket), 'GlobalDataService':getOutActiveCells()),
 'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
 
-%sendFeedForward() ->
-%  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedForward),
-%  sendData(get(socket), 'GlobalDataService':getFeedForward()),
-%  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
-%
-%sendFeedBack() ->
-%  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedBack),
-%  sendData(get(socket), 'GlobalDataService':getFeedBack()),
-%  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+sendFeedForward() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedForward),
+  sendData(get(socket), 'GlobalDataService':getFeedForward()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
+
+sendFeedBack() ->
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureName_FeedBack),
+  sendData(get(socket), 'GlobalDataService':getFeedBack()),
+  'VisualisationClient':sendInformMessage(get(socket), ?StructureEnd).
 
 
 

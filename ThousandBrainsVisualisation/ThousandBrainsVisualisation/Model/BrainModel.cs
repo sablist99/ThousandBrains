@@ -9,7 +9,7 @@
 
     public class BrainModel
     {
-        #region Data
+        #region Model
         private Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> inLayer;
         public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
         {
@@ -85,10 +85,32 @@
         }
 
 
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses;
+        private Dictionary<((int?, int?), (int?, int?)), Synapse> feedForwardSynapses;
+        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses
+        {
+            get => feedForwardSynapses;
+            set
+            {
+                if (value != null)
+                {
+                    feedForwardSynapses = value;
+                };
+            }
+        }
 
 
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses;
+        private Dictionary<((int?, int?), (int?, int?)), Synapse> feedBackSynapses;
+        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses
+        {
+            get => feedBackSynapses;
+            set
+            {
+                if (value != null)
+                {
+                    feedBackSynapses = value;
+                };
+            }
+        }
         #endregion Data
 
         #region ExternalData
@@ -151,6 +173,7 @@
         }
         #endregion
 
+        #region Checkers
         public bool HasActiveLateralDendrite(int miniColumnKey, int cellKey, int dendriteKey) => PredictInLayer.ContainsKey(miniColumnKey) 
                                                                                             && PredictInLayer[miniColumnKey].ContainsKey(cellKey)
                                                                                             && PredictInLayer[miniColumnKey][cellKey].ActiveLateralDendrites.Contains(dendriteKey);
@@ -162,6 +185,7 @@
         public bool IsActiveCellInLayer(int miniColumnKey, int cellKey) => ActiveInLayer.ContainsKey(miniColumnKey) && ActiveInLayer[miniColumnKey].Contains(cellKey);
         public bool IsPredictCellInLayer(int miniColumnKey, int cellKey) => PredictInLayer.ContainsKey(miniColumnKey) && PredictInLayer[miniColumnKey].ContainsKey(cellKey);
         public bool IsActiveCellOutLayer(int miniColumnKey) => ActiveOutLayer.Contains(miniColumnKey);
+        #endregion
 
         //TODO Реализовать передачу настроек мозга по TCP
         public const int LocationSignalSize = 100;
@@ -172,7 +196,7 @@
         public event SendSensorySignalEventHandler SendSensorySignal = delegate { };
         public event SetNeedBrainInitializeEventHandler SetNeedBrainInitialize = delegate { };
         public event SetNeedBrainInitializeEventHandler SetNeedBrainPrint = delegate { };
-        
+
         public BrainModel()
         {
             inLayer = [];
@@ -180,8 +204,8 @@
             activeInLayer = [];
             outLayer = [];
             activeOutLayer = [];
-            FeedForwardSynapses = [];
-            FeedBackSynapses = [];
+            feedForwardSynapses = [];
+            feedBackSynapses = [];
             LocationSignal = [];
         }
     }
