@@ -7,7 +7,7 @@
         xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel" 
         d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="ThousandBrains" Height="845" Width="1700" Icon="./Resources/Icon.png">
+        Title="ThousandBrains" Height="845" Width="1700" Icon="../Resources/Icon.png">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
