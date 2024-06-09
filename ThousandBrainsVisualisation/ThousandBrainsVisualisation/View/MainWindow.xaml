@@ -102,16 +102,13 @@
 
                 <StackPanel Grid.Column="1" Margin="10 10 10 10">
 
-                    <TextBlock>Дендриты</TextBlock>
+                    <TextBlock>Базальные дендриты</TextBlock>
 
                     <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
                         <Border.Effect>
                             <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
                         </Border.Effect>
                         <StackPanel>
-
-                            <TextBlock>Базальные дендриты</TextBlock>
-
                             <ListView x:Name="Dendrites" ItemsSource="{Binding BasalDendrites}" Height="700" ScrollViewer.VerticalScrollBarVisibility="Visible" HorizontalContentAlignment="Center">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>

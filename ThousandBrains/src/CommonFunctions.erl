@@ -13,7 +13,7 @@
 -export([existSynapseInMap/2, existActiveApicalDendriteByCellGuid/1,
   hasMiniColumnInPredict/1, hasActiveApicalDendriteInPredict/1, getListSize/1, getMiniColumnsWithActiveApicalDendrite/0,
   existActiveApicalDendriteByRanges/1, existSynapseBetweenLayersByRanges/3, findSynapseInMapByFRTG/3,
-  findSynapseInMapByFRTR/3, existSynapseBetweenLayersByFRTG/3, existSynapseBetweenLayersByFGTR/3]).
+  findSynapseInMapByFRTR/4, existSynapseBetweenLayersByFRTG/3, existSynapseBetweenLayersByFGTR/3]).
 
 -include("Model/Model.hrl").
 
@@ -51,12 +51,13 @@ findSynapseInMapByFGTR(FromCellGuid, ToCellRange, Iterator) ->
 
 % Проверка существования синапса между клетками слоев
 % По рэнджу клетки входного слоя и рэнджу клетки выходного слоя
-findSynapseInMapByFRTR(FromCellRange, ToCellRange, Iterator) ->
+% TODO Если ищем фидбэк от выходного слоя, то мало найти синапс. Нужно найти ВСЕ и смотреть на их устойчивость
+findSynapseInMapByFRTR(FromCellRange, ToCellRange, Iterator, Synapses) ->
   case maps:next(Iterator) of
-    none -> none;
-    {{{FromCellRange, _}, {ToCellRange, _}}, Value, _NewIterator} ->
-      {ok, Value};
-    {_, _, NewIterator} -> findSynapseInMapByFRTR(FromCellRange, ToCellRange, NewIterator)
+    none -> Synapses;
+    {{{FromCellRange, _}, {ToCellRange, _}}, Value, NewIterator} ->
+      findSynapseInMapByFRTR(FromCellRange, ToCellRange, NewIterator, lists:append(Synapses, [Value]));
+    {_, _, NewIterator} -> findSynapseInMapByFRTR(FromCellRange, ToCellRange, NewIterator, Synapses)
   end.
 
 
@@ -81,16 +82,18 @@ existSynapseBetweenLayersByFGTR(FromCellGuid, ToCellRange, SynapsesMap) ->
     _ -> false
   end.
 
-existSynapseBetweenLayersByRanges(FromRange, ToRange, SynapsesMap) ->
-  case findSynapseInMapByFRTR(FromRange, ToRange, maps:iterator(SynapsesMap)) of
-    {ok, Value} ->
-      case Value#synapse.permanenceWeight of
-        true -> {true, Value};
-        false -> false
-      end;
-    _ -> false
+
+
+checkSynapsePermanenceWeight([]) ->
+  false;
+checkSynapsePermanenceWeight([Synapse | T]) ->
+  case Synapse#synapse.permanenceWeight of
+    true -> {true, Synapse};
+    false -> checkSynapsePermanenceWeight(T)
   end.
 
+existSynapseBetweenLayersByRanges(FromRange, ToRange, SynapsesMap) ->
+  checkSynapsePermanenceWeight(findSynapseInMapByFRTR(FromRange, ToRange, maps:iterator(SynapsesMap), []) ).
 
 
 % Проверка на наличие апикального дендрита у клетки входного слоя по Guid
@@ -107,7 +110,6 @@ existActiveApicalDendriteByCellGuid(ToInCellGuid) ->
   existActiveApicalDendriteByCellGuid(ToInCellGuid, 'GlobalDataService':getOutActiveCells()).
 
 
-
 % Проверка на наличие мини-колонки в предсказанных
 hasMiniColumnInPredict(RangeOfColumnWithFeedForward) ->
   case maps:find(RangeOfColumnWithFeedForward, 'GlobalDataService':getInPredictedCells()) of
@@ -120,26 +122,21 @@ hasActiveApicalDendriteInPredictByMiniColumn(Iterator) ->
     none -> false;
     {_CellGuid, {?NoActiveApicalDendrite, _}, NewIterator} -> hasActiveApicalDendriteInPredictByMiniColumn(NewIterator);
     {_CellGuid, {_ApicalDendrite, _}, _NewIterator} -> true
-end.
+  end.
 
 % Определение наличия апикального дендрита хотя бы у одной клетки в мини-колонке
 hasActiveApicalDendriteInPredict(LayerIterator, Ret) ->
   case maps:next(LayerIterator) of
     none -> Ret;
-    {_Range, MiniColumn, NewIterator} -> hasActiveApicalDendriteInPredict(NewIterator, hasActiveApicalDendriteInPredictByMiniColumn(maps:iterator(MiniColumn)))
+    {_Range, MiniColumn, NewIterator} ->
+      hasActiveApicalDendriteInPredict(NewIterator, hasActiveApicalDendriteInPredictByMiniColumn(maps:iterator(MiniColumn)))
   end.
 
 hasActiveApicalDendriteInPredict(LayerIterator) ->
   hasActiveApicalDendriteInPredict(LayerIterator, false).
 
 
-
-
-
-
-
-
-% Проверка на наличие апикального дендрита у клетки входного слоя по Guid
+% Проверка на наличие апикального дендрита у клетки входного слоя по номеру мини-колонки
 existActiveApicalDendriteByRanges(_ToRange, []) ->
   false;
 existActiveApicalDendriteByRanges(_ToRange, undefined) ->
@@ -153,7 +150,6 @@ existActiveApicalDendriteByRanges(ToRange) ->
   existActiveApicalDendriteByRanges(ToRange, 'GlobalDataService':getOutActiveCells()).
 
 
-
 % Получение списка мини-колонок, у которых есть апикальный денднрит
 getMiniColumnsWithActiveApicalDendrite(LayerIterator, TargetColumns) ->
   case maps:next(LayerIterator) of
@@ -163,10 +159,10 @@ getMiniColumnsWithActiveApicalDendrite(LayerIterator, TargetColumns) ->
         true -> getMiniColumnsWithActiveApicalDendrite(NewIterator, lists:append(TargetColumns, [Range]));
         false -> getMiniColumnsWithActiveApicalDendrite(NewIterator, TargetColumns)
       end
-end.
+  end.
 
-getMiniColumnsWithActiveApicalDendrite() -> getMiniColumnsWithActiveApicalDendrite(maps:iterator('GlobalDataService':getInLayer()), []).
-
+getMiniColumnsWithActiveApicalDendrite() ->
+  getMiniColumnsWithActiveApicalDendrite(maps:iterator('GlobalDataService':getInLayer()), []).
 
 
 % Количество элементов в списке
@@ -176,5 +172,5 @@ getListSize(List) ->
 
 getListSize([], Count) ->
   Count;
-getListSize([_|L], Count) ->
+getListSize([_ | L], Count) ->
   getListSize(L, Count + 1).

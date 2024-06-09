@@ -24,21 +24,21 @@ getCellsFromMapByIterator(Iterator, ActiveCells) ->
 
 
 
-% Получение списка Guid всех предсказанных клеток с апикальным дендритом (из мини-колонки)
-% Iterator - итератор для перебора клеток
-% ActiveCells - out переменная, список Guid активных клеток
-getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(Iterator, ActiveCells) ->
-  case maps:next(Iterator) of
+% Функция возвращает список CellsGuid с аактивным апикальным дендритом в мини-колонке
+getCellWithActiveApicalDendriteByRangesHelper(PredictedCellsInMiniColumnIterator, ActiveCells) ->
+  case maps:next(PredictedCellsInMiniColumnIterator) of
     none -> ActiveCells;
-    {CellGuid, _Value, NewIterator} ->
-      case 'CommonFunctions':existActiveApicalDendriteByCellGuid(CellGuid) of
-        % Есть апикальный дендрит, поэтому добавляем текущую клетку к списку активных
-        {true, _ActiveOutCellRange} -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, lists:append(ActiveCells, [CellGuid]));
-        false -> getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(NewIterator, ActiveCells)
-      end
+    {_CellGuid, {noActiveApicalDendrite, _}, NewIterator} ->
+      getCellWithActiveApicalDendriteByRangesHelper(NewIterator, ActiveCells);
+    {CellGuid, {_OutCellRange, _}, NewIterator} ->
+      getCellWithActiveApicalDendriteByRangesHelper(NewIterator, lists:append(ActiveCells, [CellGuid]))
   end.
 
-
+getCellWithActiveApicalDendriteByRanges(PredictedCellsInMiniColumn, ActiveCells) ->
+  case PredictedCellsInMiniColumn of
+    {ok, PredictedCells} -> getCellWithActiveApicalDendriteByRangesHelper(maps:iterator(PredictedCells), ActiveCells);
+    _ -> ActiveCells
+  end.
 
 % Получение списка активных клеток в мини-колонке
 % RangeOfColumn - номер мини-колонки (разряд), которая выстрелила
@@ -56,17 +56,16 @@ getActiveCellsInMiniColumn(RangeOfColumn, ActiveCells, PredictedCells) ->
           )), []), ActiveCells);
     % Если да - проверяем, есть ли активный апикальный дендрит у предсказанных клеток
     true ->
-      case 'CommonFunctions':existActiveApicalDendriteByRanges(RangeOfColumn) of
+      case getCellWithActiveApicalDendriteByRanges(maps:find(RangeOfColumn, PredictedCells), []) of
         % Если нет - активируем все предсказанные клетки
-        false -> maps:put(RangeOfColumn, getCellsFromMapByIterator(
+        [] -> maps:put(RangeOfColumn, getCellsFromMapByIterator(
           maps:iterator( % Передаем в функцию итератор по мини-колонке
             maps:get(RangeOfColumn, PredictedCells) % Получаем мини-колонку по разряду
           ), []), ActiveCells);
         % Если да - активируем клетки с активным апикальным дендритом
-        true -> maps:put(RangeOfColumn, getAllPredictedCellsWithActiveApicalDendriteFromMiniColumn(maps:iterator(PredictedCells), []), ActiveCells)
+        Value -> maps:put(RangeOfColumn, Value, ActiveCells)
       end
   end.
-
 
 
 % Перебор всех выстреливших мини-колонок
@@ -79,7 +78,6 @@ getActiveCellsHelper([], ActiveCells, _PredictedCells) ->
 getActiveCellsHelper([RangeOfColumnWithFeedForward | TFeedForward], ActiveCells, PredictedCells) ->
   % Обрабатываем очередной сигнал из FeedForward
   getActiveCellsHelper(TFeedForward, getActiveCellsInMiniColumn(RangeOfColumnWithFeedForward, ActiveCells, PredictedCells), PredictedCells).
-
 
 
 % Функция возвращает активные клетки. Данные упакованы в иерархию, аналогичную структуре хранения данных
