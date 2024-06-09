@@ -167,7 +167,7 @@ namespace ThousandBrainsVisualisation.Logic
         public void SelectSensorySignalMiniColumn(int x, int y)
         {
             int miniColumnKey = (x - CellMargin) / CellSize;
-
+            // TODO Painter не должен класть данные в модель
             // Если не получилось удалить, значит синапса там и не было. Поэтому добавляем
             if (!Brain.SensorySignal.Remove(miniColumnKey))
             {
