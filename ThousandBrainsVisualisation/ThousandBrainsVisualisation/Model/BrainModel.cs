@@ -123,7 +123,6 @@
                 if (value != null)
                 {
                     locationSignal = value;
-                    SendLocationSignal();
                 };
             }
         }
@@ -137,7 +136,6 @@
                 if (value != null)
                 {
                     sensorySignal = value;
-                    SendSensorySignal();
                 };
             }
         }
@@ -157,6 +155,37 @@
                 }
             }
         }
+
+
+        private bool needSendLocationSignal = false;
+        public bool NeedSendLocationSignal
+        {
+            get => needSendLocationSignal;
+            set
+            {
+                needSendLocationSignal = value;
+                if (value == true)
+                {
+                    SendLocationSignal();
+                }
+            }
+        }
+
+
+        private bool needSendSensorySignal = false;
+        public bool NeedSendSensorySignal
+        {
+            get => needSendSensorySignal;
+            set
+            {
+                needSendSensorySignal = value;
+                if (value == true)
+                {
+                    SendSensorySignal();
+                }
+            }
+        }
+
 
         private bool needBrainPrint = false;
         public bool NeedBrainPrint
@@ -188,7 +217,7 @@
         #endregion
 
         //TODO Реализовать передачу настроек мозга по TCP
-        public const int LocationSignalSize = 200;
+        public int LocationSignalSize = 200;
 
         public event UpdateInCellsEventHandler UpdateInCells = delegate { };
         public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
@@ -207,6 +236,7 @@
             feedForwardSynapses = [];
             feedBackSynapses = [];
             LocationSignal = [];
+            SensorySignal = [];
         }
     }
 }

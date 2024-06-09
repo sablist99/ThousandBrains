@@ -1,0 +1,25 @@
+﻿<Window x:Class="ThousandBrainsVisualisation.View.EditSignalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:viewmodel="clr-namespace:ThousandBrainsVisualisation.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:EditSignalViewModel}"
+        mc:Ignorable="d"
+        Title="Редактирование сигнала местоположения" SizeToContent="WidthAndHeight" Icon="../Resources/Icon.png">
+    <Grid>
+        <StackPanel Grid.Column="0" Margin="10 10 10 10">
+            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" >
+                <Border.Effect>
+                    <DropShadowEffect Opacity="0.3" Color="Black" BlurRadius="10"/>
+                </Border.Effect>
+                <Image x:Name="SignalView" MouseDown="SignalViewMouseDown" Source="{Binding SignalBitmap}" Stretch="None"></Image>
+            </Border>
+            <!--<StackPanel Grid.Column="0" Margin="10 10 0 10" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="CancelButton" Content="Отменить" Margin="10 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" />
+                <Button x:Name="SaveButton" Content="Сохранить" Margin="10 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" />
+                <Button x:Name="SaveAndSendButton" Content="Сохранить и отправить" Margin="10 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="140" />
+            </StackPanel>-->
+        </StackPanel>
+    </Grid>
+</Window>

@@ -6,87 +6,199 @@ using ThousandBrainsVisualisation.ViewModel;
 
 namespace ThousandBrainsVisualisation.Logic
 {
-    public class Painter()
-    {
-        public MainWindowViewModel MainWindowViewModel { get; set; }
+    public delegate void InCellsPaintedEventHandler();
+    public delegate void OutCellsPaintedEventHandler();
+    public delegate void FeedBackSynapsesPaintedEventHandler();
+    public delegate void FeedForwardSynapsesPaintedEventHandler();
+    public delegate void BasalDendritesPaintedEventHandler();
+    public delegate void LocationSignalPaintedEventHandler();
+    public delegate void SensorySignalPaintedEventHandler();
 
-        private int ImageWidth;
-        private int ImageInLayerHeight;
-        private int ImageOutLayerHeight;
-        private int CellsInOneLineCount = 1;
-        private readonly int CellSize = 15;
-        private readonly int CellMargin = 12;
-        private readonly SolidBrush UsuallyCellBrush = new(Color.Gray); // Тут есть синапс, но он не активен
-        private readonly SolidBrush PotentialSynapseBrush = new(Color.LightGray); // Тут может быть синапс
-        private readonly SolidBrush EmptyCellBrush = new(Color.WhiteSmoke); // Тут мтнапса никогда возникнуть не сможет
-        private readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
-        private readonly SolidBrush ActiveCellBrush = new(Color.Coral);
+    public class Painter() : BaseViewModel
+    {
+        private static readonly SolidBrush UsuallyCellBrush = new(Color.Gray); // Тут есть синапс, но он не активен
+        private static readonly SolidBrush PotentialSynapseBrush = new(Color.LightGray); // Тут может быть синапс
+        private static readonly SolidBrush EmptyCellBrush = new(Color.WhiteSmoke); // Тут мтнапса никогда возникнуть не сможет
+        private static readonly SolidBrush PredictedCellBrush = new(Color.LightBlue);
+        private static readonly SolidBrush ActiveCellBrush = new(Color.Coral);
+        private static readonly int CellSize = 15;
+        private static readonly int CellMargin = 12;
+        private int ImageWidth => Brain.InLayer.Count * CellSize + CellMargin * 2;
+        private int CellsInOneLineCount => (ImageWidth - CellMargin * 2) / CellSize;
+        private int ImageDendriteHeight => (int)Math.Ceiling((decimal)Brain.LocationSignalSize / CellsInOneLineCount) * CellSize + CellMargin * 2;
+        private int ImageInLayerHeight => Brain.InLayer.FirstOrDefault().Value.Count * CellSize + CellMargin * 2;
+        private int ImageOutLayerHeight => (int)Math.Ceiling((decimal)Brain.OutLayer.Count / CellsInOneLineCount) * CellSize + CellMargin * 2;
 
         private Tuple<int, int>? selectedInCell;
         private Tuple<int, int>? selectedOutCell;
 
-        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
+        private readonly BrainModel brain;
+        public BrainModel Brain => brain;
+
+        #region Bitmaps
+        private BitmapImage inLayerCells = new();
+        public BitmapImage InLayerCells
         {
-            get => MainWindowViewModel.InLayer;
+            get => inLayerCells;
+            set
+            {
+                if (value != null)
+                {
+                    inLayerCells = value;
+                    InCellsPainted();
+                }
+            }
         }
 
-        public Dictionary<int, Dictionary<int, Dendrites>> PredictInLayer
+        private BitmapImage outLayerCells = new();
+        public BitmapImage OutLayerCells
         {
-            get => MainWindowViewModel.PredictInLayer;
+            get => outLayerCells;
+            set
+            {
+                if (value != null)
+                {
+                    outLayerCells = value;
+                    OutCellsPainted();
+                }
+            }
         }
 
-        public Dictionary<int, List<int>> ActiveInLayer
+        private BitmapImage feedBackSynapsesBitmap = new();
+        public BitmapImage FeedBackSynapsesBitmap
         {
-            get => MainWindowViewModel.ActiveInLayer;
+            get => feedBackSynapsesBitmap;
+            set
+            {
+                if (value != null)
+                {
+                    feedBackSynapsesBitmap = value;
+                    FeedBackSynapsesPainted();
+                }
+            }
         }
 
-        public Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> OutLayer
+        private BitmapImage feedForwardSynapsesBitmap = new();
+        public BitmapImage FeedForwardSynapsesBitmap
         {
-            get => MainWindowViewModel.OutLayer;
+            get => feedForwardSynapsesBitmap;
+            set
+            {
+                if (value != null)
+                {
+                    feedForwardSynapsesBitmap = value;
+                    FeedForwardSynapsesPainted();
+                }
+            }
         }
 
-        public List<int> ActiveOutLayer
+        private BitmapImage feedForwardSignalBitmap = new();
+        public BitmapImage FeedForwardSignalBitmap
         {
-            get => MainWindowViewModel.ActiveOutLayer;
+            get => feedForwardSignalBitmap;
+            set
+            {
+                if (value != null)
+                {
+                    feedForwardSignalBitmap = value;
+                    SensorySignalPainted();
+                }
+            }
         }
 
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses
+        private BitmapImage locationSignalBitmap = new();
+        public BitmapImage LocationSignalBitmap
         {
-            get => MainWindowViewModel.FeedForwardSynapses;
+            get => locationSignalBitmap;
+            set
+            {
+                if (value != null)
+                {
+                    locationSignalBitmap = value;
+                    LocationSignalPainted();
+                }
+            }
         }
 
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses
+        private BitmapImage sensorySignalBitmap = new();
+        public BitmapImage SensorySignalBitmap
         {
-            get => MainWindowViewModel.FeedBackSynapses;
+            get => sensorySignalBitmap;
+            set
+            {
+                if (value != null)
+                {
+                    sensorySignalBitmap = value;
+                    SensorySignalPainted();
+                }
+            }
         }
 
-        public List<int> LocationSignal
+        private List<DendriteView> basalDendrites { get; set; } = [];
+        public List<DendriteView> BasalDendrites
         {
-            get => MainWindowViewModel.LocationSignal;
+            get => basalDendrites;
+            set
+            {
+                if (value != null)
+                {
+                    basalDendrites = value;
+                }
+            }
+        }
+        #endregion
+
+        #region ClickOnElipse
+        public void SelectLocationSignalSynapse(int x, int y)
+        {
+            int miniColumnKey = (x - CellMargin) / CellSize;
+            int cellIndex = (y - CellMargin) / CellSize;
+            int range = cellIndex * CellsInOneLineCount + miniColumnKey;
+
+            // Если не получилось удалить, значит синапса там и не было. Поэтому добавляем
+            if (!Brain.LocationSignal.Remove(range))
+            {
+                Brain.LocationSignal.Add(range);
+            }
+            DrawLocationSignal();
+        }
+
+        // TODO Написать функцию, преобразующую координаты в порядковый номер клетки
+        public void SelectSensorySignalMiniColumn(int x, int y)
+        {
+            int miniColumnKey = (x - CellMargin) / CellSize;
+
+            // Если не получилось удалить, значит синапса там и не было. Поэтому добавляем
+            if (!Brain.SensorySignal.Remove(miniColumnKey))
+            {
+                Brain.SensorySignal.Add(miniColumnKey);
+            }
+            DrawSensorySignal();
         }
 
         public void SelectInCell(int x, int y)
         {
             int miniColumnKey = (x - CellMargin) / CellSize;
             int cellIndex = (y - CellMargin) / CellSize;
-            MainWindowViewModel.BasalDendrites = [];
-            if (InLayer.ContainsKey(miniColumnKey) && InLayer[miniColumnKey].Count >= cellIndex)
+            BasalDendrites = [];
+            if (Brain.InLayer.ContainsKey(miniColumnKey) && Brain.InLayer[miniColumnKey].Count >= cellIndex)
             {
                 // Этот замут нужен для того, чтобы обратиться к клетке не по ID, а по порядковому номеру, который соответствует выводу на картинке
                 // TODO не обрабатывается ситуация, если промазать и выйти за клетки
-                var cell = InLayer[miniColumnKey].OrderBy(c => c.Key).ToList().ElementAt(cellIndex);
+                var cell = Brain.InLayer[miniColumnKey].OrderBy(c => c.Key).ToList().ElementAt(cellIndex);
                 selectedInCell = new Tuple<int, int>(miniColumnKey, cellIndex);
                 DrawInCells();
                 DrawFeedForwardSynapses(miniColumnKey, cell.Key);
                 foreach (var dendrite in cell.Value.OrderBy(d => d.Key))
                 {
-                    MainWindowViewModel.BasalDendrites.Add(
+                    BasalDendrites.Add(
                         new DendriteView()
                         {
                             Info = GetDendriteInfo(miniColumnKey, cell.Key, dendrite.Key),
                             Image = GetDentriteImage(miniColumnKey, cell.Key, dendrite.Key, dendrite.Value)
                         });
                 }
+                BasalDendritesPainted();
             }
         }
 
@@ -95,13 +207,14 @@ namespace ThousandBrainsVisualisation.Logic
             int miniColumnKey = (x - CellMargin) / CellSize;
             int cellIndex = (y - CellMargin) / CellSize;
             int range = cellIndex * CellsInOneLineCount + miniColumnKey;
-            if (OutLayer.ContainsKey(range))
+            if (Brain.OutLayer.ContainsKey(range))
             {
                 selectedOutCell = new Tuple<int, int>(miniColumnKey, cellIndex);
                 DrawOutCells();
                 DrawFeedBackSynapses(range);
             }
         }
+        #endregion
 
         #region Draw
         // TODO На текущий момент механизм отрисовки не универсальный. Значения подобраны так, чтобы корректно отображались 50 мини-колонок на экране 1920x1080
@@ -110,16 +223,13 @@ namespace ThousandBrainsVisualisation.Logic
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                // Сохраняем ширину, чтобы остальные изображения были такими же
-                ImageWidth = InLayer.Count * CellSize + CellMargin * 2;
-                ImageInLayerHeight = InLayer.FirstOrDefault().Value.Count * CellSize + CellMargin * 2;
                 using var bmp = new Bitmap(ImageWidth, ImageInLayerHeight);
                 using var gfx = Graphics.FromImage(bmp);
 
                 gfx.Clear(Color.White);
 
                 int i = 0;
-                foreach (var miniColumn in InLayer.OrderBy(c => c.Key))
+                foreach (var miniColumn in Brain.InLayer.OrderBy(c => c.Key))
                 {
                     int j = 0;
                     foreach (var cell in miniColumn.Value.OrderBy(c => c.Key))
@@ -146,7 +256,7 @@ namespace ThousandBrainsVisualisation.Logic
                         CellSize);
                 }
 
-                MainWindowViewModel.InLayerCells = BitmapImageImageFromBitmap(bmp);
+                InLayerCells = BitmapImageImageFromBitmap(bmp);
             });
         }
 
@@ -154,9 +264,6 @@ namespace ThousandBrainsVisualisation.Logic
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                int cellsCount = OutLayer.Count;
-                CellsInOneLineCount = (ImageWidth - CellMargin * 2) / CellSize;
-                ImageOutLayerHeight = (int)Math.Ceiling((decimal)cellsCount / CellsInOneLineCount) * CellSize + CellMargin * 2;
                 using var bmp = new Bitmap(ImageWidth, ImageOutLayerHeight);
                 using var gfx = Graphics.FromImage(bmp);
 
@@ -164,7 +271,7 @@ namespace ThousandBrainsVisualisation.Logic
 
                 int i = 0;
                 int j = 0;
-                foreach (var miniColumn in OutLayer.OrderBy(c => c.Key))
+                foreach (var miniColumn in Brain.OutLayer.OrderBy(c => c.Key))
                 {
                     if (i == CellsInOneLineCount)
                     {
@@ -192,7 +299,7 @@ namespace ThousandBrainsVisualisation.Logic
                         CellSize);
                 }
 
-                MainWindowViewModel.OutLayerCells = BitmapImageImageFromBitmap(bmp);
+                OutLayerCells = BitmapImageImageFromBitmap(bmp);
             });
         }
 
@@ -200,15 +307,16 @@ namespace ThousandBrainsVisualisation.Logic
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                // ImageInLayerHeight - исходим из того, что нелзя нарисовать FeedBack до выходного слоя
                 using var bmp = new Bitmap(ImageWidth, ImageInLayerHeight);
                 using var gfx = Graphics.FromImage(bmp);
 
                 gfx.Clear(Color.White);
 
-                var synapses = FeedBackSynapses.Where(f => f.Key.Item1.Item1 == range);
+                var synapses = Brain.FeedBackSynapses.Where(f => f.Key.Item1.Item1 == range);
 
                 int i = 0;
-                foreach (var miniColumn in InLayer.OrderBy(c => c.Key))
+                foreach (var miniColumn in Brain.InLayer.OrderBy(c => c.Key))
                 {
                     int j = 0;
                     foreach (var cell in miniColumn.Value.OrderBy(c => c.Key))
@@ -225,7 +333,7 @@ namespace ThousandBrainsVisualisation.Logic
                 }
                 DrawRisk(gfx);
 
-                MainWindowViewModel.FeedBackSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
+                FeedBackSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
             });
         }
 
@@ -233,13 +341,14 @@ namespace ThousandBrainsVisualisation.Logic
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                int cellsCount = OutLayer.Count;
+                int cellsCount = Brain.OutLayer.Count;
+                // ImageOutLayerHeight - исходим из того, что нелзя нарисовать FeedForward до выходного слоя
                 using var bmp = new Bitmap(ImageWidth, ImageOutLayerHeight);
                 using var gfx = Graphics.FromImage(bmp);
 
                 gfx.Clear(Color.White);
 
-                var synapses = FeedForwardSynapses.Where(f => f.Key.Item1.Item1 == miniColumnKey && f.Key.Item1.Item2 == cellKey);
+                var synapses = Brain.FeedForwardSynapses.Where(f => f.Key.Item1.Item1 == miniColumnKey && f.Key.Item1.Item2 == cellKey);
 
                 int i = 0;
                 int j = 0;
@@ -261,7 +370,65 @@ namespace ThousandBrainsVisualisation.Logic
                 }
                 DrawRisk(gfx);
 
-                MainWindowViewModel.FeedForwardSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
+                FeedForwardSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
+            });
+        }
+
+        public void DrawLocationSignal()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                using var bmp = new Bitmap(ImageWidth, ImageDendriteHeight);
+                using var gfx = Graphics.FromImage(bmp);
+
+                gfx.Clear(Color.White);
+
+
+                int i = 0;
+                int j = 0;
+                for (int s = 0; s < Brain.LocationSignalSize; s++)
+                {
+                    if (i == CellsInOneLineCount)
+                    {
+                        i = 0;
+                        j++;
+                    }
+
+                    gfx.FillEllipse(
+                        SelectBrushForLocationSignal(j * CellsInOneLineCount + i),
+                        (CellSize * i) + CellMargin,
+                        (CellSize * j) + CellMargin,
+                        CellSize,
+                        CellSize);
+                    i++;
+                }
+                DrawRisk(gfx);
+
+                LocationSignalBitmap = BitmapImageImageFromBitmap(bmp);
+            });
+        }
+
+        public void DrawSensorySignal()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                using var bmp = new Bitmap(ImageWidth, CellMargin * 2 + CellSize);
+                using var gfx = Graphics.FromImage(bmp);
+
+                gfx.Clear(Color.White);
+
+                for (int s = 0; s < Brain.InLayer.Count; s++)
+                {
+                    gfx.FillEllipse(
+                        SelectBrushForSensorySignal(s),
+                        (CellSize * s) + CellMargin,
+                        CellMargin,
+                        CellSize,
+                        CellSize);
+                }
+                DrawRisk(gfx);
+
+                SensorySignalBitmap = BitmapImageImageFromBitmap(bmp);
             });
         }
 
@@ -277,16 +444,15 @@ namespace ThousandBrainsVisualisation.Logic
         #region Dendrite Handle
         private BitmapImage GetDentriteImage(int miniColumnKey, int cellKey, int dendriteKey, Dictionary<int, Synapse> dendrite)
         {
-            int ImageDendriteHeight = (int)Math.Ceiling((decimal)BrainModel.LocationSignalSize / CellsInOneLineCount) * CellSize + CellMargin * 2;
+            ;
             using var bmp = new Bitmap(ImageWidth, ImageDendriteHeight);
-
             using var gfx = Graphics.FromImage(bmp);
 
             gfx.Clear(Color.White);
 
             int i = 0;
             int j = 0;
-            for (int s = 0; s < BrainModel.LocationSignalSize; s++)
+            for (int s = 0; s < Brain.LocationSignalSize; s++)
             {
                 if (i == CellsInOneLineCount)
                 {
@@ -306,7 +472,7 @@ namespace ThousandBrainsVisualisation.Logic
             DrawRisk(gfx);
 
             // Todo Разобраться с повторяющимся вызовом
-            if (MainWindowViewModel.Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey))
+            if (Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey))
             {
                 gfx.DrawRectangle(
                     new Pen(Color.Green, 3),
@@ -320,9 +486,9 @@ namespace ThousandBrainsVisualisation.Logic
         {
             string result = string.Empty;
 
-            result += "Активность: " + (MainWindowViewModel.Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey) ? "Да " : "Нет ");
-            result += "Количество существующих синапсов: " + MainWindowViewModel.Brain.GetExistSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
-            result += "Количество активных синапсов: " + MainWindowViewModel.Brain.GetActiveSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
+            result += "Активность: " + (Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey) ? "Да " : "Нет ");
+            result += "Количество существующих синапсов: " + Brain.GetExistSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
+            result += "Количество активных синапсов: " + Brain.GetActiveSynapseCountInDendrite(miniColumnKey, cellKey, dendriteKey) + " ";
 
             return result;
         }
@@ -350,13 +516,13 @@ namespace ThousandBrainsVisualisation.Logic
 
         private SolidBrush SelectBrushForInLayer(int miniColumnKey, int cellKey)
         {
-            if (MainWindowViewModel.Brain.IsActiveCellInLayer(miniColumnKey, cellKey))
+            if (Brain.IsActiveCellInLayer(miniColumnKey, cellKey))
             {
                 return ActiveCellBrush;
             }
             else
             {
-                if (MainWindowViewModel.Brain.IsPredictCellInLayer(miniColumnKey, cellKey))
+                if (Brain.IsPredictCellInLayer(miniColumnKey, cellKey))
                 {
                     return PredictedCellBrush;
                 }
@@ -375,7 +541,7 @@ namespace ThousandBrainsVisualisation.Logic
             }
             if (synapse.Weight)
             {
-                if (LocationSignal.Contains(indexInLocation))
+                if (Brain.LocationSignal.Contains(indexInLocation))
                 {
                     return ActiveCellBrush;
                 }
@@ -390,17 +556,11 @@ namespace ThousandBrainsVisualisation.Logic
             }
         }
 
-        private SolidBrush SelectBrushForOutLayer(int miniColumnKey)
-        {
-            if (MainWindowViewModel.Brain.IsActiveCellOutLayer(miniColumnKey))
-            {
-                return ActiveCellBrush;
-            }
-            else
-            {
-                return UsuallyCellBrush;
-            }
-        }
+        private SolidBrush SelectBrushForLocationSignal(int range) => Brain.LocationSignal.Contains(range) ? ActiveCellBrush : UsuallyCellBrush;
+
+        private SolidBrush SelectBrushForSensorySignal(int range) => Brain.SensorySignal.Contains(range) ? ActiveCellBrush : UsuallyCellBrush;
+
+        private SolidBrush SelectBrushForOutLayer(int miniColumnKey) => Brain.IsActiveCellOutLayer(miniColumnKey) ? ActiveCellBrush : UsuallyCellBrush;
         #endregion
 
         private static BitmapImage BitmapImageImageFromBitmap(Bitmap bmp)
@@ -418,6 +578,19 @@ namespace ThousandBrainsVisualisation.Logic
             bitmapImage.Freeze();
 
             return bitmapImage;
+        }
+
+        public event InCellsPaintedEventHandler InCellsPainted = delegate { };
+        public event OutCellsPaintedEventHandler OutCellsPainted = delegate { };
+        public event FeedBackSynapsesPaintedEventHandler FeedBackSynapsesPainted = delegate { };
+        public event FeedForwardSynapsesPaintedEventHandler FeedForwardSynapsesPainted = delegate { };
+        public event BasalDendritesPaintedEventHandler BasalDendritesPainted = delegate { };
+        public event LocationSignalPaintedEventHandler LocationSignalPainted = delegate { };
+        public event SensorySignalPaintedEventHandler SensorySignalPainted = delegate { };
+
+        public Painter(BrainModel brain) : this()
+        {
+            this.brain = brain;
         }
     }
 }

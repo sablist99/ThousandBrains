@@ -33,11 +33,11 @@
                         <MenuItem Header="Вывод в файл" Command="{Binding BrainPrintCommand}"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Сигнал местоположения" >
-                        <MenuItem Header="Редактировать"></MenuItem>
+                        <MenuItem Header="Редактировать" Command="{Binding EditLocationSignalCommand}"></MenuItem>
                         <MenuItem Header="Отправить" Command="{Binding SendLocationSignalCommand}"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Сенсорный сигнал" >
-                        <MenuItem Header="Редактировать"></MenuItem>
+                        <MenuItem Header="Редактировать" Command="{Binding EditSensorySignalCommand}"></MenuItem>
                         <MenuItem Header="Отправить" Command="{Binding SendSensorySignalCommand}"></MenuItem>
                     </MenuItem>
                     <Separator />

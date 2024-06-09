@@ -1,13 +1,14 @@
 ﻿using System.Windows.Media.Imaging;
 using ThousandBrainsVisualisation.Logic;
 using ThousandBrainsVisualisation.Model;
+using ThousandBrainsVisualisation.View;
 
 namespace ThousandBrainsVisualisation.ViewModel
 {
-    public class MainWindowViewModel(BrainModel brain, Painter painter) : BaseViewModel
+    public class MainWindowViewModel : BaseViewModel
     {
-        public readonly BrainModel Brain = brain;
-        private readonly Painter Painter = painter;
+        public readonly BrainModel Brain;
+        private readonly Painter Painter;
 
         private bool isBusy = false;
         public bool IsBusy
@@ -31,55 +32,7 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
 
-        #region Model
-        public Dictionary<int, Dictionary<int, Dictionary<int, Dictionary<int, Synapse>>>> InLayer
-        {
-            get => Brain.InLayer;
-        }
-
-        public Dictionary<int, Dictionary<int, Dendrites>> PredictInLayer
-        {
-            get => Brain.PredictInLayer;
-        }
-
-        public Dictionary<int, List<int>> ActiveInLayer
-        {
-            get => Brain.ActiveInLayer;
-        }
-
-        public Dictionary<int, (int, Dictionary<int, Dictionary<int, Synapse>>)> OutLayer
-        {
-            get => Brain.OutLayer;
-        }
-
-        public List<int> ActiveOutLayer
-        {
-            get => Brain.ActiveOutLayer;
-        }
-
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedForwardSynapses
-        {
-            get => Brain.FeedForwardSynapses;
-        }
-
-        public Dictionary<((int?, int?), (int?, int?)), Synapse> FeedBackSynapses
-        {
-            get => Brain.FeedBackSynapses;
-        }
-
-        public List<int> LocationSignal
-        {
-            get => Brain.LocationSignal;
-            set
-            {
-                if (value != null)
-                {
-                    Brain.LocationSignal = value;
-                    Painter.DrawOutCells();
-                };
-            }
-        }
-        #endregion
+        
 
         #region Bitmaps
         private BitmapImage inLayerCells = new();
@@ -166,13 +119,13 @@ namespace ThousandBrainsVisualisation.ViewModel
         private void SendLocationSignal()
         {
             IsBusy = true;
-            Brain.LocationSignal = [1, 4, 7, 11, 14, 19, 21, 22, 46, 58, 69, 90, 104, 139, 150, 167, 179, 182, 187, 192, 195, 199];
+            Brain.NeedSendLocationSignal = true;
         }
 
         private void SendSensorySignal()
         {
             IsBusy = true;
-            Brain.SensorySignal = [1, 4, 7, 11, 15];
+            Brain.NeedSendSensorySignal = true;
         }
 
         #region Commands
@@ -215,7 +168,43 @@ namespace ThousandBrainsVisualisation.ViewModel
                 });
             }
         }
-        
+
+
+        private RelayCommand? editLocationSignalCommand;
+        public RelayCommand EditLocationSignalCommand
+        {
+            get
+            {
+                return editLocationSignalCommand ??= new RelayCommand(obj =>
+                {
+                    EditSignalViewModel editSignalViewModel = new(Brain, EditSignalMode.LocationSignal);
+                    EditSignalWindow editSignal = new()
+                    {
+                        DataContext = editSignalViewModel
+                    };
+                    editSignal.ShowDialog();
+                });
+            }
+        }
+
+
+        private RelayCommand? editSensorySignalCommand;
+        public RelayCommand EditSensorySignalCommand
+        {
+            get
+            {
+                return editSensorySignalCommand ??= new RelayCommand(obj =>
+                {
+                    EditSignalViewModel editSignalViewModel = new(Brain, EditSignalMode.SensorySignal);
+                    EditSignalWindow editSignal = new()
+                    {
+                        DataContext = editSignalViewModel
+                    };
+                    editSignal.ShowDialog();
+                });
+            }
+        }
+
 
         private RelayCommand? sendSensorySignasCommand;
         public RelayCommand SendSensorySignalCommand
@@ -229,5 +218,20 @@ namespace ThousandBrainsVisualisation.ViewModel
             }
         }
         #endregion
+
+        public MainWindowViewModel(BrainModel brain)
+        {
+            Brain = brain;
+            Painter = new(brain);
+
+            Brain.UpdateInCells += Painter.DrawInCells;
+            Brain.UpdateOutCells += Painter.DrawOutCells;
+
+            Painter.InCellsPainted += () => InLayerCells = Painter.InLayerCells;
+            Painter.OutCellsPainted += () => OutLayerCells = Painter.OutLayerCells;
+            Painter.FeedBackSynapsesPainted += () => FeedBackSynapsesBitmap = Painter.FeedBackSynapsesBitmap;
+            Painter.FeedForwardSynapsesPainted += () => FeedForwardSynapsesBitmap = Painter.FeedForwardSynapsesBitmap;
+            Painter.BasalDendritesPainted += () => BasalDendrites = Painter.BasalDendrites;
+        }
     }
 }

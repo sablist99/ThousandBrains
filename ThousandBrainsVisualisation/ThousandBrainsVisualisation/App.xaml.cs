@@ -12,20 +12,14 @@ namespace ThousandBrainsVisualisation
     public partial class App : Application
     {
         private BrainModel Brain;
-        private Painter Painter;
         private MainWindowViewModel MainWindowViewModel;
         private BrainFiller BrainFiller;
         private Server Server;
         public App()
         {
             Brain = new();
-            Painter = new();
-            MainWindowViewModel = new(Brain, Painter);
+            MainWindowViewModel = new(Brain);
 
-            Painter.MainWindowViewModel = MainWindowViewModel;
-
-            Brain.UpdateInCells += Painter.DrawInCells;
-            Brain.UpdateOutCells += Painter.DrawOutCells;
             Brain.SendLocationSignal += SendLocationSignalToClient;
             Brain.SendSensorySignal += SendSensorySignalToClient;
             Brain.SetNeedBrainInitialize += SetNeedBrainInitialize;
@@ -90,6 +84,7 @@ namespace ThousandBrainsVisualisation
                 Server.SendDataToClient(i.ToString());
             }
             Server.SendDataToClient(BrainCommands.LocationSignalEnd);
+            Brain.NeedSendLocationSignal = false;
         }
 
         private void SendSensorySignalToClient()
@@ -100,7 +95,7 @@ namespace ThousandBrainsVisualisation
                 Server.SendDataToClient(i.ToString());
             }
             Server.SendDataToClient(BrainCommands.SensorySignalEnd);
+            Brain.NeedSendSensorySignal = false;
         }
-
     }
 }
