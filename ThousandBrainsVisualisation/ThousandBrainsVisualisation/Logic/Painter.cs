@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using ThousandBrainsVisualisation.Model;
@@ -135,6 +134,7 @@ namespace ThousandBrainsVisualisation.Logic
                     }
                     i++;
                 }
+                DrawRisk(gfx);
 
                 if (selectedInCell != null)
                 {
@@ -180,6 +180,7 @@ namespace ThousandBrainsVisualisation.Logic
                         CellSize);
                     i++;
                 }
+                DrawRisk(gfx);
 
                 if (selectedOutCell != null)
                 {
@@ -222,6 +223,7 @@ namespace ThousandBrainsVisualisation.Logic
                     }
                     i++;
                 }
+                DrawRisk(gfx);
 
                 MainWindowViewModel.FeedBackSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
             });
@@ -257,9 +259,18 @@ namespace ThousandBrainsVisualisation.Logic
                         CellSize);
                     i++;
                 }
+                DrawRisk(gfx);
 
                 MainWindowViewModel.FeedForwardSynapsesBitmap = BitmapImageImageFromBitmap(bmp);
             });
+        }
+
+        private void DrawRisk(Graphics g)
+        {
+            for (int i = 1; i < CellsInOneLineCount / 5; i++)
+            {
+                g.DrawLine(new Pen(Color.Gray, 1), CellMargin + CellSize * 5 * i, 8, CellMargin + CellSize * 5 * i, 13);
+            }
         }
         #endregion
 
@@ -292,6 +303,7 @@ namespace ThousandBrainsVisualisation.Logic
                     CellSize);
                 i++;
             }
+            DrawRisk(gfx);
 
             // Todo Разобраться с повторяющимся вызовом
             if (MainWindowViewModel.Brain.HasActiveLateralDendrite(miniColumnKey, cellKey, dendriteKey))

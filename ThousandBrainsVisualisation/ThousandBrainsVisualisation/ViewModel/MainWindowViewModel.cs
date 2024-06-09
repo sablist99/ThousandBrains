@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 using ThousandBrainsVisualisation.Logic;
 using ThousandBrainsVisualisation.Model;
 
@@ -167,13 +166,13 @@ namespace ThousandBrainsVisualisation.ViewModel
         private void SendLocationSignal()
         {
             IsBusy = true;
-            Brain.LocationSignal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22];
+            Brain.LocationSignal = [1, 4, 7, 11, 14, 19, 21, 22, 46, 58, 69, 90, 104, 139, 150, 167, 179, 182, 187, 192, 195, 199];
         }
 
         private void SendSensorySignal()
         {
             IsBusy = true;
-            Brain.SensorySignal = [1,3];
+            Brain.SensorySignal = [1, 4, 7, 11, 15];
         }
 
         #region Commands

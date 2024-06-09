@@ -188,7 +188,7 @@
         #endregion
 
         //TODO Реализовать передачу настроек мозга по TCP
-        public const int LocationSignalSize = 100;
+        public const int LocationSignalSize = 200;
 
         public event UpdateInCellsEventHandler UpdateInCells = delegate { };
         public event UpdateOutCellsEventHandler UpdateOutCells = delegate { };
